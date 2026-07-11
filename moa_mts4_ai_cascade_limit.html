@@ -1,0 +1,496 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 캐스케이드 투자 한도 정하기</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --red: #e53935;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 128px;
+      overflow: hidden;
+    }
+
+    .stock-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f7f7f7;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .stock-card strong {
+      display: block;
+      font-size: 15px;
+      line-height: 18px;
+    }
+
+    .bubble {
+      max-width: 88%;
+      margin-top: 12px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .bubble.ai {
+      background: #f4f4f4;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 4px;
+    }
+
+    .summary-card,
+    .input-card,
+    .preview-card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .summary-card {
+      background: #f7f7f7;
+      display: grid;
+      gap: 7px;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 8px;
+    }
+
+    .summary-row b {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .input-card strong,
+    .preview-card strong {
+      display: block;
+      font-size: 14px;
+      line-height: 20px;
+      margin-bottom: 3px;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 42px;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .fake-input {
+      height: 36px;
+      border: 1px solid #c9c9c9;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #aaa;
+      background: white;
+      font-size: 11px;
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      min-height: 40px;
+      border: 1px solid #9d9d9d;
+      border-radius: 9px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .chat-area {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 62px;
+      min-height: 82px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      background: white;
+      z-index: 2;
+    }
+
+    .chat-hint {
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .chat-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 42px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .message-input {
+      height: 40px;
+      border: 1px solid #c9c9c9;
+      border-radius: 10px;
+      background: white;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      font-size: 11px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .logic-panel {
+      left: 630px;
+      top: 200px;
+      width: 410px;
+    }
+
+    .next-panel {
+      left: 1080px;
+      top: 200px;
+      width: 390px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA AI - 캐스케이드 투자 한도 정하기</div>
+    <div class="subtitle">시작 전 투자 한도 설정 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_ai_cascade_confirm.html">&larr;</a>
+          <div class="app-title">
+            투자 한도 정하기
+            <div class="app-subtitle">시작 전 설정</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="stock-card">
+            <div>
+              <strong>SK하이닉스</strong>
+              000660 · 국내 주식
+            </div>
+            <div style="text-align:right;">
+              <b>2,202,000원</b><br />
+              <span style="color:var(--red);">▼ -6.02%</span>
+            </div>
+          </section>
+
+          <div class="bubble ai">
+            가격이 내려갈 때 계속 사지 않도록, 이 캐스케이드에 넣을 최대 금액을 정할게요.
+          </div>
+
+          <section class="summary-card">
+            <div class="summary-row"><b>첫 투자금</b><span>1,000,000원</span></div>
+            <div class="summary-row"><b>변동성 간격</b><span>1%</span></div>
+            <div class="summary-row"><b>구간 금액</b><span>약 10,000원</span></div>
+          </section>
+
+          <section class="input-card">
+            <strong>최대 얼마까지 투자할까요?</strong>
+            <div class="input-row">
+              <div class="fake-input">예: 1,500,000원</div>
+              <a class="icon-button" href="moa_mts4_ai_cascade_confirm.html" style="width:42px;height:36px;background:#222;color:white;">&#8617;</a>
+            </div>
+            <div class="chips">
+              <a class="chip" href="moa_mts4_ai_cascade_confirm.html">150만원</a>
+              <a class="chip" href="moa_mts4_ai_cascade_confirm.html">200만원</a>
+              <a class="chip" href="moa_mts4_ai_cascade_confirm.html">300만원</a>
+            </div>
+          </section>
+
+          <section class="preview-card">
+            <strong>150만원으로 정하면</strong>
+            1% 하락할 때마다 1만원씩 추가되어, 약 50% 하락 구간까지 대응할 수 있습니다.
+          </section>
+
+          <div class="actions">
+            <a class="button" href="moa_mts4_ai_cascade_confirm.html">확인 화면으로</a>
+            <a class="button dark" href="moa_mts4_ai_cascade_confirm.html">이 한도로 할게요</a>
+          </div>
+        </main>
+
+        <section class="chat-area">
+          <div class="chat-hint">자유롭게 입력 가능: “150만원까지”, “200만원으로”, “하락 30%까지만”</div>
+          <div class="chat-row">
+            <div class="icon-button" title="음성으로 말하기">Mic</div>
+            <div class="message-input">MOA AI에게 메시지 보내기</div>
+            <a class="icon-button" href="moa_mts4_ai_cascade_confirm.html" style="background:#222;color:white;">&uarr;</a>
+          </div>
+        </section>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 캐스케이드 투자 한도 정하기</div>
+    </section>
+
+    <aside class="panel logic-panel">
+      <h2>프로토타입 범위</h2>
+      <div class="panel-row"><b>역할</b><span>가격 하락 시 최대 얼마까지 투자할지 정함</span></div>
+      <div class="panel-row"><b>예시</b><span>150만원 한도는 첫 투자금보다 50만원 더 투자 가능</span></div>
+      <div class="panel-row"><b>채팅 유지</b><span>하단 채팅/Mic은 그대로 유지</span></div>
+      <div class="panel-row"><b>연결</b><span>한도 선택 후 기존 확인 화면으로 돌아감</span></div>
+    </aside>
+
+    <aside class="panel next-panel">
+      <h2>다음 추천</h2>
+      <div class="panel-row"><b>반영 방식</b><span>확인 화면에 투자 한도 항목을 추가하는 흐름</span></div>
+      <div class="panel-row"><b>보류</b><span>실제 계산 변경은 프로토타입 후반에서 정교화</span></div>
+      <div class="panel-row"><b>원칙</b><span>지금은 한도 설정 화면만 가볍게 확인</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

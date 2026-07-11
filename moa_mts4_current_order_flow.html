@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 현재가 주문 프로세스 와이어프레임</title>
+  <style>
+    :root {
+      --blue: #3b66d6;
+      --red: #e53935;
+      --green: #2ead65;
+      --black: #222;
+      --gray: #8d8d8d;
+      --mid: #cfcfcf;
+      --light: #f1f1f1;
+      --yellow: #ffe33d;
+      --bg: #fafafa;
+      --phone-w: 380px;
+      --phone-h: 700px;
+    }
+
+    * { box-sizing: border-box; }
+
+    a { color: inherit; text-decoration: none; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--black);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    .board {
+      position: relative;
+      width: 1800px;
+      height: 1780px;
+      padding: 0;
+      background: var(--bg);
+    }
+
+    .title {
+      position: absolute;
+      left: 92px;
+      top: 48px;
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      position: absolute;
+      left: 92px;
+      top: 88px;
+      font-size: 16px;
+      color: #9a9a9a;
+    }
+
+    .top-line {
+      position: absolute;
+      left: 90px;
+      top: 120px;
+      width: 1620px;
+      height: 2px;
+      background: #bdbdbd;
+    }
+
+    .legend {
+      position: absolute;
+      left: 1330px;
+      top: 42px;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .back-link {
+      position: absolute;
+      left: 92px;
+      top: 132px;
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid #bdbdbd;
+      border-radius: 7px;
+      background: white;
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .menu-link {
+      position: absolute;
+      left: 342px;
+      top: 132px;
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid #bdbdbd;
+      border-radius: 7px;
+      background: white;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .legend-line {
+      display: inline-block;
+      width: 70px;
+      height: 4px;
+      margin: 0 10px 3px 10px;
+      background: var(--blue);
+    }
+
+    .legend-chip {
+      display: inline-block;
+      width: 70px;
+      height: 22px;
+      margin: 0 10px -6px 54px;
+      border: 1px solid #cbae00;
+      border-radius: 3px;
+      background: var(--yellow);
+    }
+
+    .phone-wrap {
+      position: absolute;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--black);
+      border-radius: 24px;
+      background: white;
+      overflow: visible;
+    }
+
+    .notch {
+      position: absolute;
+      left: 155px;
+      top: 6px;
+      width: 70px;
+      height: 12px;
+      border: 1px solid var(--black);
+      border-radius: 6px;
+      background: #f8f8f8;
+    }
+
+    .screen-no {
+      position: absolute;
+      left: -3px;
+      top: -42px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      z-index: 5;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 18px;
+      height: 34px;
+      border: 1px solid #bbb;
+      border-radius: 5px;
+      background: var(--light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .back {
+      position: absolute;
+      left: 28px;
+      top: 26px;
+      font-weight: 800;
+      z-index: 2;
+    }
+
+    .caption {
+      width: var(--phone-w);
+      margin-top: 22px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 22px;
+    }
+
+    .caption .muted { color: var(--gray); }
+
+    .panel {
+      position: absolute;
+      border: 1px solid #c7c7c7;
+      border-radius: 8px;
+      background: #f4f4f4;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin: 0 0 10px;
+    }
+
+    .small {
+      font-size: 11px;
+      line-height: 18px;
+    }
+
+    .body {
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .button {
+      height: 34px;
+      border: 2px solid #9d9d9d;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .button.dark {
+      background: var(--black);
+      border-color: var(--black);
+      color: white;
+    }
+
+    .button.yellow {
+      background: var(--yellow);
+      border-color: #d5bb00;
+    }
+
+    .note {
+      color: var(--blue);
+      font-size: 11px;
+      line-height: 22px;
+      white-space: nowrap;
+    }
+
+    .note.red { color: var(--red); }
+    .note.gray { color: #555; }
+
+    .footer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 44px;
+      border-top: 2px solid #ccc;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      color: var(--gray);
+      font-size: 11px;
+      background: white;
+      border-radius: 0 0 21px 21px;
+      overflow: hidden;
+    }
+
+    .footer .active { color: var(--black); font-weight: 800; }
+
+    .chat-input {
+      position: absolute;
+      left: 14px;
+      right: 50px;
+      bottom: 28px;
+      height: 30px;
+      border: 1px solid #c7c7c7;
+      border-radius: 5px;
+      color: #aaa;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      background: white;
+    }
+
+    .send {
+      position: absolute;
+      right: 12px;
+      bottom: 28px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--black);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .arrow {
+      position: absolute;
+      height: 0;
+      border-top: 4px solid var(--blue);
+    }
+
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      top: -10px;
+      border-left: 14px solid var(--blue);
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+    }
+
+    .v-arrow {
+      position: absolute;
+      width: 0;
+      border-left: 4px solid var(--blue);
+    }
+
+    .v-arrow::after {
+      content: "";
+      position: absolute;
+      left: -10px;
+      bottom: -2px;
+      border-top: 14px solid var(--blue);
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+    }
+
+    .s1 { left: 95px; top: 235px; }
+    .s2 { left: 690px; top: 235px; }
+    .s3 { left: 1280px; top: 235px; }
+    .s4 { left: 95px; top: 960px; }
+    .s5 { left: 690px; top: 960px; }
+    .s6 { left: 1280px; top: 960px; }
+
+    .stock-bar {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 60px;
+      height: 40px;
+      border: 1px solid #c2c2c2;
+      border-radius: 5px;
+      background: #efefef;
+      padding: 7px 10px;
+      font-size: 11px;
+    }
+
+    .stock-bar strong {
+      display: block;
+      font-size: 14px;
+      line-height: 14px;
+    }
+
+    .realtime {
+      position: absolute;
+      right: 16px;
+      top: 16px;
+      color: var(--green);
+      font-size: 11px;
+    }
+
+    .screen3-ai {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 122px;
+      padding: 14px;
+      min-height: 74px;
+      border: 1px solid #c7c7c7;
+      border-radius: 8px;
+      background: #f4f4f4;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .screen3-menu-title {
+      position: absolute;
+      left: 18px;
+      top: 220px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .screen3-menu {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 250px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .screen3-menu .button {
+      height: 42px;
+      font-size: 12px;
+      padding: 0 8px;
+    }
+
+    .flow-note-right {
+      position: absolute;
+      left: 366px;
+      top: 258px;
+      font-size: 11px;
+      line-height: 52px;
+    }
+
+    .bottom-line {
+      position: absolute;
+      left: 90px;
+      top: 1722px;
+      width: 1620px;
+      height: 1px;
+      background: #bdbdbd;
+    }
+
+    .change-note {
+      position: absolute;
+      left: 92px;
+      top: 1734px;
+      font-size: 11px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 — 초보자 친화형 현재가 주문 프로세스 플로우</div>
+    <div class="subtitle">기능 정의 와이어프레임 | 편집 원본 HTML | 2026.07</div>
+    <div class="top-line"></div>
+    <a class="back-link" href="moa_mts4_ai_fullscreen_wireframe.html">&larr; MOA AI 풀스크린으로 돌아가기</a>
+    <a class="menu-link" href="moa_mts4_all_menu.html">☰ 전체 메뉴</a>
+
+    <div class="legend">
+      <strong>범례:</strong><span class="legend-line"></span>플로우 이동<br />
+      <span style="color: var(--blue);">▶ 파란색: 다음 화면 이동</span><br />
+      <span style="color: var(--red);">▶ 빨간색: 분기/조건/에러</span><br />
+      <span style="color: #555;">회색: 시스템 동작</span><br />
+      <span class="legend-chip"></span>신규 기능/빠른 금액 버튼
+    </div>
+
+    <section class="phone-wrap s1">
+      <div class="phone">
+        <div class="screen-no">1</div>
+        <div class="notch"></div>
+        <div class="appbar" style="justify-content:flex-start; padding-left:8px; font-size:11px; font-weight:400;">● KRX 개장&nbsp;&nbsp;● NYSE 휴장&nbsp;&nbsp;● CRYPTO 24H</div>
+        <div class="panel" style="left:16px; right:16px; top:60px; height:180px; padding:14px;">
+          <div class="section-title">MOA AI</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div class="button">SK하이닉스 사고 싶어</div>
+            <div class="button">BTC 계속 살래</div>
+            <div class="button">삼성전자 캐스케이드</div>
+            <div class="button">코스피 투자 방법</div>
+          </div>
+          <div style="height:30px; margin-top:10px; border:1px solid #d0d0d0; border-radius:4px; background:white; color:#aaa; font-size:11px; display:flex; align-items:center; padding-left:10px;">MOA AI에게 메시지 보내기</div>
+        </div>
+        <div style="position:absolute; left:18px; top:254px;">
+          <div class="section-title">빠른 접근</div>
+          <div style="display:grid; grid-template-columns:repeat(3, 112px); gap:8px;">
+            <div class="button" style="height:46px; background:#f7f7f7; border-color:#d0d0d0;">국내주식</div>
+            <div class="button" style="height:46px; background:#f7f7f7; border-color:#d0d0d0;">해외주식</div>
+            <div class="button" style="height:46px; background:#f7f7f7; border-color:#d0d0d0;">외환</div>
+            <div class="button" style="height:46px; background:#f7f7f7; border-color:#d0d0d0;">귀금속</div>
+            <div class="button" style="height:46px; background:#f7f7f7; border-color:#d0d0d0;">크립토</div>
+            <div class="button" style="height:46px; background:#f7f7f7; border-color:#d0d0d0;">선물거래</div>
+          </div>
+        </div>
+        <div style="position:absolute; left:18px; right:16px; top:390px;">
+          <div class="section-title">AI 추천 종목</div>
+          <div class="body" style="height:32px; border:1px solid #c5c5c5; border-radius:4px; background:#f7f7f7; display:flex; align-items:center; justify-content:space-between; padding:0 8px;">
+            <span>삼성전자</span><span>73,400&nbsp;&nbsp;<b style="color:var(--green);">+1.10%</b></span>
+          </div>
+          <div class="body" style="height:32px; border:1px solid #c5c5c5; border-radius:4px; background:#f7f7f7; display:flex; align-items:center; justify-content:space-between; padding:0 8px; margin-top:2px;">
+            <span>Apple</span><span>$189.30&nbsp;&nbsp;<b style="color:var(--green);">+1.15%</b></span>
+          </div>
+        </div>
+        <div class="note" style="position:absolute; left:18px; bottom:44px;">▶ 탭: AI 메시지 입력 → SCREEN 2</div>
+        <div class="footer">
+          <div class="active">홈</div><div>캐스케이드</div><div>MOA AI</div><div>마켓</div><div>포트폴리오</div>
+        </div>
+      </div>
+      <div class="caption"><div class="muted">SCREEN 1</div><div>홈</div></div>
+    </section>
+
+    <section class="phone-wrap s2">
+      <div class="phone">
+        <div class="screen-no">2</div>
+        <div class="notch"></div>
+        <div class="back">←</div>
+        <div class="appbar">MOA AI</div>
+        <div class="panel small" style="left:24px; top:64px; width:306px; min-height:86px; padding:10px;">
+          안녕하세요! MOA AI 트레이딩 어시스턴트입니다.<br />
+          종목 추천, 캐스케이드 설계, 포트폴리오 구성 등<br />
+          무엇이든 물어보세요.
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:6px;">
+            <div class="button" style="height:22px;">오늘 추천 종목</div>
+            <div class="button" style="height:22px;">캐스케이드 시작</div>
+          </div>
+        </div>
+        <div class="button dark" style="position:absolute; left:86px; top:162px; width:278px; height:38px;">SK하이닉스 사고 싶어</div>
+        <div style="position:absolute; left:28px; top:214px; width:30px; height:30px; border-radius:50%; background:#e4e4e4; color:#888; display:flex; align-items:center; justify-content:center;">•••</div>
+        <div class="small" style="position:absolute; left:66px; top:221px; color:#888;">분석 중...</div>
+        <div class="note gray" style="position:absolute; left:24px; top:262px;">▶ 시스템: 종목 인식 → AI 분석 시작</div>
+        <div class="note" style="position:absolute; left:24px; top:288px;">▶ → SCREEN 3 (분석 완료 후)</div>
+        <div class="chat-input">메시지 입력...</div>
+        <div class="send">↑</div>
+      </div>
+      <div class="caption"><div class="muted">SCREEN 2</div><div>MOA AI 대화</div></div>
+    </section>
+
+    <section class="phone-wrap s3">
+      <div class="phone">
+        <div class="screen-no">3</div>
+        <div class="notch"></div>
+        <div class="appbar">MOA AI</div>
+        <div class="stock-bar">
+          <strong>SK하이닉스(000660)</strong>
+          <span style="color:var(--red);">현재가: 2,202,000원 ▼-6.02%</span>
+          <span class="realtime">실시간</span>
+        </div>
+
+        <div class="screen3-ai">
+          AI가 현재가와 변동 상황을 확인했습니다.<br />
+          다음 행동을 선택하거나 아래 채팅창에 원하는 주문 조건을 말해 주세요.
+        </div>
+
+        <div class="screen3-menu-title">무엇을 할까요?</div>
+
+        <!-- SCREEN 3 MENU: 메뉴 문구를 바꿀 때는 이 8개 버튼만 수정하면 됩니다. -->
+        <div class="screen3-menu">
+          <div class="button dark">현재가로 살래요 →</div>
+          <div class="button">지정가로 살래요 →</div>
+          <div class="button">캐스케이드로 살래요 →</div>
+          <div class="button">캐스케이드 사용 방법 →</div>
+          <div class="button">SK하이닉스 분석 →</div>
+          <div class="button">오늘의 추천 목록 보기 →</div>
+          <div class="button">차트 분석하기 →</div>
+          <div class="button">포트폴리오 만들기 →</div>
+        </div>
+
+        <div class="flow-note-right">
+          <div class="note">▶ SCREEN 4</div>
+          <div class="note red">▶ 지정가 입력 플로우</div>
+          <div class="note">▶ 캐스케이드 설정</div>
+          <div class="note gray">▶ 설명/튜토리얼</div>
+        </div>
+
+        <div class="chat-input" style="bottom:52px;">메시지 입력...</div>
+        <div class="send" style="bottom:52px;">↑</div>
+        <div class="footer">
+          <div>홈</div><div>캐스케이드</div><div class="active">MOA AI</div><div>마켓</div><div>포트폴리오</div>
+        </div>
+      </div>
+      <div class="caption"><div class="muted">SCREEN 3</div><div>AI 분석 & 선택</div></div>
+    </section>
+
+    <section class="phone-wrap s4">
+      <div class="phone">
+        <div class="screen-no">4</div>
+        <div class="notch"></div>
+        <div class="appbar">MOA AI</div>
+        <div class="stock-bar" style="height:28px; padding:5px 8px;">SK하이닉스&nbsp;&nbsp;2,202,000원 ▼-6.02%</div>
+        <div class="button dark" style="position:absolute; left:26px; top:104px; width:328px;">네, 현재가로 진행할게요</div>
+        <div class="panel small" style="left:26px; top:158px; width:288px; height:74px; padding:10px;">
+          즉시 주문을 진행하려면 투자 금액을 알려 주세요.<br />
+          투자 금액은 바로 주문될 수 있습니다.<br />
+          투자 금액을 알고 설정하시겠어요?
+        </div>
+        <div style="position:absolute; left:18px; right:18px; top:260px;">
+          <div class="section-title">빠른 금액 선택</div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;">
+            <div class="button yellow" style="height:40px;">10만원</div>
+            <div class="button yellow" style="height:40px;">100만원</div>
+            <div class="button yellow" style="height:40px;">1,000만원</div>
+          </div>
+          <div class="note gray" style="margin-top:10px;">▶ 탭 → 금액 자동 입력</div>
+          <div class="section-title" style="margin-top:20px;">직접 입력</div>
+          <div style="display:grid; grid-template-columns:1fr 38px; gap:6px;">
+            <div style="height:34px; border:1px solid #c7c7c7; border-radius:5px; color:#aaa; font-size:11px; display:flex; align-items:center; padding-left:10px;">금액 입력 (숫자 키패드)</div>
+            <div class="send" style="position:static; width:38px; height:34px;">↑</div>
+          </div>
+          <div class="note red" style="margin-top:10px;">감시·취소(1주 가격)·최대(보유 현금)</div>
+          <div class="note">▶ 확인 시 SCREEN 5</div>
+        </div>
+      </div>
+      <div class="caption"><div class="muted">SCREEN 4</div><div>금액 입력</div></div>
+    </section>
+
+    <section class="phone-wrap s5">
+      <div class="phone">
+        <div class="screen-no">5</div>
+        <div class="notch"></div>
+        <div class="appbar">MOA AI</div>
+        <div class="stock-bar" style="height:28px; padding:5px 8px;">SK하이닉스&nbsp;&nbsp;2,202,000원 ▼-6.02%</div>
+        <div class="panel" style="left:18px; top:104px; width:344px; height:166px; padding:16px;">
+          <div class="section-title">주문 요약</div>
+          <div class="small" style="display:grid; grid-template-columns:96px 1fr; row-gap:8px; margin-top:14px;">
+            <div style="color:var(--gray);">종목</div><div>SK하이닉스 (000660)</div>
+            <div style="color:var(--gray);">주문 방식</div><div>현재가 (즉시 체결)</div>
+            <div style="color:var(--gray);">투자 금액</div><div>500,000원</div>
+            <div style="color:var(--gray);">예상 수량</div><div>약 0.22주 (소수점 처리)</div>
+            <div style="color:var(--gray);">수수료</div><div>약 250원 (0.05%)</div>
+          </div>
+        </div>
+        <div class="button dark" style="position:absolute; left:18px; top:290px; width:344px; height:44px;">네, 진행할게요</div>
+        <div class="button" style="position:absolute; left:18px; top:348px; width:344px; height:36px;">취소 (SCREEN 3으로)</div>
+        <div class="note gray" style="position:absolute; left:18px; top:410px;">▶ 시스템: 주문 API 호출 → 로딩</div>
+        <div class="note red" style="position:absolute; left:18px; top:434px;">▶ 실패 시: 에러 토스트 + 재시도</div>
+        <div class="note" style="position:absolute; left:366px; top:304px;">▶ SCREEN 6</div>
+        <div class="note red" style="position:absolute; left:366px; top:362px;">▶ SCREEN 3</div>
+      </div>
+      <div class="caption"><div class="muted">SCREEN 5</div><div>주문 확인</div></div>
+    </section>
+
+    <section class="phone-wrap s6">
+      <div class="phone">
+        <div class="screen-no">6</div>
+        <div class="notch"></div>
+        <div class="appbar">MOA AI</div>
+        <div class="panel small" style="left:26px; top:64px; width:304px; height:58px; padding:12px;">
+          SK하이닉스 주문이 체결되었습니다!<br />
+          포트폴리오에 반영되었습니다.
+        </div>
+        <div class="panel" style="left:18px; top:142px; width:344px; height:150px; padding:16px;">
+          <div class="section-title">체결 내역</div>
+          <div class="small" style="display:grid; grid-template-columns:104px 1fr; row-gap:6px; margin-top:14px;">
+            <div style="color:var(--gray);">종목</div><div>SK하이닉스 (000660)</div>
+            <div style="color:var(--gray);">체결가</div><div>2,202,000원</div>
+            <div style="color:var(--gray);">체결 수량</div><div>0.22주</div>
+            <div style="color:var(--gray);">총 금액</div><div>500,000원</div>
+            <div style="color:var(--gray);">체결 시간</div><div>11:26:54 KST</div>
+          </div>
+        </div>
+        <div style="position:absolute; left:18px; right:18px; top:310px; display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:8px;">
+          <div class="button dark" style="height:38px;">포트폴리오</div>
+          <div class="button" style="height:38px;">추가 주문</div>
+          <div class="button" style="height:38px;">홈으로</div>
+        </div>
+        <div class="note" style="position:absolute; left:18px; top:370px;">▶ 추가 주문 → SCREEN 3</div>
+        <div class="note" style="position:absolute; left:18px; top:394px;">▶ 홈으로 → SCREEN 1</div>
+        <div class="note gray" style="position:absolute; left:18px; top:418px;">▶ 포트폴리오 즉시 업데이트</div>
+      </div>
+      <div class="caption"><div class="muted">SCREEN 6</div><div>체결 완료</div></div>
+    </section>
+
+    <div class="arrow" style="left:475px; top:580px; width:195px;"></div>
+    <div class="arrow" style="left:1070px; top:580px; width:180px;"></div>
+    <div class="arrow" style="left:475px; top:1285px; width:195px;"></div>
+    <div class="arrow" style="left:1070px; top:1285px; width:180px;"></div>
+    <div class="arrow" style="left:290px; top:925px; width:1170px;"></div>
+    <div class="v-arrow" style="left:290px; top:925px; height:35px;"></div>
+    <div style="position:absolute; left:850px; top:905px; color:var(--blue); font-size:11px;">현재가로 살래요 선택</div>
+
+    <div class="bottom-line"></div>
+    <div class="change-note">주요 변경: SCREEN 3 메뉴를 2열 배치로 변경, 시장 맥락/투자 인사이트 제거, 채팅창과 푸터 메뉴 유지.</div>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

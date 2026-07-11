@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 연결 계좌 없음</title>
+  <link rel="stylesheet" href="moa_mts4_stock_trade.css" />
+  <style>
+    .warning { width:76px; height:76px; border-radius:50%; border:1px solid #ddd; background:#f7f7f7; color:#555; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:28px; font-weight:900; }
+    .info-box { margin-top:18px; border:1px solid var(--line); border-radius:16px; background:#fbfbfb; overflow:hidden; text-align:left; }
+    .info-row { display:grid; grid-template-columns:120px 1fr; gap:10px; padding:12px 14px; border-top:1px solid #ececec; font-size:13px; line-height:20px; }
+    .info-row:first-child { border-top:0; }
+    .info-row b { color:var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 연결 계좌 없음</div>
+    <div class="subtitle">입출금 또는 주문 전에 등록 계좌가 없을 때의 예외 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_portfolio_cash.html">&larr;</a>
+          <div class="app-title">계좌 연결 필요<div class="app-subtitle">입출금 계좌</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="order-card done">
+            <div class="warning">계좌</div>
+            <div class="headline">연결된 계좌가 없어요</div>
+            <div class="copy">입금, 출금, 주문을 진행하려면 본인 명의 은행 계좌를 먼저 연결해야 합니다.</div>
+            <div class="info-box">
+              <div class="info-row"><b>현재 상태</b><span>등록 계좌 없음</span></div>
+              <div class="info-row"><b>필요 정보</b><span>본인 명의 은행 계좌</span></div>
+              <div class="info-row"><b>원칙</b><span>입금과 출금은 같은 계좌로만 가능</span></div>
+            </div>
+            <div class="actions">
+              <a class="button" href="moa_mts4_home_wireframe.html">홈으로</a>
+              <a class="button dark" href="moa_mts4_account_settings.html">계좌 연결하기</a>
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - 연결 계좌 없음</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>상황</b><span>등록 계좌가 없어 입금, 출금, 주문 진행이 막힐 때 보여줍니다.</span></div>
+      <div class="panel-row"><b>이동</b><span>등록 계좌 설정 화면으로 보내 계좌 연결을 완료하게 합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

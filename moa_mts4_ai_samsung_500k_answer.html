@@ -1,0 +1,462 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA AI - 삼성전자 50만원 투자 답변</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --orange: #b76b00;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title { font-size: 34px; font-weight: 800; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+    .phone-wrap { position: absolute; left: 120px; top: 170px; width: var(--phone-w); }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title { text-align: center; font-size: 16px; font-weight: 800; line-height: 18px; }
+    .app-subtitle { color: var(--muted); font-size: 10px; font-weight: 400; }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 128px;
+      overflow-y: auto;
+      padding-bottom: 14px;
+    }
+
+    .bubble {
+      max-width: 88%;
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .bubble.user {
+      margin-left: auto;
+      background: var(--ink);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble.ai {
+      background: #f4f4f4;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 4px;
+    }
+
+    .card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 10px 12px;
+      background: #f1f1f1;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .badge {
+      border: 1px solid #f1d19b;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: var(--orange);
+      background: white;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.green {
+      border-color: #b8ddc3;
+      color: var(--green);
+      background: #f3fbf5;
+    }
+
+    .card-body {
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .summary {
+      border: 1px solid #f1d19b;
+      border-radius: 10px;
+      background: #fff8ea;
+      color: #6c4a12;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .summary b {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--orange);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .metric {
+      border: 1px solid #ededed;
+      border-radius: 10px;
+      padding: 9px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .metric b {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 17px;
+    }
+
+    .metric .red { color: var(--red); }
+    .metric .green { color: var(--green); }
+
+    .row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 8px;
+      padding: 8px 0;
+      border-top: 1px solid #efefef;
+    }
+
+    .row:first-child { border-top: 0; }
+    .row b { color: #555; }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .button.green {
+      border-color: #b8ddc3;
+      color: var(--green);
+      background: #f3fbf5;
+    }
+
+    .button.full { grid-column: 1 / -1; }
+
+    .chat-area {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 62px;
+      min-height: 82px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      background: white;
+      z-index: 2;
+    }
+
+    .chat-hint {
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .chat-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 42px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .input {
+      height: 40px;
+      border: 1px solid #c9c9c9;
+      border-radius: 10px;
+      background: white;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      font-size: 11px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item { display: grid; gap: 4px; justify-items: center; }
+    .nav-icon { width: 22px; height: 18px; border: 1px solid currentColor; border-radius: 4px; }
+    .nav-item.active { color: var(--blue); font-weight: 800; }
+    .caption { margin-top: 18px; text-align: center; color: var(--muted); font-size: 14px; font-weight: 800; }
+
+    .panel {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 460px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 { margin: 0 0 12px; font-size: 18px; }
+    .panel-row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA AI - 삼성전자 50만원 투자 답변</div>
+    <div class="subtitle">홈 빠른 질문 선택 시 MOA AI가 전체 판단을 한 번에 보여주는 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_home_wireframe.html">&larr;</a>
+          <div class="app-title">
+            MOA AI
+            <div class="app-subtitle">전체 답변</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <div class="bubble user">삼성전자 50만원 투자할래</div>
+          <div class="bubble ai">
+            바로 확인해봤어요. 결론부터 말하면, 50만원 전액을 바로 넣기보다는 금액을 줄이거나 나누어 접근하는 편이 더 좋겠습니다.
+          </div>
+
+          <section class="card">
+            <div class="card-head">
+              <span>AI 종합 판단</span>
+              <span class="badge">주의</span>
+            </div>
+            <div class="card-body">
+              <div class="summary">
+                <b>50만원 전액 투자는 권장하지 않습니다</b>
+                현재 포트폴리오에서 SK하이닉스 캐스케이드가 진행 중이고, 삼성전자를 추가하면 반도체 비중이 더 커집니다. 진행한다면 10만원 정도로 작게 시작하는 편을 추천합니다.
+              </div>
+              <div class="grid">
+                <div class="metric">현재 투자 가능 현금<b>760,000원</b></div>
+                <div class="metric">50만원 후 남은 현금<b class="red">260,000원</b></div>
+                <div class="metric">현재 반도체 비중<b>27.6%</b></div>
+                <div class="metric">50만원 후 예상 비중<b class="red">약 31.4%</b></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>포트폴리오 모니터링 확인</span>
+              <span class="badge green">AI 적용 중</span>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <b>현재 기준</b>
+                <span>삼성전자는 신규 추가 매수 보류로 관리 중입니다.</span>
+              </div>
+              <div class="row">
+                <b>충돌 내용</b>
+                <span>SK하이닉스 캐스케이드와 삼성전자가 모두 반도체 업종이라 같은 방향으로 흔들릴 수 있습니다.</span>
+              </div>
+              <div class="row">
+                <b>현금 여력</b>
+                <span>50만원을 쓰면 남은 현금이 26만원으로 줄어 캐스케이드 추가 실행 여력이 약해집니다.</span>
+              </div>
+              <div class="row">
+                <b>AI 추천</b>
+                <span>지금은 50만원 전액보다 10만원 이하 또는 대체 후보 비교가 더 적절합니다.</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>선택지</span>
+              <span class="badge">다음 행동</span>
+            </div>
+            <div class="card-body">
+              <div class="actions">
+                <a class="button dark full" href="moa_mts4_ai_samsung_override_confirm.html">10만원 이하로 진행할래요</a>
+                <a class="button full" href="moa_mts4_ai_samsung_500k_final_confirm.html">그래도 50만원 진행</a>
+                <a class="button" href="moa_mts4_ai_alternative_candidates.html">대체 후보 비교</a>
+                <a class="button green" href="moa_mts4_cascade_portfolio.html">포트폴리오 보기</a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <section class="chat-area">
+          <div class="chat-hint">추가 질문 가능 · “왜 50만원은 별로야?”, “10만원이면 괜찮아?”처럼 말할 수 있습니다.</div>
+          <div class="chat-row">
+            <div class="icon-button" title="음성으로 말하기">Mic</div>
+            <div class="input">MOA AI에게 메시지 보내기</div>
+            <div class="icon-button" style="background:#222;color:white;">↑</div>
+          </div>
+        </section>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 삼성전자 50만원 투자 전체 답변</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>홈 빠른 질문을 눌렀을 때 MOA AI가 전체 판단을 한 번에 보여줍니다.</span></div>
+      <div class="panel-row"><b>핵심</b><span>주문 의도, 포트폴리오 모니터링, 현금 여력, 업종 비중을 동시에 확인합니다.</span></div>
+      <div class="panel-row"><b>다음 행동</b><span>소액 진행, 대체 후보 비교, 포트폴리오 분석, 포트폴리오 보기로 연결합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,466 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 포트폴리오 넓게 보기</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 78px;
+      overflow: hidden;
+    }
+
+    .summary-strip {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f7f7f7;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .summary-strip b {
+      display: block;
+      margin-top: 3px;
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .summary-strip span {
+      color: var(--muted);
+    }
+
+    .toolbar {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 84px;
+      gap: 8px;
+    }
+
+    .search {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      font-size: 11px;
+      background: white;
+    }
+
+    .filter {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      background: white;
+    }
+
+    .table {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .table-head,
+    .asset-row {
+      display: grid;
+      grid-template-columns: 1.1fr .85fr .8fr .7fr;
+      gap: 6px;
+      align-items: center;
+      min-height: 44px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #efefef;
+      font-size: 10px;
+    }
+
+    .table-head {
+      background: #f1f1f1;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .asset-row:last-child { border-bottom: 0; }
+
+    .asset-row strong {
+      display: block;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .asset-row span {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .num {
+      text-align: right;
+      line-height: 15px;
+    }
+
+    .profit {
+      color: var(--green);
+      font-weight: 800;
+    }
+
+    .profit.down {
+      color: var(--red);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .logic-panel {
+      left: 630px;
+      top: 200px;
+      width: 410px;
+    }
+
+    .next-panel {
+      left: 1080px;
+      top: 200px;
+      width: 390px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .row:first-of-type { border-top: 0; }
+    .row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 포트폴리오 넓게 보기</div>
+    <div class="subtitle">보유 종목이 많을 때 표 형태로 비교하는 상세 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_portfolio_after_fill.html">&larr;</a>
+          <div class="app-title">
+            보유 종목
+            <div class="app-subtitle">넓게 보기</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="summary-strip">
+            <div><span>총 자산</span><b>12,480,000원</b></div>
+            <div><span>총 수익</span><b style="color:var(--green);">+480,000원</b></div>
+            <div><span>살 수 있는 금액</span><b>1,760,000원</b></div>
+            <div><span>보유 종목</span><b>8개</b></div>
+          </section>
+
+          <section class="toolbar">
+            <div class="search">종목 검색</div>
+            <div class="filter">정렬</div>
+          </section>
+
+          <section class="table">
+            <div class="table-head">
+              <div>종목</div>
+              <div class="num">평가금액</div>
+              <div class="num">수익률</div>
+              <div class="num">비중</div>
+            </div>
+            <div class="asset-row">
+              <div><strong>삼성전자</strong><span>18주 · 국내</span></div>
+              <div class="num">1,321,200원<br /><span>73,400원</span></div>
+              <div class="num profit">+1.1%</div>
+              <div class="num">10.6%</div>
+            </div>
+            <div class="asset-row">
+              <div><strong>Apple</strong><span>7주 · 해외</span></div>
+              <div class="num">$1,325.10<br /><span>$189.30</span></div>
+              <div class="num profit">+1.15%</div>
+              <div class="num">14.2%</div>
+            </div>
+            <div class="asset-row">
+              <div><strong>SK하이닉스</strong><span>0.22주 · 방금 체결</span></div>
+              <div class="num">500,000원<br /><span>2,202,000원</span></div>
+              <div class="num profit">+0.0%</div>
+              <div class="num">4.0%</div>
+            </div>
+            <div class="asset-row">
+              <div><strong>USD/KRW</strong><span>외환</span></div>
+              <div class="num">1,382,500원<br /><span>1,382.50</span></div>
+              <div class="num profit down">-0.12%</div>
+              <div class="num">11.1%</div>
+            </div>
+            <div class="asset-row">
+              <div><strong>BTC</strong><span>크립토</span></div>
+              <div class="num">2,100,000원<br /><span>0.014 BTC</span></div>
+              <div class="num profit">+3.8%</div>
+              <div class="num">16.8%</div>
+            </div>
+            <div class="asset-row">
+              <div><strong>현금</strong><span>주문 가능</span></div>
+              <div class="num">1,760,000원</div>
+              <div class="num">-</div>
+              <div class="num">14.1%</div>
+            </div>
+          </section>
+
+          <div class="actions">
+            <a class="button dark" href="moa_mts4_ai_portfolio_analysis.html">AI 분석하기</a>
+            <div class="button">필터 자세히</div>
+            <a class="button" href="moa_mts4_order_history.html">전체 주문 내역</a>
+            <a class="button" href="moa_mts4_portfolio_after_fill.html">요약으로</a>
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 포트폴리오 넓게 보기</div>
+    </section>
+
+    <aside class="panel logic-panel">
+      <h2>화면 목적</h2>
+      <div class="row"><b>비교</b><span>보유 종목이 많을 때 평가금액, 수익률, 비중을 한눈에 비교</span></div>
+      <div class="row"><b>간결함</b><span>각 행은 핵심 정보만 표시하고 상세는 다음 화면으로 분리</span></div>
+      <div class="row"><b>정렬</b><span>비중순, 수익률순, 손실순, 최근 체결순 정렬 진입점</span></div>
+      <div class="row"><b>복귀</b><span>요약으로 버튼으로 포트폴리오 대시보드에 돌아감</span></div>
+    </aside>
+
+    <aside class="panel next-panel">
+      <h2>다음 확장 추천</h2>
+      <div class="row"><b>1순위</b><span>전체 주문 내역 화면</span></div>
+      <div class="row"><b>2순위</b><span>종목별 상세 보유 화면</span></div>
+      <div class="row"><b>3순위</b><span>필터/정렬 바텀시트</span></div>
+      <div class="row"><b>AI 연결</b><span>AI 분석하기는 포트폴리오 분석 화면으로 이동</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

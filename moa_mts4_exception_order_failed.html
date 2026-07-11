@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 주문 실패</title>
+  <link rel="stylesheet" href="moa_mts4_stock_trade.css" />
+  <style>
+    .warning { width:76px; height:76px; border-radius:50%; border:1px solid #fecaca; background:#fef2f2; color:var(--red); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:34px; font-weight:900; }
+    .info-box { margin-top:18px; border:1px solid var(--line); border-radius:16px; background:#fbfbfb; overflow:hidden; text-align:left; }
+    .info-row { display:grid; grid-template-columns:120px 1fr; gap:10px; padding:12px 14px; border-top:1px solid #ececec; font-size:13px; line-height:20px; }
+    .info-row:first-child { border-top:0; }
+    .info-row b { color:var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 주문 실패</div>
+    <div class="subtitle">일시적 네트워크 또는 가격 변동으로 주문이 실패했을 때의 예외 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_stock_market_buy_confirm.html">&larr;</a>
+          <div class="app-title">주문 실패<div class="app-subtitle">다시 확인 필요</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="order-card done">
+            <div class="warning">!</div>
+            <div class="headline">주문을 완료하지 못했어요</div>
+            <div class="copy">가격이 빠르게 변했거나 연결이 일시적으로 불안정했습니다. 주문은 체결되지 않았습니다.</div>
+            <div class="info-box">
+              <div class="info-row"><b>상태</b><span>미체결 · 보유 수량 변화 없음</span></div>
+              <div class="info-row"><b>원인</b><span>가격 재확인 필요 또는 일시적 연결 오류</span></div>
+              <div class="info-row"><b>다음 행동</b><span>가격을 다시 확인한 뒤 재시도</span></div>
+            </div>
+            <div class="actions">
+              <a class="button" href="moa_mts4_stock_quick_order_samsung.html">종목 다시 보기</a>
+              <a class="button dark" href="moa_mts4_stock_market_buy_confirm.html">다시 주문하기</a>
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item active" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - 주문 실패</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>상황</b><span>주문 요청은 보냈지만 체결 또는 접수가 완료되지 않았을 때 보여줍니다.</span></div>
+      <div class="panel-row"><b>명확성</b><span>사용자가 중복 주문을 걱정하지 않도록 “체결되지 않음”을 먼저 알려줍니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

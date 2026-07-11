@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 데모 포트폴리오</title>
+  <style>
+    :root { --ink:#232323; --muted:#7c7c7c; --line:#d4d4d4; --soft:#f5f6f7; --blue:#3b66d6; --green:#2ead65; --red:#e53935; --phone-w:430px; --phone-h:920px; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#fafafa; color:var(--ink); font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .board { position:relative; width:1600px; min-height:1220px; padding:48px 64px; }
+    .title { font-size:34px; font-weight:800; letter-spacing:0; }
+    .subtitle { margin-top:6px; color:#9a9a9a; font-size:15px; }
+    .rule { width:1460px; height:1px; margin-top:20px; background:#bdbdbd; }
+    .phone-wrap { position:absolute; left:120px; top:170px; width:var(--phone-w); }
+    .phone { position:relative; width:var(--phone-w); height:var(--phone-h); border:3px solid var(--ink); border-radius:28px; background:white; overflow:hidden; }
+    .notch { position:absolute; top:7px; left:174px; width:82px; height:13px; border:1px solid var(--ink); border-radius:8px; background:white; z-index:4; }
+    .appbar { position:absolute; left:0; right:0; top:0; height:78px; padding:30px 18px 12px; border-bottom:1px solid var(--line); background:white; display:grid; grid-template-columns:36px 1fr 36px; gap:8px; align-items:center; z-index:3; }
+    .icon-button { width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:white; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; }
+    .app-title { text-align:center; font-size:16px; font-weight:800; line-height:18px; }
+    .app-subtitle { color:var(--muted); font-size:10px; font-weight:400; }
+    .content { position:absolute; left:18px; right:18px; top:94px; bottom:72px; overflow-y:auto; padding-bottom:16px; scrollbar-width:none; }
+    .content::-webkit-scrollbar { display:none; }
+    .demo-widget { border:1px solid #b7dfc1; border-radius:12px; background:#f3fbf5; padding:11px 12px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; font-size:11px; line-height:16px; }
+    .demo-widget strong { display:block; font-size:13px; line-height:18px; }
+    .badge { width:max-content; border:1px solid #c7d2fe; border-radius:999px; background:#f8fbff; color:var(--blue); padding:3px 8px; font-size:10px; font-weight:900; }
+    .card { margin-top:10px; border:1px solid var(--line); border-radius:12px; background:white; overflow:hidden; }
+    .card-head { padding:10px 12px; border-bottom:1px solid var(--line); background:#f4f4f4; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:900; }
+    .card-body { padding:12px; font-size:11px; line-height:16px; }
+    .metrics { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+    .metric { border:1px solid #e5e7eb; border-radius:10px; background:#fafafa; padding:9px; color:var(--muted); font-size:10px; line-height:14px; font-weight:800; }
+    .metric b { display:block; margin-top:3px; color:var(--ink); font-size:15px; line-height:18px; }
+    .row { display:grid; grid-template-columns:86px 1fr auto; gap:8px; padding:9px 0; border-top:1px solid #eeeeee; font-size:10px; line-height:14px; align-items:center; }
+    .row:first-child { border-top:0; }
+    .row b { font-size:11px; }
+    .green { color:var(--green); font-weight:900; }
+    .red { color:var(--red); font-weight:900; }
+    .note { border:1px solid #cddbf6; border-radius:10px; background:#f8fbff; color:#334155; padding:10px; font-size:11px; line-height:16px; font-weight:800; }
+    .button { min-height:40px; border:1px solid #aaa; border-radius:10px; background:white; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 10px; margin-top:10px; font-size:12px; font-weight:900; }
+    .button.dark { background:var(--ink); color:white; border-color:var(--ink); }
+    .bottom-nav { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:white; display:grid; grid-template-columns:repeat(5,1fr); align-items:center; text-align:center; font-size:10px; color:var(--muted); z-index:4; }
+    .nav-item { display:grid; gap:4px; justify-items:center; }
+    .nav-icon { width:22px; height:18px; border:1px solid currentColor; border-radius:4px; }
+    .nav-item.active { color:var(--blue); font-weight:800; }
+    .caption { margin-top:18px; text-align:center; color:var(--muted); font-size:14px; font-weight:800; }
+    .panel { position:absolute; left:620px; top:210px; width:600px; border-left:3px solid var(--blue); padding-left:24px; font-size:14px; line-height:22px; }
+    .panel h2 { margin:0 0 16px; font-size:22px; }
+    .panel-row { margin:12px 0; padding:12px; border:1px solid var(--line); border-radius:8px; background:white; }
+    .panel-row b { display:block; margin-bottom:4px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 데모 포트폴리오</div>
+    <div class="subtitle">데모 모드에서 자동 매매 테스트 내역을 실시간 모니터링하는 포트폴리오 화면 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_demo_market.html">&larr;</a>
+          <div class="app-title">데모 포트폴리오<div class="app-subtitle">자동 매매 테스트 모니터링</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="demo-widget">
+            <div><strong>데모 모드 활성</strong>실제 자금 없이 전략을 실시간 테스트 중입니다.</div>
+            <span class="badge">DEMO</span>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><span>데모 자산 현황</span><span class="green">실시간</span></div>
+            <div class="card-body">
+              <div class="metrics">
+                <div class="metric">가상 투자금<b>10,000,000원</b></div>
+                <div class="metric">평가 금액<b>10,184,000원</b></div>
+                <div class="metric">전략 수익률<b class="green">+1.84%</b></div>
+                <div class="metric">오늘 실행<b>2건</b></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><span>테슬라 자동 매매 전략</span><span class="badge">Running</span></div>
+            <div class="card-body">
+              5% 하락 후 5일 이동평균선이 20일 이동평균선을 상향 돌파하면 매수 후보로 판단합니다. 손실 제한은 -10%, 최대 투자금은 1,000만원입니다.
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><span>실시간 테스트 거래 내역</span><span class="green">Live</span></div>
+            <div class="card-body">
+              <div class="row"><b>09:42</b><span>TSLA 5% 하락 조건 감지</span><span>대기</span></div>
+              <div class="row"><b>09:48</b><span>5일선이 20일선 상향 돌파</span><span class="green">매수</span></div>
+              <div class="row"><b>10:15</b><span>수익률 +1.8% 구간 유지</span><span class="green">보유</span></div>
+              <div class="row"><b>10:30</b><span>손실 제한 조건 미발생</span><span>정상</span></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><span>AI 데모 분석</span><span>MOA AI</span></div>
+            <div class="card-body">
+              <div class="note">현재 전략은 상승 전환 구간에서 정상적으로 진입했습니다. 다음 확인 포인트는 진입 후 수익 보존 조건과 손실 제한 조건입니다.</div>
+              <a class="button dark" href="moa_mts4_ai_strategy_chat.html">AI가 데모 거래 분석하기</a>
+              <a class="button" href="moa_mts4_demo_market.html">데모 거래 더 하기</a>
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - 데모 포트폴리오</div>
+    </section>
+
+    <aside class="panel">
+      <h2>데모 모드 흐름</h2>
+      <div class="panel-row"><b>진입</b><span>홈 샌드위치 메뉴에서 데모 거래를 선택하면 데모 모드가 활성화됩니다.</span></div>
+      <div class="panel-row"><b>모니터링</b><span>데모 모드에서 포트폴리오를 누르면 테스트 거래 내역을 실시간으로 확인합니다.</span></div>
+      <div class="panel-row"><b>AI 분석</b><span>데모 거래 결과를 MOA AI가 분석하고 전략 개선 조건을 제안합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

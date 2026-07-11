@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 삼성전자 바로 주문</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --soft: #f5f6f7;
+      --blue: #3b66d6;
+      --red: #e53935;
+      --green: #2ead65;
+      --orange: #ff9f1a;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+      color: #232323;
+    }
+
+    .title { font-size: 34px; font-weight: 800; letter-spacing: 0; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid #232323;
+      border-radius: 28px;
+      background: var(--bg);
+      overflow: hidden;
+      color: var(--ink);
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid #232323;
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .status {
+      display: none;
+      height: 54px;
+    }
+
+    .status-old {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 18px 22px 0;
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .topbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .back {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .bell {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      font-size: 16px;
+    }
+
+    .menu-round {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      background: #fff;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .bell::after {
+      content: "";
+      position: absolute;
+      right: 2px;
+      top: 2px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .content {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 94px;
+      bottom: 174px;
+      overflow-y: auto;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+    }
+
+    .content::-webkit-scrollbar { display: none; }
+
+    .stock-head {
+      text-align: center;
+      padding-top: 10px;
+    }
+
+    .stock-name {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    .market-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #52606c;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      background: #fff;
+      color: #111;
+    }
+
+    .price {
+      margin-top: 12px;
+      font-size: 42px;
+      line-height: 46px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .change {
+      margin-top: 8px;
+      font-size: 21px;
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .meta {
+      margin-top: 9px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .chart-title {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-top: 30px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .chart-toggle,
+    .advanced-chart {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 11px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .advanced-chart {
+      justify-content: center;
+      color: #8a5400;
+      border-color: #f3c06a;
+      background: #fff8ea;
+    }
+
+    .circle {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #9ca3af;
+      border-radius: 50%;
+    }
+
+    .chart {
+      width: 100%;
+      height: 222px;
+      margin-top: 10px;
+      display: block;
+    }
+
+    .candle-chart { display: none; }
+    .phone.show-candle .line-chart { display: none; }
+    .phone.show-candle .candle-chart { display: block; }
+
+    .periods {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 9px;
+      margin-top: 8px;
+    }
+
+    .period {
+      min-height: 34px;
+      border-radius: 12px;
+      background: var(--soft);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .period.active {
+      background: var(--orange);
+      color: #111;
+    }
+
+    .action-panel {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      bottom: 72px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      background: #fff;
+    }
+
+    .symbol-switch {
+      display: grid;
+      grid-template-columns: 34px 1fr 34px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .arrow {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .symbol {
+      height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 19px;
+      font-weight: 900;
+      background: #fff;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .mode {
+      min-height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .main-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .trade-button {
+      min-height: 58px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .trade-button.sell { background: var(--blue); }
+    .trade-button.buy { background: var(--red); }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: #7c7c7c;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 620px;
+      top: 210px;
+      width: 560px;
+      border-left: 3px solid #3b66d6;
+      padding-left: 24px;
+      font-size: 14px;
+      line-height: 22px;
+      color: #232323;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+    }
+
+    .panel-row {
+      margin: 12px 0;
+      padding: 12px;
+      border: 1px solid #d4d4d4;
+      border-radius: 8px;
+      background: white;
+    }
+
+    .panel-row b {
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 삼성전자 바로 주문창</div>
+    <div class="subtitle">국내 주식/AI 관심 종목/검색 결과에서 종목 클릭 시 바로 진입하는 3세대형 간결 주문 UI | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+
+        <header class="topbar">
+          <a class="back" href="moa_mts4_market_korea_stocks.html">&larr;</a>
+          <div class="app-title">삼성전자<div class="app-subtitle">005930 · 국내 주식</div></div>
+          <a class="menu-round" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="stock-head">
+            <div class="stock-name"><span class="market-dot">KR</span><span>삼성전자</span></div>
+            <div class="price">73,400</div>
+            <div class="change">▲ 800 (+1.10%)</div>
+            <div class="meta"><span>07.08 14:26</span><span class="live-dot"></span><span>거래 가능</span></div>
+          </section>
+
+          <div class="chart-title">
+            <button class="chart-toggle" type="button" id="detailChartBtn"><span class="circle"></span><span>상세한 차트</span></button>
+            <a class="advanced-chart" href="moa_mts4_chart.html">고급 차트</a>
+          </div>
+
+          <svg class="chart line-chart" viewBox="0 0 386 210" role="img" aria-label="삼성전자 가격 흐름">
+            <defs>
+              <linearGradient id="chartFade" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0" stop-color="#ff9f1a" stop-opacity=".22" />
+                <stop offset="1" stop-color="#ff9f1a" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path d="M8 164 C30 142 42 150 58 128 C70 110 84 118 96 100 C113 76 132 88 148 72 C171 50 188 63 204 77 C222 94 242 84 256 104 C272 128 286 112 304 136 C322 160 342 141 378 118 L378 202 L8 202 Z" fill="url(#chartFade)" />
+            <path d="M8 164 C30 142 42 150 58 128 C70 110 84 118 96 100 C113 76 132 88 148 72 C171 50 188 63 204 77 C222 94 242 84 256 104 C272 128 286 112 304 136 C322 160 342 141 378 118" fill="none" stroke="#ff9f1a" stroke-width="5" stroke-linecap="round" />
+            <circle cx="378" cy="118" r="7" fill="#ff9f1a" />
+          </svg>
+
+          <svg class="chart candle-chart" viewBox="0 0 386 210" role="img" aria-label="삼성전자 캔들스틱 차트">
+            <g stroke="#2d3742" stroke-width="1">
+              <line x1="20" y1="30" x2="20" y2="190" />
+              <line x1="20" y1="190" x2="376" y2="190" />
+              <line x1="20" y1="60" x2="376" y2="60" opacity=".45" />
+              <line x1="20" y1="100" x2="376" y2="100" opacity=".35" />
+              <line x1="20" y1="140" x2="376" y2="140" opacity=".35" />
+            </g>
+            <g stroke-width="3" stroke-linecap="round">
+              <g stroke="#41d182" fill="#41d182"><line x1="42" y1="132" x2="42" y2="168" /><rect x="34" y="142" width="16" height="18" rx="2" /></g>
+              <g stroke="#41d182" fill="#41d182"><line x1="72" y1="118" x2="72" y2="155" /><rect x="64" y="125" width="16" height="22" rx="2" /></g>
+              <g stroke="#ff4d57" fill="#ff4d57"><line x1="102" y1="96" x2="102" y2="144" /><rect x="94" y="105" width="16" height="30" rx="2" /></g>
+              <g stroke="#41d182" fill="#41d182"><line x1="132" y1="82" x2="132" y2="126" /><rect x="124" y="93" width="16" height="25" rx="2" /></g>
+              <g stroke="#ff4d57" fill="#ff4d57"><line x1="162" y1="70" x2="162" y2="115" /><rect x="154" y="78" width="16" height="29" rx="2" /></g>
+              <g stroke="#ff4d57" fill="#ff4d57"><line x1="192" y1="78" x2="192" y2="130" /><rect x="184" y="91" width="16" height="30" rx="2" /></g>
+              <g stroke="#41d182" fill="#41d182"><line x1="222" y1="92" x2="222" y2="144" /><rect x="214" y="105" width="16" height="26" rx="2" /></g>
+              <g stroke="#ff4d57" fill="#ff4d57"><line x1="252" y1="108" x2="252" y2="158" /><rect x="244" y="117" width="16" height="31" rx="2" /></g>
+              <g stroke="#41d182" fill="#41d182"><line x1="282" y1="120" x2="282" y2="164" /><rect x="274" y="132" width="16" height="23" rx="2" /></g>
+              <g stroke="#41d182" fill="#41d182"><line x1="312" y1="104" x2="312" y2="150" /><rect x="304" y="114" width="16" height="28" rx="2" /></g>
+              <g stroke="#41d182" fill="#41d182"><line x1="342" y1="88" x2="342" y2="140" /><rect x="334" y="102" width="16" height="27" rx="2" /></g>
+            </g>
+          </svg>
+
+          <div class="periods">
+            <div class="period active">1일</div>
+            <div class="period">1주</div>
+            <div class="period">1달</div>
+            <div class="period">3달</div>
+            <div class="period">1년</div>
+          </div>
+        </main>
+
+        <section class="action-panel">
+          <div class="mode-grid">
+            <a class="mode" href="moa_mts4_stock_market_buy_amount.html">현재가로 살래요</a>
+            <a class="mode" href="moa_mts4_stock_limit_buy_price.html">지정가로 살래요</a>
+            <a class="mode" href="moa_mts4_cascade_setup_amount.html">캐스케이드</a>
+            <a class="mode" href="moa_mts4_ai_chart_analysis.html">차트 분석하기</a>
+          </div>
+        </section>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item active" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - 삼성전자 바로 주문창</div>
+    </section>
+
+    <aside class="panel">
+      <h2>UX 변경 방향</h2>
+      <div class="panel-row"><b>빠른 접근의 원칙</b><span>국내 주식, AI 관심 종목, 검색 결과에서 종목을 누르면 AI 대화가 아니라 바로 거래 가능한 종목 주문창으로 이동합니다.</span></div>
+      <div class="panel-row"><b>한 화면에서 가능한 일</b><span>현재 가격, 기본 차트, 현재가/지정가/캐스케이드/차트 분석 진입만 남겨 주문 시작을 최대한 빠르게 합니다.</span></div>
+      <div class="panel-row"><b>차트 동작</b><span>상세한 차트를 누르면 라인 차트가 캔들스틱 차트로 바뀌고, 고급 차트는 별도 차트 화면으로 이동합니다.</span></div>
+    </aside>
+  </main>
+  <script>
+    const detailChartButton = document.getElementById("detailChartBtn");
+    const phone = document.querySelector(".phone");
+
+    detailChartButton.addEventListener("click", () => {
+      phone.classList.toggle("show-candle");
+      detailChartButton.querySelector("span:last-child").textContent = phone.classList.contains("show-candle")
+        ? "기본 차트"
+        : "상세한 차트";
+    });
+  </script>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

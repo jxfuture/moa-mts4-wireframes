@@ -1,0 +1,161 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - AI 자동매매란?</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --cyan: #0891b2;
+      --soft: #f5f7fa;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fafafa; color: var(--ink); font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    .board { position: relative; width: 1600px; min-height: 1220px; padding: 48px 64px; }
+    .title { font-size: 34px; font-weight: 800; letter-spacing: 0; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+    .phone-wrap { position: absolute; left: 120px; top: 170px; width: var(--phone-w); }
+    .phone { position: relative; width: var(--phone-w); height: var(--phone-h); border: 3px solid var(--ink); border-radius: 28px; background: white; overflow: hidden; }
+    .notch { position: absolute; top: 7px; left: 174px; width: 82px; height: 13px; border: 1px solid var(--ink); border-radius: 8px; background: #fff; z-index: 4; }
+    .appbar { position: absolute; left: 0; right: 0; top: 0; height: 78px; padding: 30px 18px 12px; border-bottom: 1px solid var(--line); background: white; display: grid; grid-template-columns: 36px 1fr 36px; gap: 8px; align-items: center; z-index: 3; }
+    .icon-button { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
+    .app-title { text-align: center; font-size: 16px; font-weight: 800; line-height: 18px; }
+    .app-subtitle { color: var(--muted); font-size: 10px; font-weight: 400; }
+    .content { position: absolute; left: 18px; right: 18px; top: 94px; bottom: 72px; overflow-y: auto; padding-bottom: 16px; scrollbar-width: none; }
+    .content::-webkit-scrollbar { display: none; }
+
+    .hero {
+      border: 1px solid rgba(56,189,248,.35);
+      border-radius: 16px;
+      background: #eefcff;
+      padding: 15px;
+    }
+
+    .hero-kicker { color: var(--cyan); font-size: 11px; line-height: 15px; font-weight: 900; }
+    .hero-title { margin-top: 6px; font-size: 21px; line-height: 28px; font-weight: 900; }
+    .hero-copy { margin-top: 8px; color: #475569; font-size: 12px; line-height: 18px; font-weight: 700; }
+    .message-card, .section-card, .point-card { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; background: white; overflow: hidden; }
+    .section-head { padding: 10px 12px; border-bottom: 1px solid var(--line); background: #f4f4f4; font-size: 13px; font-weight: 900; }
+    .messages { padding: 12px; }
+    .bubble { max-width: 88%; margin-top: 8px; border-radius: 12px; padding: 10px 11px; font-size: 11px; line-height: 16px; }
+    .bubble:first-child { margin-top: 0; }
+    .bubble.user { margin-left: auto; background: var(--ink); color: white; border-bottom-right-radius: 4px; }
+    .bubble.ai { background: #f4f4f4; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+    .steps { padding: 5px 12px; }
+    .step { display: grid; grid-template-columns: 26px 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid #eeeeee; font-size: 11px; line-height: 16px; }
+    .step:last-child { border-bottom: 0; }
+    .step b { display: block; font-size: 12px; }
+    .points { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
+    .point { min-height: 78px; border: 1px solid #e2e8f0; border-radius: 10px; background: #fbfdff; padding: 9px; font-size: 10px; line-height: 15px; }
+    .point b { display: block; margin-bottom: 4px; font-size: 12px; line-height: 16px; }
+    .statement { margin-top: 12px; border: 1px solid #cddbf6; border-radius: 12px; background: #f8fbff; color: #334155; padding: 12px; font-size: 12px; line-height: 18px; font-weight: 800; }
+    .primary { height: 46px; border-radius: 12px; background: var(--ink); color: white; display: flex; align-items: center; justify-content: center; margin-top: 12px; font-size: 14px; font-weight: 900; }
+    .cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .cta-row .primary { margin-top: 0; font-size: 12px; }
+    .primary.secondary { background: white; color: var(--ink); border: 1px solid #aaa; }
+    .bottom-nav { position: absolute; left: 0; right: 0; bottom: 0; height: 62px; border-top: 1px solid var(--line); background: white; display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; text-align: center; font-size: 10px; color: var(--muted); z-index: 4; }
+    .nav-item { display: grid; gap: 4px; justify-items: center; }
+    .nav-icon { width: 22px; height: 18px; border: 1px solid currentColor; border-radius: 4px; }
+    .nav-item.active { color: var(--blue); font-weight: 800; }
+    .caption { margin-top: 18px; text-align: center; color: var(--muted); font-size: 14px; font-weight: 800; }
+    .panel { position: absolute; left: 620px; top: 210px; width: 560px; border-left: 3px solid var(--blue); padding-left: 24px; font-size: 14px; line-height: 22px; }
+    .panel h2 { margin: 0 0 16px; font-size: 22px; }
+    .panel-row { margin: 12px 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .panel-row b { display: block; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - AI 자동매매란?</div>
+    <div class="subtitle">AI와 대화하며 코드 없이 자동매매 조건을 만드는 사용법 화면 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_home_wireframe.html">&larr;</a>
+          <div class="app-title">AI 자동매매<div class="app-subtitle">AI와 대화하며 자동매매 만들기</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="hero">
+            <div class="hero-kicker">노코드 자동매매</div>
+            <div class="hero-title">코드 없이, AI와 대화하며 나만의 자동매매를 만드세요</div>
+            <div class="hero-copy">
+              MQL, Pine Script 같은 코딩 장벽 없이 투자 아이디어를 말하면 AI가 실행 가능한 자동매매 규칙으로 바꿔줍니다.
+            </div>
+          </section>
+
+          <section class="message-card">
+            <div class="section-head">대화 미리보기</div>
+            <div class="messages">
+              <div class="bubble user">테슬라가 5% 하락하고 5일 이동평균선이 22일선을 상향 돌파하면 매수하고 싶어. 최대 투자금 1,000만 원, 손실은 10% 이상 커지지 않게 해줘.</div>
+              <div class="bubble ai">진입 조건과 리스크 조건을 확인했습니다. 자동매매 규칙을 생성했고, 백테스팅으로 과거 성과를 확인한 뒤 데모 계좌에서 먼저 테스트할 수 있습니다.</div>
+              <div class="bubble user">RSI 기술적 분석 자료를 사용해서 매수 자동화를 고도화시켜줘.</div>
+              <div class="bubble ai">RSI 조건을 추가하겠습니다. RSI가 30 이하처럼 과도하게 팔린 구간에서 다시 회복되는 시점만 매수 후보로 보고, 이동평균선 돌파 신호와 함께 확인될 때만 주문이 실행되도록 자동매매를 개선했습니다.</div>
+            </div>
+          </section>
+
+          <div class="cta-row">
+            <a class="primary secondary" href="moa_mts4_ai_strategy_studio.html">AI 자동매매 페이지</a>
+            <a class="primary" href="moa_mts4_ai_strategy_chat.html">AI 자동매매 만들기</a>
+          </div>
+
+          <section class="section-card">
+            <div class="section-head">자동매매 구현 흐름</div>
+            <div class="steps">
+              <div class="step"><div>1</div><div><b>자연어로 자동매매 설명</b>코드 없이 말하듯 매매 조건을 설명합니다.</div></div>
+              <div class="step"><div>2</div><div><b>AI 자동매매 구조화</b>진입 조건, 자본 배분, 리스크, 청산 조건으로 자동 분류합니다.</div></div>
+              <div class="step"><div>3</div><div><b>백테스팅</b>과거 시장 데이터로 성과와 위험을 검토합니다.</div></div>
+              <div class="step"><div>4</div><div><b>데모 테스팅</b>실제 자금 없이 데모 계좌에서 먼저 확인합니다.</div></div>
+              <div class="step"><div>5</div><div><b>라이브 적용</b>확인된 조건 기준으로 라이브 계좌에 적용합니다.</div></div>
+            </div>
+          </section>
+
+          <section class="point-card">
+            <div class="section-head">차별화 포인트</div>
+            <div class="points">
+              <div class="point"><b>코딩 불필요</b>MQL, Pine Script 없이 자연어만으로 자동매매 설계</div>
+              <div class="point"><b>의도 기반 설계</b>AI가 진입, 배분, 리스크, 청산 조건으로 분류</div>
+              <div class="point"><b>검증 흐름 통합</b>백테스팅, 데모 테스팅, 라이브 적용을 한 흐름으로 연결</div>
+              <div class="point"><b>자동매매 템플릿</b>캐스케이드, 퀀트, 헤지 템플릿 확장 예정</div>
+            </div>
+          </section>
+
+          <div class="statement">
+            MOA는 단순히 주문 화면에 버튼을 추가하는 것이 아니라, 투자 아이디어가 실제 자동매매로 이어지는 과정을 설계합니다.
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - AI 자동매매 사용법</div>
+    </section>
+
+    <aside class="panel">
+      <h2>명세 반영</h2>
+      <div class="panel-row"><b>목적</b><span>AI 자동매매 개념, 대화 예시, 5단계 흐름을 설명하는 사용법 화면</span></div>
+      <div class="panel-row"><b>핵심</b><span>코딩 장벽 제거와 AI의 자동매매 규칙 변환을 강조</span></div>
+      <div class="panel-row"><b>CTA</b><span>AI 자동매매 페이지와 AI 자동매매 만들기 버튼을 분리해 메인/설계 흐름을 구분</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

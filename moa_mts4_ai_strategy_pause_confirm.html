@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 자동매매 멈추기</title>
+  <style>
+    :root { --ink:#232323; --muted:#777; --line:#d4d4d4; --blue:#3b66d6; --red:#e53935; --phone-w:430px; --phone-h:920px; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#fafafa; color:var(--ink); font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .board { position:relative; width:1200px; min-height:1100px; padding:48px 64px; }
+    .title { font-size:34px; font-weight:800; }
+    .subtitle { margin-top:6px; color:#999; font-size:15px; }
+    .phone-wrap { position:absolute; left:120px; top:150px; width:var(--phone-w); }
+    .phone { position:relative; width:var(--phone-w); height:var(--phone-h); border:3px solid var(--ink); border-radius:28px; background:#fff; overflow:hidden; }
+    .notch { position:absolute; top:7px; left:174px; width:82px; height:13px; border:1px solid var(--ink); border-radius:8px; background:#fff; z-index:4; }
+    .appbar { position:absolute; left:0; right:0; top:0; height:78px; padding:30px 18px 12px; border-bottom:1px solid var(--line); background:#fff; display:grid; grid-template-columns:36px 1fr 36px; gap:8px; align-items:center; z-index:3; }
+    .icon-button { width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; }
+    .app-title { text-align:center; font-size:16px; font-weight:800; line-height:18px; }
+    .app-subtitle { color:var(--muted); font-size:10px; font-weight:400; }
+    .content { position:absolute; left:18px; right:18px; top:94px; bottom:72px; overflow-y:auto; padding-bottom:16px; scrollbar-width:none; }
+    .content::-webkit-scrollbar { display:none; }
+    .hero { border:1px solid #fecaca; border-radius:14px; background:#fff7f7; padding:14px; text-align:center; }
+    .hero b { display:block; font-size:17px; line-height:22px; }
+    .hero span { display:block; margin-top:6px; color:#7f1d1d; font-size:11px; line-height:16px; font-weight:700; }
+    .card { border:1px solid var(--line); border-radius:12px; background:#fff; overflow:hidden; margin-top:10px; }
+    .card-head { padding:10px 12px; border-bottom:1px solid var(--line); background:#f4f4f4; font-size:13px; font-weight:900; }
+    .card-body { padding:12px; font-size:11px; line-height:16px; }
+    .row { display:grid; grid-template-columns:96px 1fr; gap:8px; padding:8px 0; border-bottom:1px solid #eee; }
+    .row:last-child { border-bottom:0; }
+    .note { border:1px solid #e5e7eb; border-radius:10px; background:#fafafa; padding:10px; margin-top:10px; color:#555; font-size:11px; line-height:16px; font-weight:700; }
+    .button { min-height:42px; border:1px solid #aaa; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 10px; margin-top:10px; font-size:12px; font-weight:900; }
+    .button.danger { background:var(--red); color:#fff; border-color:var(--red); }
+    .bottom-nav { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:#fff; display:grid; grid-template-columns:repeat(5,1fr); align-items:center; text-align:center; font-size:10px; color:var(--muted); }
+    .nav-item { display:grid; gap:4px; justify-items:center; }
+    .nav-icon { width:22px; height:18px; border:1px solid currentColor; border-radius:4px; }
+    .nav-item.active { color:var(--blue); font-weight:800; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">AI 자동매매 멈추기</div>
+    <div class="subtitle">진행 중인 자동매매를 멈추기 전 확인하는 화면</div>
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_ai_strategy_studio.html">&larr;</a>
+          <div class="app-title">자동매매 멈추기<div class="app-subtitle">최종 확인</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+        <main class="content">
+          <section class="hero">
+            <b>자동매매를 멈출까요?</b>
+            <span>멈추면 새로운 자동 주문은 실행되지 않습니다. 이미 체결된 보유 자산은 그대로 유지됩니다.</span>
+          </section>
+          <section class="card">
+            <div class="card-head">멈추기 전 확인</div>
+            <div class="card-body">
+              <div class="row"><b>대상 시스템</b><span>진행 중인 AI 자동매매</span></div>
+              <div class="row"><b>새 주문</b><span>멈춘 뒤에는 신규 자동 주문이 중단됩니다.</span></div>
+              <div class="row"><b>보유 자산</b><span>기존 보유 자산과 체결 내역은 포트폴리오에 남습니다.</span></div>
+              <div class="row"><b>다시 시작</b><span>상세보기에서 언제든 다시 적용할 수 있습니다.</span></div>
+              <div class="note">라이브 자동매매라면 멈추기 전에 미체결 주문이 있는지 함께 확인하는 흐름이 필요합니다.</div>
+              <a class="button danger" href="moa_mts4_ai_strategy_studio.html">네, 자동매매를 멈출게요</a>
+              <a class="button" href="moa_mts4_ai_strategy_studio.html">아니요, 계속 진행할게요</a>
+            </div>
+          </section>
+        </main>
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

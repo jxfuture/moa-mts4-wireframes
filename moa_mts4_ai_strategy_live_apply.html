@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 라이브 적용</title>
+  <style>
+    :root { --ink:#232323; --muted:#777; --line:#d4d4d4; --blue:#3b66d6; --green:#2ead65; --orange:#f59e0b; --phone-w:430px; --phone-h:920px; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#fafafa; color:var(--ink); font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .board { position:relative; width:1200px; min-height:1100px; padding:48px 64px; }
+    .title { font-size:34px; font-weight:800; }
+    .subtitle { margin-top:6px; color:#999; font-size:15px; }
+    .phone-wrap { position:absolute; left:120px; top:150px; width:var(--phone-w); }
+    .phone { position:relative; width:var(--phone-w); height:var(--phone-h); border:3px solid var(--ink); border-radius:28px; background:#fff; overflow:hidden; }
+    .notch { position:absolute; top:7px; left:174px; width:82px; height:13px; border:1px solid var(--ink); border-radius:8px; background:#fff; z-index:4; }
+    .appbar { position:absolute; left:0; right:0; top:0; height:78px; padding:30px 18px 12px; border-bottom:1px solid var(--line); background:#fff; display:grid; grid-template-columns:36px 1fr 36px; gap:8px; align-items:center; z-index:3; }
+    .icon-button { width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; }
+    .app-title { text-align:center; font-size:16px; font-weight:800; line-height:18px; }
+    .app-subtitle { color:var(--muted); font-size:10px; font-weight:400; }
+    .content { position:absolute; left:18px; right:18px; top:94px; bottom:72px; overflow-y:auto; padding-bottom:16px; scrollbar-width:none; }
+    .content::-webkit-scrollbar { display:none; }
+    .card { border:1px solid var(--line); border-radius:12px; background:#fff; overflow:hidden; margin-top:10px; }
+    .card:first-child { margin-top:0; }
+    .card-head { padding:10px 12px; border-bottom:1px solid var(--line); background:#f4f4f4; font-size:13px; font-weight:900; }
+    .card-body { padding:12px; font-size:11px; line-height:16px; }
+    .hero { border:1px solid #cddbf6; border-radius:12px; background:#f8fbff; padding:12px; font-size:11px; line-height:16px; }
+    .hero b { display:block; font-size:15px; line-height:20px; margin-bottom:4px; }
+    .step { display:grid; grid-template-columns:28px 1fr; gap:9px; padding:10px 0; border-bottom:1px solid #eee; }
+    .step:last-child { border-bottom:0; }
+    .num { width:28px; height:28px; border-radius:999px; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; }
+    .step b { display:block; font-size:12px; line-height:16px; }
+    .step span { display:block; margin-top:2px; color:var(--muted); font-size:10px; line-height:14px; }
+    .metric-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:10px; }
+    .metric { border:1px solid #e5e7eb; border-radius:10px; background:#fafafa; padding:9px; color:var(--muted); font-size:10px; }
+    .metric b { display:block; margin-top:3px; color:var(--ink); font-size:15px; line-height:18px; }
+    .choice-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:10px; }
+    .choice { min-height:34px; border:1px solid #aaa; border-radius:9px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:900; }
+    .choice.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .button { min-height:42px; border:1px solid #aaa; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 10px; margin-top:10px; font-size:12px; font-weight:900; }
+    .button.dark { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .button.disabled { background:#eee; color:#999; border-color:#ddd; pointer-events:none; }
+    .bottom-nav { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:#fff; display:grid; grid-template-columns:repeat(5,1fr); align-items:center; text-align:center; font-size:10px; color:var(--muted); }
+    .nav-item { display:grid; gap:4px; justify-items:center; }
+    .nav-icon { width:22px; height:18px; border:1px solid currentColor; border-radius:4px; }
+    .nav-item.active { color:var(--blue); font-weight:800; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">AI 자동매매 라이브 적용</div>
+    <div class="subtitle">데모 또는 백테스팅을 통과한 시스템을 실제 계좌에 적용하는 단계</div>
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_ai_strategy_detail_tesla.html">&larr;</a>
+          <div class="app-title">라이브 적용<div class="app-subtitle">최종 확인</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+        <main class="content">
+          <section class="hero">
+            <b>테슬라 이동평균 돌파 자동매매</b>
+            데모 테스팅 결과를 실제 계좌에 적용하기 전, 라이브 투자금과 위험 제한을 단계별로 확인합니다.
+          </section>
+          <section class="card">
+            <div class="card-head">라이브 적용 단계</div>
+            <div class="card-body">
+              <div class="step"><div class="num">1</div><div><b>전략 조건 확인</b><span>진입 조건, 중단 조건, 백테스팅과 데모 테스팅 결과를 확인합니다.</span></div></div>
+              <div class="step"><div class="num">2</div><div><b>라이브 투자금 설정</b><span>실제 계좌에서 사용할 최대 투자금을 먼저 정합니다.</span></div></div>
+              <div class="step"><div class="num">3</div><div><b>위험 제한 설정</b><span>1회 주문 한도, 하루 주문 횟수, 자동 중단 손실률을 정합니다.</span></div></div>
+              <div class="step"><div class="num">4</div><div><b>라이브 적용 시작</b><span>적용 후에는 포트폴리오에서 실시간 거래 내역과 수익률을 확인합니다.</span></div></div>
+            </div>
+          </section>
+          <section class="card">
+            <div class="card-head">적용 전 요약</div>
+            <div class="card-body">
+              <div class="choice-grid"><div class="choice">500만원</div><div class="choice active">1,000만원</div><div class="choice">3,000만원</div></div>
+              <div class="metric-grid">
+                <div class="metric">라이브 투자금<b>1,000만원</b></div>
+                <div class="metric">1회 주문 한도<b>100만원</b></div>
+                <div class="metric">하루 주문 횟수<b>최대 3회</b></div>
+                <div class="metric">손실 제한<b>-10%</b></div>
+                <div class="metric">데모 수익률<b style="color:var(--green);">+1.84%</b></div>
+                <div class="metric">현재 상태<b>적용 대기</b></div>
+              </div>
+              <a class="button" href="moa_mts4_ai_strategy_risk_limit.html">위험 제한 수정하기</a>
+              <a class="button dark" href="moa_mts4_ai_strategy_live_applied.html">라이브 적용 시작</a>
+            </div>
+          </section>
+        </main>
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

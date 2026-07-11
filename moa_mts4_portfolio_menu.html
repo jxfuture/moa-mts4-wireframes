@@ -1,0 +1,361 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 포트폴리오 메뉴</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 78px;
+      overflow-y: auto;
+      padding-bottom: 14px;
+    }
+
+    .summary {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f7f7f7;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .summary b {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 15px;
+    }
+
+    .section-title {
+      margin: 14px 0 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .menu-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .menu-item {
+      min-height: 52px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 10px 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .menu-item b {
+      display: block;
+      font-size: 13px;
+    }
+
+    .menu-item span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .arrow {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .badge {
+      display: inline-flex;
+      margin-top: 3px;
+      border: 1px solid #b8ddc3;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: var(--green);
+      background: #f1fbf4;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 420px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 포트폴리오 메뉴</div>
+    <div class="subtitle">입금/출금과 AI 관리 상태를 빠르게 찾는 상단 메뉴 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_cascade_portfolio.html">&larr;</a>
+          <div class="app-title">
+            포트폴리오
+            <div class="app-subtitle">상단 메뉴</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="summary">
+            <b>투자 가능 현금 760,000원</b>
+            입금, 출금, AI 관리 상태를 여기서 바로 확인할 수 있습니다.
+            <div class="badge">AI 관리 기준 적용 중</div>
+          </section>
+
+          <div class="section-title">자주 쓰는 메뉴</div>
+          <section class="menu-list">
+            <a class="menu-item" href="moa_mts4_portfolio_cash.html">
+              <div>
+                <b>입금 / 출금</b>
+                <span>투자 가능 현금을 충전하거나 출금합니다.</span>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+            <a class="menu-item" href="moa_mts4_account_settings.html">
+              <div>
+                <b>등록 계좌 설정</b>
+                <span>입금과 출금에 사용할 본인 계좌를 확인하거나 변경합니다.</span>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+            <a class="menu-item" href="moa_mts4_ai_portfolio_analysis.html">
+              <div>
+                <b>포트폴리오 AI 분석</b>
+                <span>전체 포트폴리오의 위험과 추천안을 다시 봅니다.</span>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+            <a class="menu-item" href="moa_mts4_ai_portfolio_applied.html">
+              <div>
+                <b>AI 관리 기준</b>
+                <span>현재 적용된 AI 모니터링 기준을 확인합니다.</span>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+            <a class="menu-item" href="moa_mts4_ai_cascade_active.html">
+              <div>
+                <b>캐스케이드 진행 현황</b>
+                <span>SK하이닉스 캐스케이드 상태를 봅니다.</span>
+              </div>
+              <div class="arrow">›</div>
+            </a>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 포트폴리오 상단 메뉴</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>입금/출금과 AI 관리 상태를 사용자가 쉽게 찾게 합니다.</span></div>
+      <div class="panel-row"><b>위치</b><span>포트폴리오 오른쪽 상단 메뉴 버튼에서 진입합니다.</span></div>
+      <div class="panel-row"><b>핵심</b><span>돈 관련 메뉴와 AI 적용 결과를 같은 영역에서 확인합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,409 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 차트</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 92px;
+      bottom: 62px;
+      overflow-y: auto;
+      padding-bottom: 12px;
+    }
+
+    .symbol-bar {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f7f7f7;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .symbol-bar b {
+      display: block;
+      font-size: 14px;
+      line-height: 18px;
+    }
+
+    .price {
+      text-align: right;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .price span {
+      display: block;
+      color: var(--red);
+      font-size: 10px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tool {
+      min-height: 30px;
+      border: 1px solid #c9c9c9;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .tool.active {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .chart-frame {
+      height: 560px;
+      margin-top: 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #ffffff;
+      color: var(--ink);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .frame-top {
+      height: 38px;
+      border-bottom: 1px solid var(--line);
+      background: #f8fafc;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .chart-placeholder {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 52px;
+      bottom: 44px;
+      border: 1px dashed #b8c0ca;
+      border-radius: 10px;
+      background: #fbfdff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #64748b;
+      padding: 18px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .frame-bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 36px;
+      border-top: 1px solid var(--line);
+      background: #f8fafc;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: #64748b;
+    }
+
+    .note {
+      margin-top: 10px;
+      border: 1px solid #b8ddc3;
+      border-radius: 10px;
+      background: #f3fbf5;
+      color: #4d6b53;
+      padding: 10px;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 450px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 차트</div>
+    <div class="subtitle">TradingView 차트 API 연동 예정 독립 차트 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_home_wireframe.html">&larr;</a>
+          <div class="app-title">
+            차트
+            <div class="app-subtitle">TradingView</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="symbol-bar">
+            <div>
+              <b>SK하이닉스</b>
+              000660 · 국내주식
+            </div>
+            <div class="price">2,202,000원<span>▼ 6.02%</span></div>
+          </section>
+
+          <div class="toolbar">
+            <div class="tool">하루</div>
+            <div class="tool active">일주</div>
+            <div class="tool">한 달</div>
+            <div class="tool">1년</div>
+            <div class="tool">5년</div>
+          </div>
+
+          <section class="chart-frame">
+            <div class="frame-top">
+              <span>TradingView Chart</span>
+              <span>Advanced</span>
+            </div>
+            <div class="chart-placeholder">
+              TradingView Advanced Chart Widget / Charting Library 영역<br />
+              캔들, 거래량, 드로잉 툴, 피보나치, 추세선, 보조지표, 차트 템플릿을 이곳에서 직접 조작합니다.
+            </div>
+            <div class="frame-bottom">
+              <div>드로잉</div>
+              <div>지표</div>
+              <div>패턴</div>
+              <div>알림</div>
+              <div>저장</div>
+            </div>
+          </section>
+
+          <div class="note">
+            이 화면은 AI 분석 화면이 아니라 독립 차트 메뉴입니다. MOA AI, 빠른 접근, 추천 종목, 종목 상세에서 “고급 차트”를 누르면 이 차트 화면으로 이동합니다.
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item active" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 독립 차트 화면</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>AI 모듈이 아니라 앱 공통 차트 메뉴로 사용하는 독립 화면입니다.</span></div>
+      <div class="panel-row"><b>진입</b><span>홈 샌드위치 메뉴, AI 차트 분석의 고급 차트, 종목 상세의 차트 보기에서 이동합니다.</span></div>
+      <div class="panel-row"><b>구현</b><span>실제 프로토타입 이후 TradingView 차트 API를 이 영역에 넣습니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,388 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 등록 계좌 설정</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --orange: #b76b00;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 78px;
+      overflow-y: auto;
+      padding-bottom: 14px;
+    }
+
+    .account-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f7f7f7;
+      padding: 14px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .bank-name {
+      margin-top: 4px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .account-number {
+      margin-top: 6px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .badge {
+      display: inline-flex;
+      margin-top: 10px;
+      border: 1px solid #b8ddc3;
+      border-radius: 999px;
+      padding: 4px 9px;
+      color: var(--green);
+      background: #f1fbf4;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .section {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 94px 1fr;
+      gap: 8px;
+      padding: 8px 0;
+      border-top: 1px solid #efefef;
+    }
+
+    .row:first-of-type {
+      border-top: 0;
+    }
+
+    .row b {
+      color: #555;
+    }
+
+    .notice {
+      margin-top: 12px;
+      border: 1px solid #f1d19b;
+      border-radius: 10px;
+      background: #fff8ea;
+      color: var(--orange);
+      padding: 10px;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .actions {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 40px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 430px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 등록 계좌 설정</div>
+    <div class="subtitle">회원가입 때 등록된 입출금 계좌 확인 및 변경 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_portfolio_cash.html">&larr;</a>
+          <div class="app-title">
+            등록 계좌 설정
+            <div class="app-subtitle">입금 / 출금 계좌</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="account-card">
+            <div class="label">현재 등록 계좌</div>
+            <div class="bank-name">국민은행</div>
+            <div class="account-number">12345-***-******</div>
+            <div class="badge">본인 계좌 확인 완료</div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">사용 범위</div>
+            <div class="row">
+              <b>입금</b>
+              <span>이 계좌에서 MOA 투자 가능 현금으로 입금합니다.</span>
+            </div>
+            <div class="row">
+              <b>출금</b>
+              <span>MOA 투자 가능 현금은 이 계좌로만 출금됩니다.</span>
+            </div>
+            <div class="row">
+              <b>보안</b>
+              <span>계좌번호는 앞 다섯 자리만 표시하고 나머지는 숨깁니다.</span>
+            </div>
+          </section>
+
+          <div class="notice">
+            계좌 변경은 본인 인증 후 가능합니다. 변경이 완료되기 전까지 입금과 출금은 현재 등록 계좌로만 진행됩니다.
+          </div>
+
+          <div class="actions">
+            <div class="button dark">계좌 변경하기</div>
+            <a class="button" href="moa_mts4_portfolio_cash.html">입금 / 출금으로 돌아가기</a>
+            <a class="button" href="moa_mts4_cascade_portfolio.html">포트폴리오로</a>
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 등록 계좌 설정</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>회원가입 때 등록한 본인 계좌를 확인하고 변경 진입점을 제공합니다.</span></div>
+      <div class="panel-row"><b>원칙</b><span>입금과 출금은 같은 등록 계좌 하나로만 가능합니다.</span></div>
+      <div class="panel-row"><b>프로토타입</b><span>계좌 변경 세부 인증 화면은 아직 만들지 않고 버튼만 둡니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

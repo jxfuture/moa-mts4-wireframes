@@ -1,0 +1,447 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 캐스케이드 종목 선택</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #777;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #138a45;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1180px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 128px;
+      overflow-y: auto;
+      padding-bottom: 8px;
+    }
+
+    .user-bubble {
+      margin-left: 70px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      background: #222;
+      color: white;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .ai-bubble {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f4f4f4;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .card {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f7f7f7;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-body { padding: 12px; }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 42px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .fake-input {
+      height: 38px;
+      border: 1px solid #c9c9c9;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #aaa;
+      background: white;
+      font-size: 12px;
+    }
+
+    .recommend-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .stock-link {
+      min-height: 58px;
+      border: 1px solid #aaa;
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px 11px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .stock-link strong {
+      display: block;
+      font-size: 14px;
+      line-height: 18px;
+      margin-bottom: 2px;
+    }
+
+    .tag {
+      min-width: 54px;
+      padding: 5px 7px;
+      border: 1px solid #aaa;
+      border-radius: 999px;
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      background: #f8fff9;
+    }
+
+    .note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .chat-area {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 62px;
+      min-height: 82px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      background: white;
+      z-index: 2;
+    }
+
+    .chat-hint {
+      margin: 0 4px 7px;
+      color: #8a8a8a;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .chat-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .input {
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      color: #aaa;
+      font-size: 11px;
+      background: #fff;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 3;
+    }
+
+    .nav-item {
+      color: #888;
+      font-size: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .nav-item.active {
+      color: #222;
+      font-weight: 800;
+    }
+
+    .nav-icon {
+      width: 16px;
+      height: 12px;
+      border: 1px solid currentColor;
+      border-radius: 3px;
+    }
+
+    .caption {
+      margin-top: 16px;
+      text-align: center;
+      color: #8a8a8a;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 22px;
+    }
+
+    .panel {
+      position: absolute;
+      left: 620px;
+      top: 210px;
+      width: 520px;
+      border-left: 3px solid var(--blue);
+      padding-left: 24px;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+    }
+
+    .panel-row {
+      margin: 12px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .panel-row b {
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 캐스케이드 종목 선택</div>
+    <div class="subtitle">기능 정의 와이어프레임 | 캐스케이드 시작 전 종목 선택 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_ai_cascade_explain.html">&larr;</a>
+          <div class="app-title">MOA AI<br><span class="app-subtitle">캐스케이드 시작</span></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <div class="user-bubble">캐스케이드 시작하기</div>
+
+          <div class="ai-bubble">
+            좋아요. 먼저 어떤 종목에 캐스케이드를 적용할지 선택해 주세요.
+            종목이 정해지면 총 투자 한도와 시작 금액을 이어서 정합니다.
+          </div>
+
+          <section class="card">
+            <div class="card-head">어떤 종목에 투자하고 싶으세요?</div>
+            <div class="card-body">
+              <div class="input-row">
+                <div class="fake-input">종목명 또는 티커 입력</div>
+                <a class="icon-button" href="moa_mts4_cascade_setup_amount.html">&#8617;</a>
+              </div>
+              <div class="note">채팅창에 “삼성전자 캐스케이드”처럼 말해도 같은 단계로 이어집니다.</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>추천 종목</span>
+              <span style="color:#777;font-size:11px;font-weight:400;">AI 선별 4개</span>
+            </div>
+            <div class="card-body">
+              <div class="recommend-list">
+                <a class="stock-link" href="moa_mts4_cascade_setup_amount.html">
+                  <span><strong>SK하이닉스</strong>반도체 변동성 높음 · 캐스케이드 적합</span>
+                  <span class="tag">국내</span>
+                </a>
+                <a class="stock-link" href="moa_mts4_cascade_setup_amount.html">
+                  <span><strong>삼성전자</strong>대형주 · 구간 분할 진입 후보</span>
+                  <span class="tag">국내</span>
+                </a>
+                <a class="stock-link" href="moa_mts4_cascade_setup_amount.html">
+                  <span><strong>Apple</strong>해외주식 · 환율 영향 함께 관찰</span>
+                  <span class="tag">해외</span>
+                </a>
+                <a class="stock-link" href="moa_mts4_cascade_setup_amount.html">
+                  <span><strong>KODEX 200</strong>시장 대표 ETF · 장기 분산 후보</span>
+                  <span class="tag">ETF</span>
+                </a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <section class="chat-area">
+          <div class="chat-hint">종목명, 티커, 투자 의도를 자유롭게 말하거나 입력할 수 있습니다.</div>
+          <div class="chat-row">
+            <div class="icon-button" title="음성으로 말하기">Mic</div>
+            <div class="input">MOA AI에게 메시지 보내기</div>
+            <div class="icon-button" style="background:#222;color:white;">↵</div>
+          </div>
+        </section>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 캐스케이드 종목 선택</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>위치</b><span>캐스케이드 설명 화면에서 시작하기를 누른 직후의 첫 단계입니다.</span></div>
+      <div class="panel-row"><b>핵심</b><span>종목을 먼저 정한 뒤 투자 한도, 시작 금액, 변동 간격을 순서대로 결정합니다.</span></div>
+      <div class="panel-row"><b>다음</b><span>추천 종목이나 직접 입력을 선택하면 기존 캐스케이드 금액 선택 화면으로 이동합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

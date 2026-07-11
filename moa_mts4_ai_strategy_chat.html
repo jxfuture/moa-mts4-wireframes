@@ -1,0 +1,1040 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - MOA AI 자동매매 대화</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --soft: #f3f4f6;
+      --panel: #fff;
+      --blue: #3b66d6;
+      --red: #e53935;
+      --green: #2ead65;
+      --yellow: #ffe33d;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .messages {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 128px;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .messages::-webkit-scrollbar { display: none; }
+
+    .ai-intro {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #f7f7f7;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .quick-title {
+      margin: 14px 0 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .chip {
+      height: 36px;
+      border: 1px solid #bdbdbd;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .bubble {
+      max-width: 86%;
+      margin-top: 14px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .bubble.user {
+      margin-left: auto;
+      background: var(--ink);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble.ai {
+      background: #f4f4f4;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 4px;
+    }
+
+    .typing {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 10px;
+    }
+
+    .typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #aaa;
+      display: inline-block;
+    }
+
+    .result-card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .result-head {
+      padding: 10px 12px;
+      background: #f1f1f1;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .result-head strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .result-body {
+      padding: 12px;
+      font-size: 11px;
+      line-height: 17px;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .button {
+      min-height: 36px;
+      border: 1px solid #9d9d9d;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .button.blue {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
+    .detail-panel {
+      display: none;
+      margin-top: 10px;
+      border: 1px solid #cddbf6;
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 10px;
+    }
+
+    .detail-panel.show {
+      display: block;
+    }
+
+    .detail-title {
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 900;
+    }
+
+    .detail-copy {
+      margin-top: 6px;
+      color: #475569;
+      font-size: 10px;
+      line-height: 15px;
+      font-weight: 800;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .detail-option {
+      border: 1px solid #c8d2e5;
+      border-radius: 8px;
+      background: white;
+      padding: 8px;
+      font-size: 10px;
+      line-height: 14px;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .detail-option b {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 11px;
+      color: var(--ink);
+    }
+
+    .period-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .period-button {
+      min-height: 34px;
+      border: 1px solid #9d9d9d;
+      border-radius: 8px;
+      background: white;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .period-button.active {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .backtest-result {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .backtest-result.show {
+      display: block;
+    }
+
+    .demo-complete {
+      display: none;
+    }
+
+    .demo-complete.show {
+      display: block;
+    }
+
+    .mini-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .live-steps {
+      display: grid;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .live-step {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 7px;
+      align-items: start;
+      border: 1px solid #d9e3f5;
+      border-radius: 8px;
+      background: white;
+      padding: 8px;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .live-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .live-step b {
+      display: block;
+      font-size: 11px;
+      line-height: 14px;
+    }
+
+    .live-controls {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .risk-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid #e6edf8;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .risk-row:last-child { border-bottom: 0; }
+
+    .risk-row b { font-size: 10px; }
+
+    .risk-value {
+      color: var(--blue);
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .mini-metric {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: white;
+      padding: 7px;
+      color: #667085;
+      font-size: 9px;
+      line-height: 12px;
+      font-weight: 800;
+    }
+
+    .mini-metric b {
+      display: block;
+      margin-top: 2px;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 15px;
+    }
+
+    .download-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .composer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 62px;
+      min-height: 66px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .input {
+      height: 40px;
+      border: 1px solid #c9c9c9;
+      border-radius: 10px;
+      color: #aaa;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      background: white;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .state-panel {
+      left: 630px;
+      top: 200px;
+      width: 390px;
+    }
+
+    .intent-panel {
+      left: 1060px;
+      top: 200px;
+      width: 410px;
+    }
+
+    .flow-panel {
+      left: 630px;
+      top: 650px;
+      width: 840px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .row:first-of-type { border-top: 0; }
+    .row b { color: #555; }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .flow {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 96px;
+      font-size: 12px;
+      line-height: 18px;
+      background: #fff;
+    }
+
+    .flow strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .annotation {
+      position: absolute;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .line {
+      position: absolute;
+      height: 0;
+      border-top: 3px solid var(--blue);
+    }
+
+    .line::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      top: -8px;
+      border-left: 12px solid var(--blue);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - MOA AI 자동매매 대화</div>
+    <div class="subtitle">홈 MOA AI에서 바로 AI 자동매매를 만드는 대화형 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_home_wireframe.html">&larr;</a>
+          <div class="app-title">
+            MOA AI
+            <div class="app-subtitle">AI 자동매매 어시스턴트</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="messages">
+          <section class="ai-intro">
+            <b>안녕하세요. MOA AI입니다.</b><br />
+            종목, 금액, 자동매매, 포트폴리오를 말하면 바로 분석하고 다음 행동을 제안합니다. AI 자동매매 만들기도 이 대화창 안에서 바로 시작할 수 있습니다.
+          </section>
+
+          <div class="bubble user">이동평균선을 사용해서 테슬라 AI 자동매매를 만들고 싶어</div>
+
+          <div class="bubble ai">
+            테슬라 AI 자동매매로 이해했습니다. 이동평균선을 이용해 진입 조건을 만들고, 손실 제한과 투자 한도를 함께 설정할 수 있습니다.
+          </div>
+
+          <div class="typing"><span></span><span></span><span></span> 자동매매 구조화 중...</div>
+
+          <section class="result-card">
+            <div class="result-head">
+              <div>
+                <strong>테슬라 AI 자동매매</strong>
+                <span style="color:var(--blue);">이동평균선 기반 · 초안 생성</span>
+              </div>
+              <span style="color:var(--green); font-weight:800;">MOA AI</span>
+            </div>
+            <div class="result-body">
+              <b>구조화된 자동매매</b><br />
+              테슬라가 5% 하락한 뒤 5일 이동평균선이 20일 이동평균선을 상향 돌파하면 매수 후보로 판단합니다.
+              손실 제한, 최대 투자금, RSI 같은 추가 조건을 더하면 AI 자동매매를 더 안전하게 고도화할 수 있습니다.
+              <div class="action-grid">
+                <button class="button dark" type="button" data-detail-target="backtestPanel">백테스팅 실행</button>
+                <button class="button" type="button" data-detail-target="demoPanel">데모 테스팅</button>
+                <button class="button" type="button" data-detail-target="livePanel">라이브 적용</button>
+                <button class="button" type="button" data-detail-target="enhancePanel">자동매매 고도화하기</button>
+                <button class="button" type="button" data-detail-target="lossPanel">손실 제한 설정</button>
+                <button class="button" type="button" data-detail-target="capitalPanel">최대 투자금 설정</button>
+              </div>
+              <div class="detail-panel" id="backtestPanel">
+                <div class="detail-title">백테스팅 실행</div>
+                <div class="detail-copy">먼저 검증 기간을 선택해 주세요. 기간을 고르면 확인 지표와 결과지가 아래에 나타납니다.</div>
+                <div class="period-grid">
+                  <button class="period-button" type="button" data-period="1년">1년</button>
+                  <button class="period-button" type="button" data-period="3년">3년</button>
+                  <button class="period-button" type="button" data-period="5년">5년</button>
+                </div>
+                <div class="backtest-result" id="backtestResult">
+                  <div class="detail-copy"><b id="periodLabel">3년</b> 기준 백테스트 결과입니다. 실제 체결 내역과 다운로드 파일까지 확인할 수 있습니다.</div>
+                  <div class="mini-metrics">
+                    <div class="mini-metric">자동매매 수익률<b>+18.4%</b></div>
+                    <div class="mini-metric">최대 낙폭<b>-7.2%</b></div>
+                    <div class="mini-metric">승률<b>61%</b></div>
+                    <div class="mini-metric">손익비<b>1.36</b></div>
+                  </div>
+                  <div class="detail-option"><b>AI 결과 해석</b>상승 전환 신호가 강했던 구간에서는 수익률이 좋았습니다. 다만 횡보장에서는 진입 빈도가 높아져 수익률이 낮아지는 구간이 있었습니다. 손실 제한 조건을 함께 쓰면 최대 낙폭을 줄이는 데 도움이 됩니다.</div>
+                  <div class="detail-option">
+                    <b>백테스트 거래 내역 상세 보기</b>
+                    아래 다운로드 파일에서 각 거래의 날짜, 체결 조건, 진입 가격, 청산 가격, 거래별 손익을 자세히 확인할 수 있습니다.
+                    <div class="download-row">
+                      <button class="button" type="button">HTML 다운로드</button>
+                      <button class="button" type="button">CSV 다운로드</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-panel" id="demoPanel">
+                <div class="detail-title">데모 테스팅</div>
+                <div class="detail-copy">실제 돈을 쓰기 전에 데모 계좌에서 자동매매가 어떻게 실행되는지 확인합니다. 라이브 적용과 같은 흐름으로 금액과 위험 제한을 먼저 정합니다.</div>
+                <div class="live-steps">
+                  <div class="live-step"><div class="live-step-num">1</div><div><b>가상 투자금 설정</b>데모 계좌에서 사용할 금액을 정합니다.</div></div>
+                  <div class="live-step"><div class="live-step-num">2</div><div><b>AI 위험 제한 자동 설정</b>가상 환경에서도 최대 투자금, 1회 주문 한도, 자동 중단 기준을 함께 설정합니다.</div></div>
+                  <div class="live-step"><div class="live-step-num">3</div><div><b>데모 테스팅 시작</b>설정값을 확인한 뒤 데모 환경에서 자동매매를 실행합니다.</div></div>
+                </div>
+                <div class="period-grid">
+                  <button class="period-button" type="button" data-demo-amount="500만원">500만원</button>
+                  <button class="period-button" type="button" data-demo-amount="1,000만원">1,000만원</button>
+                  <button class="period-button" type="button" data-demo-amount="3,000만원">3,000만원</button>
+                </div>
+                <div class="backtest-result" id="demoStartBlock">
+                  <div class="detail-copy"><b id="demoAmountLabel">1,000만원</b>으로 데모 자동매매를 설정합니다. 다음으로 AI 위험 제한을 확인해 주세요.</div>
+                  <div class="live-controls">
+                    <button class="button dark" id="demoAiSetupButton" type="button">AI가 자동 설정하기</button>
+                    <button class="button" id="demoRiskButton" type="button">위험 제한 조절</button>
+                  </div>
+                </div>
+                <div class="backtest-result" id="demoAiSetupBlock">
+                  <div class="detail-option"><b>AI가 데모 설정값을 제안했습니다</b>가상 투자금 안에서 자동매매가 과도하게 주문하지 않도록 제한값을 세팅했습니다.</div>
+                  <div class="mini-metrics">
+                    <div class="mini-metric">가상 투자금<b id="demoSetupAmountLabel">1,000만원</b></div>
+                    <div class="mini-metric">1회 주문 한도<b>100만원</b></div>
+                    <div class="mini-metric">하루 주문 횟수<b>최대 3회</b></div>
+                    <div class="mini-metric">자동 중단<b>-10%</b></div>
+                  </div>
+                  <button class="button dark" id="demoConfirmButton" type="button">이 설정으로 최종 확인</button>
+                </div>
+                <div class="backtest-result" id="demoRiskBlock">
+                  <div class="detail-option">
+                    <b>데모 위험 제한 조절</b>
+                    데모 환경에서도 라이브와 같은 기준으로 위험 제한을 테스트할 수 있습니다.
+                    <div class="risk-row"><b>가상 투자금</b><span class="risk-value">500만원 · 1,000만원 · 최대 · 직접 입력</span></div>
+                    <div class="risk-row"><b>1회 주문 한도</b><span class="risk-value">50만원 · 100만원 · 없음 · 직접 입력</span></div>
+                    <div class="risk-row"><b>하루 주문 횟수</b><span class="risk-value">1회 · 3회 · 없음 · 직접 입력</span></div>
+                    <div class="risk-row"><b>자동 중단 손실률</b><span class="risk-value">-5% · -10% · 없음 · 직접 입력</span></div>
+                  </div>
+                </div>
+                <div class="backtest-result" id="demoConfirmBlock">
+                  <div class="detail-option"><b>데모 테스팅 최종 확인</b>선택한 가상 투자금과 위험 제한으로 데모 환경에서 자동매매를 시작합니다.</div>
+                  <button class="button dark" id="demoStartButton" type="button">데모 테스팅 시작</button>
+                </div>
+                <div class="backtest-result" id="demoStatusBlock">
+                  <div class="detail-option"><b>데모 테스팅을 실행하고 있습니다</b>선택한 가상 투자금으로 테슬라 AI 자동매매를 데모 환경에 적용하고 있습니다.</div>
+                  <div class="demo-complete" id="demoCompleteBlock">
+                    <div class="detail-option"><b>데모 테스팅 실행이 완료됐습니다</b>먼저 화면을 데모 환경으로 변경하겠습니다. 다음 단계에서 포트폴리오 페이지로 넘어가 실시간 테스트 결과를 확인합니다.</div>
+                    <a class="button dark" href="moa_mts4_demo_portfolio.html">포트폴리오에서 데모 테스팅 결과 실시간 확인하기</a>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-panel" id="livePanel">
+                <div class="detail-title">라이브 적용</div>
+                <div class="detail-copy">MOA AI가 백테스팅과 데모 테스팅 결과를 확인한 뒤, 라이브 계좌에 적용할 투자금과 위험 제한을 자동으로 제안합니다.</div>
+                <div class="live-steps">
+                  <div class="live-step"><div class="live-step-num">1</div><div><b>검증 결과 확인</b>3년 백테스팅 수익률 +18.4%, 데모 테스팅 수익률 +1.84% 기준으로 적용 가능 상태입니다.</div></div>
+                  <div class="live-step"><div class="live-step-num">2</div><div><b>라이브 투자금 설정</b>실제 계좌에서 사용할 최대 투자금을 먼저 정합니다.</div></div>
+                  <div class="live-step"><div class="live-step-num">3</div><div><b>AI 위험 제한 자동 설정</b>계좌 규모와 변동성을 기준으로 1회 주문 한도, 주문 횟수, 자동 중단 기준을 제안합니다.</div></div>
+                  <div class="live-step"><div class="live-step-num">4</div><div><b>사용자 최종 확인</b>금액과 위험 제한을 조절한 뒤 라이브 적용을 시작합니다.</div></div>
+                </div>
+                <div class="period-grid">
+                  <button class="period-button" type="button" data-live-amount="500만원">500만원</button>
+                  <button class="period-button" type="button" data-live-amount="1,000만원">1,000만원</button>
+                  <button class="period-button" type="button" data-live-amount="3,000만원">3,000만원</button>
+                </div>
+                <div class="backtest-result" id="liveAmountBlock">
+                  <div class="detail-copy"><b id="liveAmountLabel">1,000만원</b>을 라이브 최대 투자금으로 설정합니다. 다음으로 AI 위험 제한을 확인해 주세요.</div>
+                </div>
+                <div class="live-controls">
+                  <button class="button dark" id="liveAiSetupButton" type="button">AI가 자동 설정하기</button>
+                  <button class="button" id="liveRiskButton" type="button">위험 제한 조절</button>
+                </div>
+                <div class="backtest-result" id="liveAiSetupBlock">
+                  <div class="detail-option"><b>AI가 라이브 적용값을 제안했습니다</b>테슬라 변동성과 데모 결과를 반영해 너무 공격적이지 않은 기본값으로 세팅했습니다.</div>
+                  <div class="mini-metrics">
+                    <div class="mini-metric">최대 투자금<b id="liveSetupAmountLabel">1,000만원</b></div>
+                    <div class="mini-metric">1회 주문 한도<b>100만원</b></div>
+                    <div class="mini-metric">하루 주문 횟수<b>최대 3회</b></div>
+                    <div class="mini-metric">자동 중단<b>-10%</b></div>
+                  </div>
+                  <button class="button dark" id="liveConfirmButton" type="button">이 설정으로 최종 확인</button>
+                </div>
+                <div class="backtest-result" id="liveRiskBlock">
+                  <div class="detail-option">
+                    <b>위험 제한 조절</b>
+                    사용자가 직접 조절할 수 있지만, AI 추천값을 기본으로 두는 것을 권장합니다.
+                    <div class="risk-row"><b>최대 투자금</b><span class="risk-value">500만원 · 1,000만원 · 최대 · 직접 입력</span></div>
+                    <div class="risk-row"><b>1회 주문 한도</b><span class="risk-value">50만원 · 100만원 · 없음 · 직접 입력</span></div>
+                    <div class="risk-row"><b>하루 주문 횟수</b><span class="risk-value">1회 · 3회 · 없음 · 직접 입력</span></div>
+                    <div class="risk-row"><b>자동 중단 손실률</b><span class="risk-value">-5% · -10% · 없음 · 직접 입력</span></div>
+                  </div>
+                </div>
+                <div class="backtest-result" id="liveConfirmBlock">
+                  <div class="detail-option"><b>라이브 적용 최종 확인</b>이제 실제 계좌에서 조건을 모니터링합니다. 조건이 충족될 때만 주문 후보가 생성되고, 위험 제한에 닿으면 자동으로 멈춥니다.</div>
+                  <button class="button dark" id="liveStartButton" type="button">라이브 적용 시작</button>
+                </div>
+                <div class="backtest-result" id="liveAppliedBlock">
+                  <div class="detail-option"><b>라이브 적용이 시작됐습니다</b>테슬라 AI 자동매매가 라이브 계좌에서 조건을 모니터링합니다. 포트폴리오에서 거래 내역과 수익률을 확인할 수 있습니다.</div>
+                  <a class="button dark" href="moa_mts4_ai_strategy_studio.html">AI 자동매매 대시보드로 가기</a>
+                  <a class="button" href="moa_mts4_cascade_portfolio.html">포트폴리오에서 확인하기</a>
+                </div>
+              </div>
+              <div class="detail-panel" id="enhancePanel">
+                <div class="detail-title">자동매매 고도화 옵션</div>
+                <div class="detail-copy">기본 이동평균선 조건에 추가 조건을 더해 진입 품질과 자금 운용 방식을 개선합니다.</div>
+                <div class="detail-grid">
+                  <button class="detail-option" type="button"><b>RSI 추가하기</b>RSI가 과매도 구간에서 회복될 때만 매수 후보로 인정합니다.</button>
+                  <button class="detail-option" type="button"><b>볼린저 밴드 추가하기</b>가격이 밴드 하단에서 반등할 때만 진입하도록 조건을 더합니다.</button>
+                  <button class="detail-option" type="button"><b>캐스케이드 추가하기</b>5% 하락 후 5일 이동평균선이 21일 이동평균선을 상향 돌파하면, 한 번에 매수하지 않고 캐스케이드 방식으로 나누어 진입합니다.</button>
+                </div>
+              </div>
+              <div class="detail-panel" id="lossPanel">
+                <div class="detail-title">손실 제한 설정</div>
+                <div class="detail-copy">자동매매가 예상과 다르게 움직일 때 손실이 커지기 전에 자동으로 멈추는 기준을 정합니다.</div>
+                <div class="detail-grid">
+                  <button class="detail-option" type="button"><b>기본값</b>총 투자금 기준 -10% 손실 시 자동 중단합니다.</button>
+                  <button class="detail-option" type="button"><b>보수적 설정</b>-5% 손실 시 중단해 손실 확대를 더 빨리 막습니다.</button>
+                  <button class="detail-option" type="button"><b>공격적 설정</b>-15%까지 허용해 변동성을 더 견딥니다.</button>
+                </div>
+              </div>
+              <div class="detail-panel" id="capitalPanel">
+                <div class="detail-title">최대 투자금 설정</div>
+                <div class="detail-copy">AI 자동매매가 사용할 수 있는 전체 한도를 정해, 계좌 자금을 과도하게 쓰지 않도록 합니다.</div>
+                <div class="detail-grid">
+                  <button class="detail-option" type="button"><b>최대 1,000만원</b>초기 제안값으로 자동매매 리스크를 제한합니다.</button>
+                  <button class="detail-option" type="button"><b>계좌의 10%</b>전체 포트폴리오 대비 비중을 기준으로 제한합니다.</button>
+                  <button class="detail-option" type="button"><b>캐스케이드 한도</b>일부만 먼저 진입하고 나머지는 가격 구간별로 대기시킵니다.</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div class="bubble ai">AI 자동매매를 더 고도화하거나 추가하고 싶은 조건이 있으면 알려주세요. RSI, 볼린저 밴드, 캐스케이드 진입 방식처럼 조건을 계속 추가할 수 있습니다.</div>
+        </main>
+
+        <section class="composer">
+          <div class="icon-button">m</div>
+          <div class="input">MOA AI에게 메시지 보내기</div>
+          <div class="icon-button" style="background:#222;color:white;">↑</div>
+        </section>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · MOA AI 자동매매 대화</div>
+    </section>
+
+    <aside class="panel state-panel">
+      <h2>화면 상태</h2>
+      <div class="row"><b>기본</b><span>AI 인사, 자동매매 요청 대화, 메시지 입력창, 마이크, 전송 버튼 표시</span></div>
+      <div class="row"><b>입력 중</b><span>Enter 또는 전송 버튼으로 AI에 메시지 전송</span></div>
+      <div class="row"><b>응답 중</b><span>점 애니메이션과 중단 버튼 상태로 전환</span></div>
+      <div class="row"><b>음성 인식</b><span>마이크 탭 시 대기/녹음/취소/확인 상태 표시</span></div>
+      <div class="row"><b>고도화</b><span>자동매매 고도화하기 선택 시 RSI, 볼린저 밴드, 캐스케이드 추가 옵션 표시</span></div>
+    </aside>
+
+    <aside class="panel intent-panel">
+      <h2>AI 인텐트 결과</h2>
+      <div class="row"><b>자동매매 생성</b><span>자연어 요청을 진입 조건, 리스크 조건, 자본 한도로 구조화</span></div>
+      <div class="row"><b>자동매매 고도화</b><span>RSI, 손실 제한, 최대 투자금 같은 추가 조건을 대화로 계속 반영</span></div>
+      <div class="row"><b>검증 연결</b><span>백테스팅, 데모 테스팅, 라이브 적용을 MOA AI 안에서 선택</span></div>
+      <div class="row"><b>초보자 설명</b><span>이동평균선, RSI, 손실 제한 의미를 쉬운 문장으로 설명</span></div>
+      <div class="row"><b>자동매매 저장</b><span>대화로 만든 AI 자동매매를 내 목록에 저장 가능</span></div>
+      <div class="row"><b>일반 질문</b><span>자동매매 외 종목, 주문, 포트폴리오 질문도 같은 대화창에서 처리</span></div>
+    </aside>
+
+    <section class="panel flow-panel">
+      <h2>다음 연결 와이어프레임 후보</h2>
+      <div class="flow-grid">
+        <div class="flow"><strong>백테스팅</strong>과거 시장 데이터로 자동매매 성과와 위험을 검증</div>
+        <div class="flow"><strong>데모 테스팅</strong>실제 자금 없이 데모 계좌에서 자동매매 동작 확인</div>
+        <div class="flow"><strong>라이브 적용</strong>검증된 자동매매만 라이브 계좌에 적용</div>
+        <div class="flow"><strong>자동매매 고도화</strong>RSI, 거래량, 손실 제한 등 추가 조건 반영</div>
+        <div class="flow"><strong>자동매매 저장</strong>내 자동매매 목록에 저장하고 다시 수정</div>
+        <div class="flow"><strong>캐스케이드 연결</strong>자동매매 결과를 캐스케이드 자본 배분으로 확장</div>
+      </div>
+    </section>
+
+    <div class="annotation" style="left:560px; top:540px;">AI 액션 선택 시 다음 플로우로 확장</div>
+    <div class="line" style="left:500px; top:555px; width:120px;"></div>
+  </main>
+  <script>
+    const detailButtons = document.querySelectorAll('[data-detail-target]');
+    const detailPanels = document.querySelectorAll('.detail-panel');
+    const periodButtons = document.querySelectorAll('[data-period]');
+    const backtestResult = document.getElementById('backtestResult');
+    const periodLabel = document.getElementById('periodLabel');
+    const demoAmountButtons = document.querySelectorAll('[data-demo-amount]');
+    const demoAmountLabel = document.getElementById('demoAmountLabel');
+    const demoSetupAmountLabel = document.getElementById('demoSetupAmountLabel');
+    const demoStartBlock = document.getElementById('demoStartBlock');
+    const demoAiSetupButton = document.getElementById('demoAiSetupButton');
+    const demoRiskButton = document.getElementById('demoRiskButton');
+    const demoConfirmButton = document.getElementById('demoConfirmButton');
+    const demoStartButton = document.getElementById('demoStartButton');
+    const demoAiSetupBlock = document.getElementById('demoAiSetupBlock');
+    const demoRiskBlock = document.getElementById('demoRiskBlock');
+    const demoConfirmBlock = document.getElementById('demoConfirmBlock');
+    const demoStatusBlock = document.getElementById('demoStatusBlock');
+    const demoCompleteBlock = document.getElementById('demoCompleteBlock');
+    const liveAmountButtons = document.querySelectorAll('[data-live-amount]');
+    const liveAmountLabel = document.getElementById('liveAmountLabel');
+    const liveSetupAmountLabel = document.getElementById('liveSetupAmountLabel');
+    const liveAmountBlock = document.getElementById('liveAmountBlock');
+    const liveAiSetupButton = document.getElementById('liveAiSetupButton');
+    const liveRiskButton = document.getElementById('liveRiskButton');
+    const liveConfirmButton = document.getElementById('liveConfirmButton');
+    const liveStartButton = document.getElementById('liveStartButton');
+    const liveAiSetupBlock = document.getElementById('liveAiSetupBlock');
+    const liveRiskBlock = document.getElementById('liveRiskBlock');
+    const liveConfirmBlock = document.getElementById('liveConfirmBlock');
+    const liveAppliedBlock = document.getElementById('liveAppliedBlock');
+
+    detailButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.dataset.detailTarget);
+        const shouldShow = !target.classList.contains('show');
+        detailPanels.forEach((panel) => panel.classList.remove('show'));
+        detailButtons.forEach((item) => item.classList.remove('dark'));
+        if (shouldShow) {
+          target.classList.add('show');
+          button.classList.add('dark');
+        }
+      });
+    });
+
+    periodButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        periodButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        periodLabel.textContent = button.dataset.period;
+        backtestResult.classList.add('show');
+      });
+    });
+
+    demoAmountButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        demoAmountButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        demoAmountLabel.textContent = button.dataset.demoAmount;
+        demoSetupAmountLabel.textContent = button.dataset.demoAmount;
+        demoStartBlock.classList.add('show');
+        demoAiSetupBlock.classList.remove('show');
+        demoRiskBlock.classList.remove('show');
+        demoConfirmBlock.classList.remove('show');
+        demoStatusBlock.classList.remove('show');
+        demoCompleteBlock.classList.remove('show');
+      });
+    });
+
+    demoAiSetupButton?.addEventListener('click', () => {
+      demoAiSetupBlock.classList.add('show');
+      demoRiskBlock.classList.remove('show');
+      demoConfirmBlock.classList.remove('show');
+      demoStatusBlock.classList.remove('show');
+      demoCompleteBlock.classList.remove('show');
+    });
+
+    demoRiskButton?.addEventListener('click', () => {
+      demoAiSetupBlock.classList.add('show');
+      demoRiskBlock.classList.add('show');
+      demoConfirmBlock.classList.remove('show');
+      demoStatusBlock.classList.remove('show');
+      demoCompleteBlock.classList.remove('show');
+    });
+
+    demoConfirmButton?.addEventListener('click', () => {
+      demoConfirmBlock.classList.add('show');
+      demoStatusBlock.classList.remove('show');
+      demoCompleteBlock.classList.remove('show');
+    });
+
+    demoStartButton?.addEventListener('click', () => {
+      demoStatusBlock.classList.add('show');
+      demoCompleteBlock.classList.remove('show');
+      window.setTimeout(() => {
+        demoCompleteBlock.classList.add('show');
+      }, 700);
+    });
+
+    liveAmountButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        liveAmountButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        liveAmountLabel.textContent = button.dataset.liveAmount;
+        liveSetupAmountLabel.textContent = button.dataset.liveAmount;
+        liveAmountBlock.classList.add('show');
+        liveAiSetupBlock.classList.remove('show');
+        liveRiskBlock.classList.remove('show');
+        liveConfirmBlock.classList.remove('show');
+        liveAppliedBlock.classList.remove('show');
+      });
+    });
+
+    liveAiSetupButton?.addEventListener('click', () => {
+      liveAmountBlock.classList.add('show');
+      liveAiSetupBlock.classList.add('show');
+      liveRiskBlock.classList.remove('show');
+      liveConfirmBlock.classList.remove('show');
+      liveAppliedBlock.classList.remove('show');
+    });
+
+    liveRiskButton?.addEventListener('click', () => {
+      liveAmountBlock.classList.add('show');
+      liveRiskBlock.classList.add('show');
+      liveAiSetupBlock.classList.add('show');
+      liveConfirmBlock.classList.remove('show');
+      liveAppliedBlock.classList.remove('show');
+    });
+
+    liveConfirmButton?.addEventListener('click', () => {
+      liveConfirmBlock.classList.add('show');
+      liveAppliedBlock.classList.remove('show');
+    });
+
+    liveStartButton?.addEventListener('click', () => {
+      liveAppliedBlock.classList.add('show');
+    });
+  </script>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

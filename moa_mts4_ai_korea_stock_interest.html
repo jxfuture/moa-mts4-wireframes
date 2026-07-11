@@ -1,0 +1,509 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA AI - 국내 주식 AI 관심 종목</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --orange: #b76b00;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title { font-size: 34px; font-weight: 800; letter-spacing: 0; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title { text-align: center; font-size: 16px; font-weight: 800; line-height: 18px; }
+    .app-subtitle { color: var(--muted); font-size: 10px; font-weight: 400; }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 128px;
+      overflow-y: auto;
+      padding-bottom: 14px;
+    }
+
+    .bubble {
+      max-width: 88%;
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .bubble.user {
+      margin-left: auto;
+      background: var(--ink);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble.ai {
+      background: #f4f4f4;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 4px;
+    }
+
+    .card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f1f1f1;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .badge {
+      border: 1px solid #aaa;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: white;
+      color: #555;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.green {
+      border-color: #b8ddc3;
+      color: var(--green);
+      background: #f3fbf5;
+    }
+
+    .badge.orange {
+      border-color: #f1d19b;
+      color: var(--orange);
+      background: #fff8ea;
+    }
+
+    .card-body {
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .quote {
+      border: 1px solid #cfe2d5;
+      border-radius: 10px;
+      background: #f3fbf5;
+      padding: 10px;
+      color: #1f6b40;
+      font-weight: 800;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .metric {
+      min-height: 62px;
+      border: 1px solid #e6e6e6;
+      border-radius: 9px;
+      background: #fafafa;
+      padding: 9px;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .metric b {
+      display: block;
+      margin-top: 4px;
+      font-size: 15px;
+      line-height: 18px;
+    }
+
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .orange { color: var(--orange); }
+
+    .reason-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .reason {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 8px;
+      padding: 8px 0;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .reason:first-child { border-top: 0; }
+    .reason b { color: #555; }
+
+    .risk-card {
+      margin-top: 12px;
+      border: 1px solid #f1d19b;
+      border-radius: 12px;
+      background: #fff8ea;
+      overflow: hidden;
+    }
+
+    .risk-card .card-head {
+      background: #fff3d8;
+      border-color: #f1d19b;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 42px;
+      border: 1px solid #aaa;
+      border-radius: 9px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 16px;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .button.green {
+      border-color: #b8ddc3;
+      color: var(--green);
+      background: #f3fbf5;
+    }
+
+    .chatbar {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 72px;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .mic,
+    .send {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      background: white;
+    }
+
+    .send {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .chat-input {
+      height: 36px;
+      border: 1px solid #c9c9c9;
+      border-radius: 9px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 620px;
+      top: 210px;
+      width: 560px;
+      border-left: 3px solid var(--blue);
+      padding-left: 24px;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+    }
+
+    .panel-row {
+      margin: 12px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .panel-row b {
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA AI - 국내 주식 AI 관심 종목</div>
+    <div class="subtitle">국내 주식 화면에서 AI 보기 클릭 시 나오는 종목별 AI 리포트 샘플 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_market_korea_stocks.html">&larr;</a>
+          <div class="app-title">
+            MOA AI
+            <div class="app-subtitle">삼성전자 AI 관심 종목</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <div class="bubble user">삼성전자 AI 보기</div>
+          <div class="bubble ai">
+            삼성전자는 AI 관심 종목입니다. 다만 지금은 포트폴리오 안의 반도체 비중이 이미 높아서, 큰 금액으로 바로 들어가기보다 소액 관찰 또는 대체 후보 비교를 먼저 권합니다.
+          </div>
+
+          <section class="card">
+            <div class="card-head">
+              <span>삼성전자(005930)</span>
+              <span class="badge orange">관찰 우선</span>
+            </div>
+            <div class="card-body">
+              <div class="quote">AI 판단: 관심은 유지하되, 신규 추가 매수는 작게 시작하는 편이 좋습니다.</div>
+              <div class="metric-grid">
+                <div class="metric">현재가<b>73,400원</b><span class="green">+1.10%</span></div>
+                <div class="metric">AI 점수<b>72 / 100</b><span>관심 유지</span></div>
+                <div class="metric">추천 행동<b class="orange">소액 관찰</b><span>10만원 이하</span></div>
+                <div class="metric">포트폴리오 영향<b class="orange">반도체 집중</b><span>확대 주의</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>AI가 관심 종목으로 본 이유</span>
+              <span class="badge green">요약</span>
+            </div>
+            <div class="card-body">
+              <div class="reason-list">
+                <div class="reason"><b>실적</b><span>메모리 업황 회복 기대가 유지되고 있어 중기 관심 종목으로 남아 있습니다.</span></div>
+                <div class="reason"><b>수급</b><span>외국인 매수 강도는 약하지만 기관 순매수 전환 가능성이 관찰됩니다.</span></div>
+                <div class="reason"><b>가격</b><span>최근 반등 후 단기 저항 구간에 가까워 한 번에 크게 진입하기는 부담입니다.</span></div>
+                <div class="reason"><b>환율</b><span>원·달러 환율 상승은 수출주에 우호적일 수 있지만 변동성도 같이 커집니다.</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="risk-card">
+            <div class="card-head">
+              <span>내 포트폴리오 기준 체크</span>
+              <span class="badge orange">주의</span>
+            </div>
+            <div class="card-body">
+              현재 보유 포트폴리오에는 SK하이닉스 캐스케이드와 삼성전자 비중이 이미 들어가 있습니다. 삼성전자를 추가하면 반도체 비중이 더 커지므로, AI는 신규 추가 매수 보류 또는 소액 테스트를 우선 제안합니다.
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>무엇을 할까요?</span>
+              <span class="badge">선택</span>
+            </div>
+            <div class="card-body">
+              <div class="actions">
+                <a class="button dark" href="moa_mts4_ai_samsung_100k_confirm.html">10만원 이하로 진행</a>
+                <a class="button" href="moa_mts4_ai_samsung_monitoring_check.html">그래도 50만원 보기</a>
+                <a class="button green" href="moa_mts4_ai_alternative_candidates.html">대체 후보 비교</a>
+                <a class="button" href="moa_mts4_ai_chart_analysis.html">차트 분석</a>
+                <a class="button" href="moa_mts4_cascade_portfolio.html">포트폴리오 보기</a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <div class="chatbar">
+          <div class="mic">Mic</div>
+          <div class="chat-input">MOA AI에게 메시지 입력...</div>
+          <div class="send">↵</div>
+        </div>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item active" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - AI 관심 종목 리포트</div>
+    </section>
+
+    <aside class="panel">
+      <h2>AI 보기 클릭 시 나오는 내용</h2>
+      <div class="panel-row"><b>1. 왜 관심 종목인지</b><span>실적, 수급, 가격 위치, 환율처럼 투자자가 판단에 쓸 수 있는 근거를 짧게 보여줍니다.</span></div>
+      <div class="panel-row"><b>2. 내 포트폴리오와 충돌하는지</b><span>MOA AI가 이미 모니터링 중인 포트폴리오 상태를 확인해서, 반도체 비중 확대 같은 리스크를 먼저 안내합니다.</span></div>
+      <div class="panel-row"><b>3. 다음 행동</b><span>바로 주문, 소액으로 진행, 대체 후보 비교, 차트 분석, 포트폴리오 보기 중에서 사용자가 고를 수 있게 합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 데모 리워드 적립</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --yellow: #fbbf24;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fafafa; color: var(--ink); font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    .board { position: relative; width: 1600px; min-height: 1220px; padding: 48px 64px; }
+    .title { font-size: 34px; font-weight: 800; letter-spacing: 0; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+    .phone-wrap { position: absolute; left: 120px; top: 170px; width: var(--phone-w); }
+    .phone { position: relative; width: var(--phone-w); height: var(--phone-h); border: 3px solid var(--ink); border-radius: 28px; background: white; overflow: hidden; }
+    .notch { position: absolute; top: 7px; left: 174px; width: 82px; height: 13px; border: 1px solid var(--ink); border-radius: 8px; background: #fff; z-index: 4; }
+    .appbar { position: absolute; left: 0; right: 0; top: 0; height: 78px; padding: 30px 18px 12px; border-bottom: 1px solid var(--line); background: white; display: grid; grid-template-columns: 36px 1fr 36px; gap: 8px; align-items: center; z-index: 3; }
+    .icon-button { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
+    .app-title { text-align: center; font-size: 16px; font-weight: 800; line-height: 18px; }
+    .app-subtitle { color: var(--muted); font-size: 10px; font-weight: 400; }
+    .content { position: absolute; left: 18px; right: 18px; top: 94px; bottom: 72px; overflow-y: auto; padding-bottom: 16px; scrollbar-width: none; }
+    .content::-webkit-scrollbar { display: none; }
+    .success { border: 1px solid #b7dfc1; border-radius: 16px; background: #f3fbf5; padding: 18px 14px; text-align: center; }
+    .success-icon { width: 54px; height: 54px; border-radius: 50%; background: var(--green); color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 26px; font-weight: 900; }
+    .success h2 { margin: 0; font-size: 21px; line-height: 28px; }
+    .success p { margin: 8px 0 0; color: #355a3e; font-size: 12px; line-height: 18px; font-weight: 700; }
+    .reward-card, .order-card, .next-card { border: 1px solid var(--line); border-radius: 12px; background: white; margin-top: 12px; overflow: hidden; }
+    .reward-card { padding: 14px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; background: #fff8e7; border-color: #f1d592; }
+    .reward-card strong { display: block; font-size: 14px; line-height: 19px; }
+    .reward-card span { color: #6c4a12; font-size: 11px; line-height: 16px; font-weight: 700; }
+    .reward-point { color: var(--green); font-size: 24px; font-weight: 900; }
+    .section-head { padding: 10px 12px; border-bottom: 1px solid var(--line); background: #f4f4f4; font-size: 13px; font-weight: 900; }
+    .rows { padding: 6px 12px; }
+    .row { display: grid; grid-template-columns: 128px 1fr; gap: 8px; padding: 8px 0; border-bottom: 1px solid #eeeeee; font-size: 12px; line-height: 17px; }
+    .row:last-child { border-bottom: 0; }
+    .row b { color: var(--muted); }
+    .next-card { padding: 12px; }
+    .next-title { font-size: 14px; font-weight: 900; }
+    .next-copy { margin-top: 4px; color: var(--muted); font-size: 11px; line-height: 16px; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .button { min-height: 42px; border: 1px solid #aaa; border-radius: 10px; background: white; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 10px; font-size: 12px; font-weight: 900; }
+    .button.dark { background: var(--ink); color: white; border-color: var(--ink); }
+    .button.full { grid-column: 1 / -1; }
+    .bottom-nav { position: absolute; left: 0; right: 0; bottom: 0; height: 62px; border-top: 1px solid var(--line); background: white; display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; text-align: center; font-size: 10px; color: var(--muted); z-index: 4; }
+    .nav-item { display: grid; gap: 4px; justify-items: center; }
+    .nav-icon { width: 22px; height: 18px; border: 1px solid currentColor; border-radius: 4px; }
+    .nav-item.active { color: var(--blue); font-weight: 800; }
+    .caption { margin-top: 18px; text-align: center; color: var(--muted); font-size: 14px; font-weight: 800; }
+    .panel { position: absolute; left: 620px; top: 210px; width: 560px; border-left: 3px solid var(--blue); padding-left: 24px; font-size: 14px; line-height: 22px; }
+    .panel h2 { margin: 0 0 16px; font-size: 22px; }
+    .panel-row { margin: 12px 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .panel-row b { display: block; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 데모 주문 리워드 적립</div>
+    <div class="subtitle">데모 주문 완료 후 마이닝 포인트가 자동 적립되는 결과 화면 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_demo_market.html">&larr;</a>
+          <div class="app-title">데모 주문 완료<div class="app-subtitle">리워드 자동 적립</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="success">
+            <div class="success-icon">✓</div>
+            <h2>데모 주문이 완료됐어요</h2>
+            <p>실제 자금은 사용되지 않았고, 주문 완료 리워드가 자동 적립되었습니다.</p>
+          </section>
+
+          <section class="reward-card">
+            <div>
+              <strong>마이닝 포인트 적립</strong>
+              <span>데모 거래 1회 완료</span>
+            </div>
+            <div class="reward-point">+1원</div>
+          </section>
+
+          <section class="order-card">
+            <div class="section-head">데모 주문 내역</div>
+            <div class="rows">
+              <div class="row"><b>종목</b><span>삼성전자 (005930)</span></div>
+              <div class="row"><b>주문 방식</b><span>현재가 데모 주문</span></div>
+              <div class="row"><b>투자 금액</b><span>1,000,000원</span></div>
+              <div class="row"><b>체결가</b><span>73,400원</span></div>
+              <div class="row"><b>누적 포인트</b><span>1원</span></div>
+            </div>
+          </section>
+
+          <section class="next-card">
+            <div class="next-title">다음에 무엇을 해볼까요?</div>
+            <div class="next-copy">데모 거래를 반복하면 주문 경험과 리워드가 함께 쌓입니다.</div>
+            <div class="actions">
+              <a class="button dark" href="moa_mts4_demo_market.html">데모 거래 계속하기</a>
+              <a class="button" href="moa_mts4_investment_mining.html">리워드 보기</a>
+              <a class="button full" href="moa_mts4_home_wireframe.html">홈으로</a>
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - 데모 주문 리워드 적립</div>
+    </section>
+
+    <aside class="panel">
+      <h2>명세 반영</h2>
+      <div class="panel-row"><b>트리거</b><span>데모 모드에서 주문 완료 시 현재 사용자에게 +1원 적립</span></div>
+      <div class="panel-row"><b>상태</b><span>누적 포인트는 데모 모드 상태에서 실시간 위젯과 결과 화면에 표시</span></div>
+      <div class="panel-row"><b>범위</b><span>서버 저장, 출금, 포인트 사용은 향후 개발 항목으로 분리</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

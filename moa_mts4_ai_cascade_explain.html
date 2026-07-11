@@ -1,0 +1,757 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA AI - 캐스케이드 설명</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --orange: #b76b00;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title { font-size: 34px; font-weight: 800; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+    .phone-wrap { position: absolute; left: 120px; top: 170px; width: var(--phone-w); }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title { text-align: center; font-size: 16px; font-weight: 800; line-height: 18px; }
+    .app-subtitle { color: var(--muted); font-size: 10px; font-weight: 400; }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 128px;
+      overflow-y: auto;
+      padding-bottom: 14px;
+    }
+
+    .bubble {
+      max-width: 88%;
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: 12px;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .bubble.user {
+      margin-left: auto;
+      background: var(--ink);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .bubble.ai {
+      background: #f4f4f4;
+      border: 1px solid var(--line);
+      border-bottom-left-radius: 4px;
+    }
+
+    .card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 10px 12px;
+      background: #f1f1f1;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .badge {
+      border: 1px solid #b8ddc3;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: var(--green);
+      background: #f3fbf5;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .card-body {
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .simple {
+      border: 1px solid #b8ddc3;
+      border-radius: 10px;
+      background: #f3fbf5;
+      color: #4d6b53;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .problem {
+      border: 1px solid #ededed;
+      border-radius: 10px;
+      padding: 9px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .problem b {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .core-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .core-item {
+      border: 1px solid #ededed;
+      border-radius: 10px;
+      padding: 9px;
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      align-items: start;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid #b8ddc3;
+      color: var(--green);
+      background: #f3fbf5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .core-item b {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 12px;
+    }
+
+    .formula {
+      margin-top: 10px;
+      border: 1px solid #d8d8d8;
+      border-radius: 10px;
+      background: #fafafa;
+      padding: 10px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 16px;
+      font-weight: 800;
+    }
+
+    .mobile-diagram {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .diagram-panel {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .diagram-title {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .diagram-tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 7px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .mini-chart {
+      display: block;
+      width: 100%;
+      height: 128px;
+      border: 1px solid #ededed;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+
+    .capital-strip {
+      margin-top: 7px;
+      border: 1px solid #d8d8d8;
+      border-radius: 8px;
+      background: #f5f5f5;
+      padding: 7px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .capital-strip b {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .capital-bar {
+      height: 14px;
+      border: 1px solid #aaa;
+      border-radius: 999px;
+      background: repeating-linear-gradient(90deg, #e6e6e6 0, #e6e6e6 12px, #d4d4d4 12px, #d4d4d4 24px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .capital-bar.growing::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 82%;
+      background: linear-gradient(90deg, #f0f0f0, #9c9c9c);
+    }
+
+    .diagram-caption {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .compare-box {
+      border: 1px solid #ededed;
+      border-radius: 10px;
+      padding: 9px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 15px;
+    }
+
+    .compare-box b {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .flow {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .step {
+      border: 1px solid #ededed;
+      border-radius: 10px;
+      padding: 9px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+
+    .num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .step b {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 12px;
+    }
+
+    .example-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .example {
+      border: 1px solid #ededed;
+      border-radius: 10px;
+      padding: 9px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .example b {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .example .green { color: var(--green); }
+    .example .red { color: var(--red); }
+
+    .warning {
+      margin-top: 10px;
+      border: 1px solid #f1d19b;
+      border-radius: 10px;
+      background: #fff8ea;
+      color: #6c4a12;
+      padding: 10px;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .button.full { grid-column: 1 / -1; }
+
+    .chat-area {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 62px;
+      min-height: 82px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      background: white;
+      z-index: 2;
+    }
+
+    .chat-hint {
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .chat-row {
+      display: grid;
+      grid-template-columns: 36px 1fr 42px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .input {
+      height: 40px;
+      border: 1px solid #c9c9c9;
+      border-radius: 10px;
+      background: white;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      font-size: 11px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item { display: grid; gap: 4px; justify-items: center; }
+    .nav-icon { width: 22px; height: 18px; border: 1px solid currentColor; border-radius: 4px; }
+    .nav-item.active { color: var(--blue); font-weight: 800; }
+    .caption { margin-top: 18px; text-align: center; color: var(--muted); font-size: 14px; font-weight: 800; }
+
+    .panel {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 460px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 { margin: 0 0 12px; font-size: 18px; }
+    .panel-row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA AI - 캐스케이드가 뭐야</div>
+    <div class="subtitle">홈 빠른 질문에서 캐스케이드 개념을 쉽게 설명하는 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_home_wireframe.html">&larr;</a>
+          <div class="app-title">
+            MOA AI
+            <div class="app-subtitle">캐스케이드 설명</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <div class="bubble user">캐스케이드가 뭐야</div>
+          <div class="bubble ai">
+            캐스케이드는 사용자가 혼자 정하기 어려운 진입, 자본 배분, 수익 보전, 청산, 결산 기준을 MOA가 구조화해주는 코어 자본 배분 시스템입니다.
+          </div>
+
+          <section class="card">
+            <div class="card-head">
+              <span>MOA가 캐스케이드를 만든 이유</span>
+              <span class="badge">문제</span>
+            </div>
+            <div class="card-body">
+              <div class="simple">
+                투자자는 종목을 고른 뒤에도 언제 들어갈지, 얼마를 넣을지, 얼마를 남길지, 언제 일부 정리할지, 언제 결산할지 계속 판단해야 합니다. 이 복잡함 때문에 좋은 기회가 있어도 실행이 어렵습니다.
+              </div>
+              <div class="problem-grid">
+                <div class="problem"><b>진입</b>지금 들어갈까, 더 기다릴까?</div>
+                <div class="problem"><b>한도</b>총 얼마까지 쓸까?</div>
+                <div class="problem"><b>배분</b>처음에 얼마 넣고 얼마를 남길까?</div>
+                <div class="problem"><b>수익 보전</b>얼마나 팔고 얼마나 남길까?</div>
+                <div class="problem"><b>청산</b>언제 멈추고 정리할까?</div>
+                <div class="problem"><b>결산</b>수익을 언제 확정할까?</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>캐스케이드가 해주는 것</span>
+              <span class="badge">코어 시스템</span>
+            </div>
+            <div class="card-body">
+              <div class="core-list">
+                <div class="core-item">
+                  <div class="check">✓</div>
+                  <div><b>자본 배분 설계</b>한 번에 전부 넣지 않고 최초 투입금, 남겨둘 현금, 추가 투입 한도를 나눕니다.</div>
+                </div>
+                <div class="core-item">
+                  <div class="check">✓</div>
+                  <div><b>진입과 추가 투입 기준</b>가격 변동성, 구간 간격, 투자 한도를 기준으로 어디서 더 넣을지 정합니다.</div>
+                </div>
+                <div class="core-item">
+                  <div class="check">✓</div>
+                  <div><b>진입가 낮추기</b>가격이 내려갈 때 남겨둔 한도를 나누어 투입해 평균 진입가를 낮춥니다.</div>
+                </div>
+                <div class="core-item">
+                  <div class="check">✓</div>
+                  <div><b>수익 보존 기준</b>가격이 올라갈 때 어느 구간에서 일부를 정리해 수익을 보존할지 정합니다.</div>
+                </div>
+                <div class="core-item">
+                  <div class="check">✓</div>
+                  <div><b>청산과 결산 기준</b>언제 멈추고, 언제 정리하고, 현재까지의 성과를 어떻게 볼지 구조화합니다.</div>
+                </div>
+              </div>
+              <div class="formula">매수/매도 버튼 사이에 추가되는 세 번째 행동: 자본 배분</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>수익이 나는 방식</span>
+              <span class="badge">재배분</span>
+            </div>
+            <div class="card-body">
+              <div class="mobile-diagram" aria-label="일반 주문과 캐스케이드 수익 구조 비교">
+                <section class="diagram-panel">
+                  <div class="diagram-title">
+                    <span>일반 주문</span>
+                    <span class="diagram-tag">자금 고정</span>
+                  </div>
+                  <svg class="mini-chart" viewBox="0 0 360 128" role="img" aria-label="일반 주문 가격과 자본 흐름">
+                    <line x1="24" y1="104" x2="338" y2="104" stroke="#999" stroke-dasharray="5 5" />
+                    <line x1="24" y1="18" x2="24" y2="112" stroke="#777" />
+                    <line x1="18" y1="104" x2="344" y2="104" stroke="#777" />
+                    <polyline points="42,104 78,78 112,88 150,56 184,78 220,35 250,70 284,86 320,104" fill="none" stroke="#222" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                    <text x="28" y="17" fill="#555" font-size="11" font-weight="700">가격</text>
+                    <text x="278" y="121" fill="#555" font-size="11" font-weight="700">시간</text>
+                    <text x="42" y="99" fill="#555" font-size="10">원점</text>
+                    <text x="177" y="22" fill="#222" font-size="12" font-weight="700">한 번 진입</text>
+                  </svg>
+                  <div class="capital-strip">
+                    <div>
+                      <div class="capital-bar"></div>
+                      <b>자본이 포지션 안에 고정</b>
+                    </div>
+                    <span>대기</span>
+                  </div>
+                  <div class="diagram-caption">가격이 올랐다가 원점으로 돌아오면 중간 경로의 수익을 놓칠 수 있습니다.</div>
+                </section>
+
+                <section class="diagram-panel">
+                  <div class="diagram-title">
+                    <span>MOA 캐스케이드</span>
+                    <span class="diagram-tag">자본 재배분</span>
+                  </div>
+                  <svg class="mini-chart" viewBox="0 0 360 128" role="img" aria-label="캐스케이드 가격과 자본 재배분 흐름">
+                    <line x1="24" y1="104" x2="338" y2="104" stroke="#999" stroke-dasharray="5 5" />
+                    <line x1="24" y1="18" x2="24" y2="112" stroke="#777" />
+                    <line x1="18" y1="104" x2="344" y2="104" stroke="#777" />
+                    <polyline points="42,104 72,76 102,92 132,58 162,84 198,40 230,78 260,62 292,88 324,104" fill="none" stroke="#222" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                    <circle cx="102" cy="92" r="10" fill="#fff" stroke="#222" stroke-width="3" />
+                    <circle cx="162" cy="84" r="10" fill="#fff" stroke="#222" stroke-width="3" />
+                    <circle cx="292" cy="88" r="10" fill="#fff" stroke="#222" stroke-width="3" />
+                    <circle cx="72" cy="76" r="10" fill="#222" />
+                    <circle cx="132" cy="58" r="10" fill="#222" />
+                    <circle cx="198" cy="40" r="10" fill="#222" />
+                    <circle cx="260" cy="62" r="10" fill="#222" />
+                    <text x="98" y="96" fill="#222" font-size="11" font-weight="800">B</text>
+                    <text x="158" y="88" fill="#222" font-size="11" font-weight="800">B</text>
+                    <text x="288" y="92" fill="#222" font-size="11" font-weight="800">B</text>
+                    <text x="68" y="80" fill="#fff" font-size="11" font-weight="800">S</text>
+                    <text x="128" y="62" fill="#fff" font-size="11" font-weight="800">S</text>
+                    <text x="194" y="44" fill="#fff" font-size="11" font-weight="800">S</text>
+                    <text x="256" y="66" fill="#fff" font-size="11" font-weight="800">S</text>
+                    <text x="28" y="17" fill="#555" font-size="11" font-weight="700">가격</text>
+                    <text x="278" y="121" fill="#555" font-size="11" font-weight="700">시간</text>
+                    <text x="42" y="99" fill="#555" font-size="10">원점</text>
+                  </svg>
+                  <div class="capital-strip">
+                    <div>
+                      <div class="capital-bar growing"></div>
+                      <b>파동마다 수익 보전 + 재투입</b>
+                    </div>
+                    <span>축적</span>
+                  </div>
+                  <div class="diagram-caption">낮은 구간에서 모으고 높은 구간에서 일부 보전합니다. 가격이 횡보해도 자본은 계속 움직입니다.</div>
+                </section>
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">
+              <span>한도 분산 예시</span>
+              <span class="badge">150만원</span>
+            </div>
+            <div class="card-body">
+              <div class="example-grid">
+                <div class="example">일반 주문<b>150만원 즉시 노출</b></div>
+                <div class="example">캐스케이드<b>100만원 시작</b></div>
+                <div class="example">남은 한도<b class="green">50만원 대기</b></div>
+                <div class="example">가격 변동 시<b class="green">나누어 투입</b></div>
+              </div>
+              <div class="warning">
+                캐스케이드는 투자 한도를 처음부터 100% 쓰는 것이 아니라, 시장 움직임에 맞춰 나누어 사용하게 만드는 구조입니다. 그래서 사용자는 복잡한 판단을 혼자 하지 않고, 시스템이 제안한 자본 배분 구조를 확인한 뒤 실행할 수 있습니다.
+              </div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">무엇을 해볼까요?</div>
+            <div class="card-body">
+              <div class="actions">
+                <a class="button dark full" href="moa_mts4_ai_cascade_example_answer.html">설정 예시 보기</a>
+                <a class="button full" href="moa_mts4_ai_cascade_stock_select.html">캐스케이드 시작하기</a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <section class="chat-area">
+          <div class="chat-hint">추가 질문 가능 · “손실은 어떻게 막아?”, “얼마부터 시작하면 돼?”처럼 말할 수 있습니다.</div>
+          <div class="chat-row">
+            <div class="icon-button" title="음성으로 말하기">Mic</div>
+            <div class="input">MOA AI에게 메시지 보내기</div>
+            <div class="icon-button" style="background:#222;color:white;">↑</div>
+          </div>
+        </section>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 캐스케이드 설명</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>처음 보는 사용자가 캐스케이드의 의미와 동작 방식을 바로 이해하게 합니다.</span></div>
+      <div class="panel-row"><b>구성</b><span>한 줄 설명, 수익 구조, 한도 분산, 1% 예시, 시작하기 버튼으로 구성합니다.</span></div>
+      <div class="panel-row"><b>다음</b><span>설정 예시 보기는 예시 화면으로, 캐스케이드 시작하기는 종목 선택 화면으로 연결합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

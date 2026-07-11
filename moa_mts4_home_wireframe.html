@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 홈 화면 와이어프레임</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d5d5d5;
+      --soft: #f3f4f6;
+      --panel: #ffffff;
+      --blue: #3b66d6;
+      --red: #f87171;
+      --nyse: #60a5fa;
+      --fx: #fbbf24;
+      --metal: #a78bfa;
+      --crypto: #34d399;
+      --futures: #22d3ee;
+      --green: #2ead65;
+      --orange: #f59e0b;
+      --purple: #8b5cf6;
+      --phone-w: 430px;
+      --phone-h: 1100px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1420px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      padding: 22px 18px 78px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1fr 36px 36px;
+      gap: 8px;
+      align-items: center;
+      padding-top: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: #111;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .brand-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .status-bar {
+      margin-top: 12px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+      font-size: 9px;
+    }
+
+    .market-pill {
+      min-height: 34px;
+      border: 1px solid #d8d8d8;
+      border-radius: 6px;
+      background: white;
+      padding: 5px 4px;
+      line-height: 11px;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 4px;
+      background: var(--green);
+    }
+
+    .dot.yellow { background: #eab308; }
+    .dot.gray { background: #a3a3a3; }
+    .dot.orange { background: var(--orange); }
+
+    .home-scroll {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 138px;
+      bottom: 62px;
+      overflow-y: auto;
+      padding-bottom: 18px;
+      scrollbar-width: none;
+    }
+
+    .home-scroll::-webkit-scrollbar { display: none; }
+
+    .section {
+      margin-top: 12px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .small-link {
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .ai-widget {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f6f7f8;
+      padding: 12px;
+    }
+
+    .ai-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .bot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .ai-title {
+      font-weight: 800;
+      font-size: 14px;
+      line-height: 16px;
+    }
+
+    .typing {
+      margin-left: auto;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 9px;
+    }
+
+    .chip {
+      min-height: 31px;
+      border: 1px solid #bdbdbd;
+      border-radius: 7px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      line-height: 14px;
+      font-weight: 700;
+      text-align: center;
+      padding: 4px 6px;
+    }
+
+    .chip.wide {
+      grid-column: 1 / -1;
+    }
+
+    .message-row {
+      display: grid;
+      grid-template-columns: 30px 1fr 30px;
+      gap: 6px;
+    }
+
+    .input {
+      height: 31px;
+      border: 1px solid #c9c9c9;
+      border-radius: 7px;
+      background: white;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      padding-left: 9px;
+      font-size: 10px;
+    }
+
+    .demo-ai-input {
+      width: 100%;
+      display: block;
+      outline: none;
+      font-family: inherit;
+      font-weight: 700;
+    }
+
+    .demo-ai-input::placeholder {
+      color: #aaa;
+    }
+
+    .demo-ai-button {
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .fake-ai-response {
+      display: none;
+      margin-top: 10px;
+      border: 1px solid #cddbf6;
+      border-radius: 10px;
+      background: #fff;
+      overflow: hidden;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .fake-ai-response.show {
+      display: block;
+    }
+
+    .fake-ai-question {
+      background: #222;
+      color: white;
+      padding: 9px 10px;
+      font-weight: 800;
+    }
+
+    .fake-ai-answer {
+      padding: 10px;
+      color: #333;
+    }
+
+    .fake-ai-answer b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .fake-ai-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 0 10px 10px;
+    }
+
+    .fake-ai-actions a {
+      min-height: 30px;
+      border: 1px solid #bdbdbd;
+      border-radius: 8px;
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .fake-ai-actions a.dark {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: white;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .quick {
+      min-height: 58px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      padding: 8px;
+      display: grid;
+      align-content: center;
+      gap: 5px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .quick-order-card {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .quick-order-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .quick-order-title span:last-child {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    .quick-order-row {
+      display: grid;
+      grid-template-columns: 1fr 34px;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .quick-order-input {
+      height: 34px;
+      border: 1px solid #c9c9c9;
+      border-radius: 8px;
+      background: var(--soft);
+      color: #888;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 11px;
+    }
+
+    .quick-order-submit {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: var(--ink);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .quick-order-examples {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .quick-order-chip {
+      min-width: 0;
+      border: 1px solid #d8d8d8;
+      border-radius: 999px;
+      background: #fafafa;
+      padding: 5px 8px;
+      color: #555;
+      font-size: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .color-line {
+      height: 4px;
+      border-radius: 4px;
+      background: var(--red);
+    }
+
+    .picks {
+      display: grid;
+      gap: 6px;
+    }
+
+    .pick {
+      height: 54px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .pick strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .spark {
+      width: 72px;
+      height: 28px;
+      border-bottom: 1px solid #aaa;
+      border-left: 1px solid #aaa;
+      position: relative;
+    }
+
+    .spark::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 15px;
+      width: 58px;
+      height: 2px;
+      background: var(--green);
+      transform: rotate(-10deg);
+    }
+
+    .banner {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #f7f7f7;
+      padding: 12px;
+      font-size: 11px;
+      line-height: 17px;
+    }
+
+    .banner-title {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .banner-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .button {
+      min-height: 32px;
+      border: 1px solid #9d9d9d;
+      border-radius: 7px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .button.blue {
+      background: var(--blue);
+      color: white;
+      border-color: var(--blue);
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .drawer {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 360px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+      box-shadow: 0 8px 0 rgba(0,0,0,.05);
+    }
+
+    .drawer h2, .state-panel h2, .flow-panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .drawer-row {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 10px;
+      padding: 9px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+    }
+
+    .drawer-row:first-of-type { border-top: 0; }
+    .drawer-row b { color: #555; }
+
+    .state-panel {
+      position: absolute;
+      left: 1030px;
+      top: 200px;
+      width: 410px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .state-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 18px;
+      background: #f7f7f7;
+    }
+
+    .flow-panel {
+      position: absolute;
+      left: 630px;
+      top: 680px;
+      width: 810px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .flow {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 86px;
+      font-size: 12px;
+      line-height: 18px;
+      background: #fff;
+    }
+
+    .flow strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .annotation {
+      position: absolute;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .line {
+      position: absolute;
+      height: 0;
+      border-top: 3px solid var(--blue);
+    }
+
+    .line::after {
+      content: "";
+      position: absolute;
+      right: -2px;
+      top: -8px;
+      border-left: 12px solid var(--blue);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 홈 화면 와이어프레임</div>
+    <div class="subtitle">홈페이지 기능 명세서 기반 | 편집 원본 HTML | v4.0.0 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <header class="header">
+            <div class="brand">
+              <div class="logo">MOA</div>
+              <div>
+                <div class="brand-title">MOA MTS4</div>
+                <div class="brand-subtitle">4세대 멀티에셋 트레이딩</div>
+              </div>
+            </div>
+            <div class="icon-button">!</div>
+            <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+          </header>
+
+          <div class="status-bar">
+            <div class="market-pill"><span class="dot"></span>KRX<br />개장 14:26</div>
+            <div class="market-pill"><span class="dot yellow"></span>NYSE<br />프리마켓</div>
+            <div class="market-pill"><span class="dot orange"></span>CRYPTO<br />24H</div>
+            <div class="market-pill"><span class="dot gray"></span>KST<br />13:58:20</div>
+          </div>
+
+          <div class="home-scroll">
+            <section class="ai-widget">
+              <div class="ai-top">
+                <div class="bot">AI</div>
+                <div>
+                  <div class="ai-title">MOA AI</div>
+                  <div class="brand-subtitle">무엇을 도와드릴까요?</div>
+                </div>
+                <div class="typing">응답 중...</div>
+              </div>
+              <div class="chips">
+                <a class="chip" href="moa_mts4_ai_fullscreen_wireframe.html">SK하이닉스 사고 싶어</a>
+                <a class="chip" href="moa_mts4_ai_samsung_500k_answer.html">삼성전자 50만원 투자할래</a>
+                <a class="chip" href="moa_mts4_ai_cascade_explain.html">캐스케이드가 뭐야</a>
+                <a class="chip" href="moa_mts4_ai_chart_analysis.html">원 달러 차트 분석해줘</a>
+                <a class="chip wide" href="moa_mts4_ai_kospi_intent.html">코스피에 1,000만 원 투자할 포트폴리오를 만들어줘</a>
+              </div>
+              <div class="message-row">
+                <button class="icon-button demo-ai-button" id="demoMicButton" type="button" style="width:30px;height:31px;">Mic</button>
+                <input class="input demo-ai-input" id="demoAiInput" type="text" placeholder="MOA AI에게 메시지 보내기" />
+                <button class="icon-button demo-ai-button" id="demoAiSend" type="button" style="width:30px;height:31px;background:#222;color:white;">↑</button>
+              </div>
+              <div class="fake-ai-response" id="fakeAiResponse">
+                <div class="fake-ai-question" id="fakeAiQuestion">삼성전자 지금 사도 돼?</div>
+                <div class="fake-ai-answer">
+                  <b>MOA AI</b>
+                  현재 포트폴리오에서 반도체 비중이 이미 높은 편입니다. 바로 크게 들어가기보다는 소액으로 시작하거나, 대체 후보와 비교한 뒤 결정하는 흐름을 추천합니다.
+                </div>
+                <div class="fake-ai-actions">
+                  <a class="dark" href="moa_mts4_ai_samsung_monitoring_check.html">AI 분석 보기</a>
+                  <a href="moa_mts4_cascade_portfolio.html">포트폴리오 보기</a>
+                </div>
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-head">빠른 접근</div>
+              <div class="quick-grid">
+                <a class="quick" href="moa_mts4_market_korea_stocks.html"><span>국내 주식</span><div class="color-line"></div></a>
+                <div class="quick"><span>해외 주식</span><div class="color-line" style="background:var(--nyse);"></div></div>
+                <div class="quick"><span>외환</span><div class="color-line" style="background:var(--fx);"></div></div>
+                <div class="quick"><span>귀금속</span><div class="color-line" style="background:var(--metal);"></div></div>
+                <div class="quick"><span>크립토</span><div class="color-line" style="background:var(--crypto);"></div></div>
+                <a class="quick" href="moa_mts4_cascade_setup_edit_all.html"><span>캐스케이드</span><div class="color-line" style="background:var(--blue);"></div></a>
+              </div>
+              <div class="quick-order-card">
+                <div class="quick-order-title">
+                  <span>빠른 주문</span>
+                  <span>검색 후 바로 주문</span>
+                </div>
+                <div class="quick-order-row">
+                  <a class="quick-order-input" href="moa_mts4_search_results_samsung.html">종목명 또는 코드 검색</a>
+                  <a class="quick-order-submit" href="moa_mts4_search_results_samsung.html">&#8617;</a>
+                </div>
+                <div class="quick-order-examples">
+                  <a class="quick-order-chip" href="moa_mts4_search_results_samsung.html">삼성전자</a>
+                  <a class="quick-order-chip" href="moa_mts4_stock_quick_order_samsung.html">SK하이닉스</a>
+                  <a class="quick-order-chip" href="moa_mts4_ai_chart_analysis.html">USD/KRW</a>
+                </div>
+              </div>
+            </section>
+
+            <section class="section">
+              <div class="section-head">
+                <span>AI 추천 종목</span>
+                <span class="small-link">전체 보기</span>
+              </div>
+              <div class="picks">
+                <a class="pick" href="moa_mts4_stock_quick_order_samsung.html">
+                  <div><strong>삼성전자</strong>국내 주식 · 73,400원 <span style="color:var(--green);">▲ 1.10%</span></div>
+                  <div class="spark"></div>
+                </a>
+                <a class="pick" href="moa_mts4_stock_quick_order_samsung.html">
+                  <div><strong>Apple (AAPL)</strong>해외 주식 · $189.30 <span style="color:var(--green);">▲ 1.15%</span></div>
+                  <div class="spark"></div>
+                </a>
+                <a class="pick" href="moa_mts4_stock_quick_order_samsung.html">
+                  <div><strong>USD/KRW</strong>외환 · 1,382.50원 <span style="color:#2563eb;">▼ 0.12%</span></div>
+                  <div class="spark"></div>
+                </a>
+              </div>
+            </section>
+
+            <section class="section banner">
+              <div class="banner-title">데모 거래하고 리워드도 받으세요</div>
+              <div>거래 1회 +1원 적립 · 친구 초대 +0.5원</div>
+              <div class="banner-actions">
+                <a class="button" href="moa_mts4_investment_mining.html">자세히</a>
+                <a class="button dark" href="moa_mts4_demo_market.html">무료 데모 계좌 실행</a>
+              </div>
+            </section>
+
+            <section class="section banner">
+              <div class="banner-title">AI 자동매매 만들기</div>
+              <div>말로 설명하면 AI가 자동매매 조건을 만들어줍니다.</div>
+              <div class="banner-actions">
+                <a class="button" href="moa_mts4_ai_strategy_intro.html">AI 자동매매란</a>
+                <a class="button blue" href="moa_mts4_ai_strategy_studio.html">AI 자동매매 페이지</a>
+              </div>
+            </section>
+
+            <section class="section banner">
+              <div class="banner-title">캐스케이드 실행 구조</div>
+              <div>1% 하락 → 추가 주문 · 30% 수익 → 단계 청산</div>
+              <div class="banner-actions">
+                <div class="button">시뮬레이션</div>
+                <div class="button dark">시작</div>
+              </div>
+            </section>
+          </div>
+
+          <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+        </div>
+      </div>
+      <div class="caption">SCREEN 1 · 홈 화면</div>
+    </section>
+
+    <div class="annotation" style="left:563px; top:290px;">메뉴 버튼 탭</div>
+    <div class="line" style="left:530px; top:304px; width:92px;"></div>
+
+    <aside class="drawer">
+      <h2>우측 드로어 메뉴</h2>
+      <div class="drawer-row"><b>계정</b><span>프로필 설정 → 계정 화면</span></div>
+      <div class="drawer-row"><b>계정</b><span>자산 → 포트폴리오 화면</span></div>
+      <div class="drawer-row"><b>계정</b><span>포트폴리오 → 포트폴리오 화면</span></div>
+      <div class="drawer-row"><b>트레이딩</b><span>캐스케이드 → 캐스케이드 메인</span></div>
+      <div class="drawer-row"><b>트레이딩</b><span>국내 시장 / 해외 시장 → 마켓 화면</span></div>
+      <div class="drawer-row"><b>차트</b><span><a href="moa_mts4_chart.html">고급 차트 → TradingView 차트 화면</a></span></div>
+      <div class="drawer-row"><b>AI 서비스</b><span>AI 추천 종목 / MOA AI 어시스턴트 → MOA AI 풀스크린</span></div>
+      <div class="drawer-row"><b>AI 서비스</b><span><a href="moa_mts4_ai_strategy_studio.html">AI 자동매매 → 자동매매 페이지</a></span></div>
+      <div class="drawer-row"><b>데모</b><span><a href="moa_mts4_demo_market.html">데모 거래 → 데모 모드 활성화 + 마켓 화면</a></span></div>
+      <div class="drawer-row"><b>데모</b><span><a href="moa_mts4_demo_portfolio.html">데모 포트폴리오 → 테스트 거래 내역 실시간 확인</a></span></div>
+    </aside>
+
+    <aside class="state-panel">
+      <h2>상태 및 보조 화면</h2>
+      <div class="state-card">
+        <b>알림 버튼</b><br />
+        현재는 버튼만 존재. 향후 알림 패널 연결 예정.
+      </div>
+      <div class="state-card">
+        <b>데모 모드 ON 배너</b><br />
+        DEMO 배지, 누적 마이닝 포인트, 라이브 전환, 데모 거래 시작하기, 데모 포트폴리오 확인, 라이브 계좌 개설 링크를 표시.
+      </div>
+      <div class="state-card">
+        <b>라이브 계좌 전환 다이얼로그</b><br />
+        누적 포인트, 혜택 3가지, 라이브 전환/데모 계속 진행 선택지를 하단 시트로 표시.
+      </div>
+      <div class="state-card">
+        <b>개인화</b><br />
+        최근 사용 종목이 있으면 첫 번째 AI 칩을 자동 교체. 빠른 칩은 길게 눌러 편집.
+      </div>
+    </aside>
+
+    <section class="flow-panel">
+      <h2>홈 화면 주요 진입 경로</h2>
+      <div class="flow-grid">
+        <div class="flow"><strong>MOA AI 풀스크린</strong>AI 위젯 탭, 칩 클릭, 입력 후 전송, 하단 MOA AI 탭</div>
+        <div class="flow"><strong>마켓 화면</strong>하단 탭, 드로어 메뉴, AI 추천 전체 보기, 데모 배너</div>
+        <div class="flow"><strong>차트 화면</strong>홈 샌드위치 메뉴 또는 각 화면의 고급 차트 버튼에서 진입</div>
+        <div class="flow"><strong>캐스케이드 메인</strong>하단 탭, 드로어 메뉴, 캐스케이드 소개 배너 시작</div>
+        <div class="flow"><strong>자산 카테고리</strong>빠른 접근 6개 버튼에서 각 카테고리 화면 진입</div>
+        <div class="flow"><strong>종목 상세</strong>AI 추천 종목 카드 탭으로 종목 상세 화면 이동</div>
+        <div class="flow"><strong>투자 마이닝</strong>데모 배너 자세히, 헤더 포인트 배지에서 진입</div>
+        <div class="flow"><strong>데모 포트폴리오</strong>샌드위치 메뉴의 데모 거래 진입 후 포트폴리오에서 테스트 내역 모니터링</div>
+        <div class="flow"><strong>AI 자동매매</strong>전체 메뉴에서 자동매매 페이지 진입, 사용법에서 설명 페이지 이동</div>
+        <div class="flow"><strong>포트폴리오</strong>하단 탭 또는 드로어 메뉴의 자산/포트폴리오 항목</div>
+        <div class="flow"><strong>실시간 데이터</strong>시세/등락률 30초 갱신, 시장 상태 30초 갱신, KST 1초 갱신</div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const demoAiInput = document.getElementById('demoAiInput');
+    const demoAiSend = document.getElementById('demoAiSend');
+    const demoMicButton = document.getElementById('demoMicButton');
+    const fakeAiResponse = document.getElementById('fakeAiResponse');
+    const fakeAiQuestion = document.getElementById('fakeAiQuestion');
+    const typingLabel = document.querySelector('.typing');
+
+    function showFakeAiResponse(source) {
+      const fallback = source === 'voice' ? '음성으로 삼성전자 지금 사도 되는지 물어봤어요' : '삼성전자 지금 사도 돼?';
+      const question = demoAiInput.value.trim() || fallback;
+      fakeAiQuestion.textContent = question;
+      if (typingLabel) typingLabel.textContent = '응답 완료';
+      fakeAiResponse.classList.add('show');
+      demoAiInput.value = '';
+    }
+
+    demoAiSend.addEventListener('click', () => showFakeAiResponse('text'));
+    demoMicButton.addEventListener('click', () => showFakeAiResponse('voice'));
+    demoAiInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        showFakeAiResponse('text');
+      }
+    });
+
+  </script>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

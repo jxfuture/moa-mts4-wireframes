@@ -1,0 +1,375 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA AI - Technical Indicator 설정</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 78px;
+      overflow-y: auto;
+      padding-bottom: 14px;
+    }
+
+    .note {
+      border: 1px solid #b8ddc3;
+      border-radius: 12px;
+      background: #f3fbf5;
+      color: #4d6b53;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .settings-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .setting-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .setting-item b {
+      display: block;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .setting-item span {
+      color: var(--muted);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .value {
+      border: 1px solid #d9d9d9;
+      border-radius: 999px;
+      background: #fafafa;
+      padding: 3px 7px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .adjust {
+      min-height: 26px;
+      border: 1px solid #9d9d9d;
+      border-radius: 8px;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 430px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA AI - Technical Indicator 설정</div>
+    <div class="subtitle">20개 기술적 지표의 Standard 설정값과 사용자 조절 진입점 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_ai_chart_analysis.html">&larr;</a>
+          <div class="app-title">
+            지표 설정
+            <div class="app-subtitle">Technical Indicators 20</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="note">
+            현재는 Standard 설정값을 사용합니다. 사용자가 원하면 각 지표의 기간, 기준선, 계산 방식, 표시 방식을 조절할 수 있습니다.
+          </section>
+
+          <section class="settings-list">
+            <div class="setting-item"><div><b>ADX</b><span>기간 14 · 추세 강도 25 기준</span></div><div class="controls"><span class="value">14/25</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Bollinger Band</b><span>기간 20 · 표준편차 2</span></div><div class="controls"><span class="value">20, 2</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>CCI</b><span>기간 20 · +100 / -100 기준</span></div><div class="controls"><span class="value">20</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>EMA12/26</b><span>EMA · 종가 기준 · 12/26 교차</span></div><div class="controls"><span class="value">12/26</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Ichimoku</b><span>전환 9 · 기준 26 · 선행 52</span></div><div class="controls"><span class="value">9/26/52</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>MA5/MA20</b><span>SMA · 종가 기준 · 5일/20일 교차</span></div><div class="controls"><span class="value">5/20</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>MA20</b><span>SMA · 종가 기준 · 20일선 기울기</span></div><div class="controls"><span class="value">20</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>MA60</b><span>SMA · 종가 기준 · 중기선</span></div><div class="controls"><span class="value">60</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>MACD</b><span>Fast 12 · Slow 26 · Signal 9</span></div><div class="controls"><span class="value">12/26/9</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>MFI</b><span>기간 14 · 과매수 80 · 과매도 20</span></div><div class="controls"><span class="value">14</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Momentum</b><span>기간 10 · 가격 속도</span></div><div class="controls"><span class="value">10</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>OBV</b><span>종가 방향과 거래량 누적</span></div><div class="controls"><span class="value">누적</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Parabolic SAR</b><span>Step 0.02 · Max 0.20</span></div><div class="controls"><span class="value">0.02/0.20</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Pivot S1</b><span>Classic · 일봉 기준 지지/저항</span></div><div class="controls"><span class="value">Daily</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>ROC</b><span>기간 12 · 변화율</span></div><div class="controls"><span class="value">12</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>RSI</b><span>기간 14 · 과매수 70 · 과매도 30</span></div><div class="controls"><span class="value">14</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Stochastic</b><span>K 14 · D 3 · Smooth 3 · 80/20 기준</span></div><div class="controls"><span class="value">14/3/3</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Volume</b><span>거래량 · 20일 평균 비교</span></div><div class="controls"><span class="value">20</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>VWAP</b><span>세션 기준 · Typical Price</span></div><div class="controls"><span class="value">Session</span><span class="adjust">조절</span></div></div>
+            <div class="setting-item"><div><b>Williams %R</b><span>기간 14 · -20 / -80 기준</span></div><div class="controls"><span class="value">14</span><span class="adjust">조절</span></div></div>
+          </section>
+
+          <div class="actions">
+            <div class="button dark">설정 저장</div>
+            <div class="button">Standard로 복원</div>
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 지표 설정</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>Technical Indicators 20의 Standard 설정값을 한 곳에서 확인하고 조절합니다.</span></div>
+      <div class="panel-row"><b>정렬</b><span>Buy/Sell/Neutral이 아니라 지표명을 알파벳 순으로 나열합니다.</span></div>
+      <div class="panel-row"><b>확장</b><span>조절 버튼을 누르면 기간, 기준선, 색상, 표시 여부를 바꿀 수 있습니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

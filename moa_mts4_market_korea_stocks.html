@@ -1,0 +1,496 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 국내 주식</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --orange: #b76b00;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 62px;
+      overflow-y: auto;
+      padding-bottom: 12px;
+    }
+
+    .search-card,
+    .market-card,
+    .section-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .search-card { margin-top: 0; padding: 12px; }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr 38px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .fake-input {
+      height: 38px;
+      border: 1px solid #c9c9c9;
+      border-radius: 9px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      min-height: 34px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 800;
+      background: #fafafa;
+    }
+
+    .card-head {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #f2f2f2;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .badge {
+      padding: 4px 7px;
+      border: 1px solid #aaa;
+      border-radius: 999px;
+      background: white;
+      color: #555;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .card-body {
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .index-box {
+      min-height: 64px;
+      border: 1px solid #e3e3e3;
+      border-radius: 9px;
+      padding: 9px;
+      background: #fafafa;
+      font-size: 10px;
+      line-height: 14px;
+    }
+
+    .index-box b {
+      display: block;
+      margin-top: 4px;
+      font-size: 16px;
+      line-height: 18px;
+    }
+
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .orange { color: var(--orange); }
+
+    .stock-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #eeeeee;
+      font-size: 11px;
+      line-height: 15px;
+    }
+
+    .stock-row:last-child { border-bottom: 0; }
+
+    .stock-row strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 2px;
+    }
+
+    .mini-action {
+      min-width: 58px;
+      min-height: 28px;
+      border: 1px solid #aaa;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      background: white;
+    }
+
+    .ai-note {
+      margin-top: 10px;
+      padding: 9px 10px;
+      border: 1px solid #e5e5e5;
+      border-radius: 9px;
+      background: #fafafa;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .button {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 9px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: #222;
+      color: white;
+      border-color: #222;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 620px;
+      top: 210px;
+      width: 540px;
+      border-left: 3px solid var(--blue);
+      padding-left: 24px;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+    }
+
+    .panel-row {
+      margin: 12px 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .panel-row b {
+      display: block;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 국내 주식</div>
+    <div class="subtitle">홈 빠른 접근에서 국내 주식을 눌렀을 때 나오는 마켓 화면 샘플 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_home_wireframe.html">&larr;</a>
+          <div class="app-title">
+            국내 주식
+            <div class="app-subtitle">KRX · 개장 14:26</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="search-card">
+            <div class="search-row">
+              <a class="fake-input" href="moa_mts4_search_results_samsung.html">종목명 또는 코드 검색</a>
+              <a class="icon-button" href="moa_mts4_search_results_samsung.html" style="width:38px;height:38px;background:#222;color:white;">&#8617;</a>
+            </div>
+            <div class="chips">
+              <a class="chip" href="moa_mts4_search_results_samsung.html">삼성전자</a>
+              <a class="chip" href="moa_mts4_ai_fullscreen_wireframe.html">SK하이닉스</a>
+              <a class="chip" href="moa_mts4_ai_chart_analysis.html">차트 분석</a>
+            </div>
+          </section>
+
+          <section class="market-card">
+            <div class="card-head">
+              <span>국내 시장 요약</span>
+              <span class="badge">실시간</span>
+            </div>
+            <div class="card-body">
+              <div class="index-grid">
+                <div class="index-box">KOSPI<b class="green">2,842.15 ▲ 0.64%</b></div>
+                <div class="index-box">KOSDAQ<b class="green">812.44 ▲ 0.38%</b></div>
+                <div class="index-box">거래대금<b>9.8조원</b></div>
+                <div class="index-box">시장 분위기<b class="orange">반도체 주도</b></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="card-head">
+              <span>AI 관심 종목</span>
+              <span class="badge">국내</span>
+            </div>
+            <div class="card-body">
+              <div class="stock-row">
+                <div><strong>삼성전자</strong>73,400원 · ▲ 1.10% · AI 추가 매수 보류 관찰</div>
+                <a class="mini-action" href="moa_mts4_stock_quick_order_samsung.html">주문하기</a>
+              </div>
+              <div class="stock-row">
+                <div><strong>SK하이닉스</strong>2,202,000원 · ▼ 6.02% · 변동성 확대</div>
+                <a class="mini-action" href="moa_mts4_stock_quick_order_samsung.html">주문하기</a>
+              </div>
+              <div class="stock-row">
+                <div><strong>현대차</strong>246,500원 · ▲ 0.72% · 환율 수혜 관찰</div>
+                <a class="mini-action" href="moa_mts4_stock_quick_order_samsung.html">주문하기</a>
+              </div>
+              <div class="stock-row">
+                <div><strong>NAVER</strong>194,800원 · ▼ 0.24% · 박스권 관찰</div>
+                <a class="mini-action" href="moa_mts4_stock_quick_order_samsung.html">주문하기</a>
+              </div>
+            </div>
+          </section>
+
+          <section class="section-card">
+            <div class="card-head">
+              <span>MOA AI 시장 판단</span>
+              <span class="badge">오늘</span>
+            </div>
+            <div class="card-body">
+              <div class="ai-note">
+                오늘 국내 주식은 반도체 대형주가 시장을 끌고 있지만, 이미 포트폴리오에 반도체 비중이 높다면 추가 진입은 조심하는 편이 좋습니다. 신규 진입은 한 번에 크게 들어가기보다 차트 확인 후 분할 접근이 적합합니다.
+              </div>
+              <div class="actions">
+                <a class="button dark" href="moa_mts4_ai_fullscreen_wireframe.html">AI에게 물어보기</a>
+                <a class="button" href="moa_mts4_ai_chart_analysis.html">차트 분석하기</a>
+                <a class="button" href="moa_mts4_ai_cascade_explain.html">캐스케이드란</a>
+                <a class="button" href="moa_mts4_cascade_portfolio.html">포트폴리오 보기</a>
+              </div>
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item active" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 국내 주식 마켓</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>홈 빠른 접근에서 국내 주식을 눌렀을 때 시장 요약, 검색, 관심 종목, AI 판단을 바로 보여줍니다.</span></div>
+      <div class="panel-row"><b>핵심</b><span>사용자가 종목을 찾거나 AI 분석, 차트 분석, 포트폴리오 확인으로 빠르게 이동하게 합니다.</span></div>
+      <div class="panel-row"><b>다음</b><span>해외 주식, 외환, 귀금속, 크립토도 같은 구조로 확장할 수 있습니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

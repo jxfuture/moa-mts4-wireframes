@@ -1,0 +1,227 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 Wireframe Prototype</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #6b7280;
+      --line: #d8dee8;
+      --blue: #3b66d6;
+      --soft: #f6f8fb;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 42px;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 23px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    a.card {
+      min-height: 128px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+      color: inherit;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card strong {
+      display: block;
+      font-size: 18px;
+      line-height: 24px;
+    }
+
+    .card span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .card em {
+      color: var(--blue);
+      font-style: normal;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .primary {
+      border-color: #bdcafd;
+      background: #f8fbff;
+    }
+
+    .note {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--soft);
+      padding: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 21px;
+    }
+
+    @media (max-width: 720px) {
+      main { padding: 34px 16px; }
+      h1 { font-size: 26px; line-height: 34px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MOA MTS4 Wireframe Prototype</h1>
+    <div class="subtitle">
+      발표용 온라인 프로토타입 시작 페이지입니다. 아래 화면을 눌러 주요 플로우로 바로 이동할 수 있습니다.
+    </div>
+
+    <section class="grid">
+      <a class="card primary" href="moa_mts4_home_wireframe.html">
+        <div>
+          <strong>홈 화면</strong>
+          <span>MOA AI, 빠른 접근, 빠른 주문, 캐스케이드 빠른 설정 진입</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card primary" href="MOA_IR_Deck_Features_1_to_5_Wireframe_Process_Flow.png">
+        <div>
+          <strong>IR Deck 기능 사례 · 프로세스 플로우</strong>
+          <span>IR 덱 슬라이드 2-6의 기능 1-5 케이스 스토리를 실제 화면 흐름으로 재구성하고, 슬라이드 7-8과 연결</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card primary" href="moa_mts4_cascade_main.html">
+        <div>
+          <strong>캐스케이드 메인</strong>
+          <span>종목 검색, AI 추천 후보, 캐스케이드 빠른 설정 시작</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card primary" href="moa_mts4_ai_conditional_order_intent.html">
+        <div>
+          <strong>조건형 자본 배분 주문</strong>
+          <span>자연어 조건 분석, 시장·계좌 분석, 시뮬레이션, 사용자 확인, 주문 등록과 모니터링</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card primary" href="moa_mts4_ai_kospi_intent.html">
+        <div>
+          <strong>코스피 포트폴리오 생성</strong>
+          <span>투자 메모리, 시장 분석, 종목군 구성, 포트폴리오 제안, 시뮬레이션과 주문 후보 생성</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card" href="moa_mts4_cascade_setup_edit_all.html">
+        <div>
+          <strong>캐스케이드 빠른 설정</strong>
+          <span>신규 시작용. 종목, 총 투자금, 초기 투자금, 변동 간격, 구간 금액을 한 화면에서 설정</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card" href="moa_mts4_ai_cascade_active.html">
+        <div>
+          <strong>캐스케이드 진행 현황</strong>
+          <span>실행 중인 캐스케이드 상태, 다음 실행 가격, 오늘 실행 내역 확인</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card" href="moa_mts4_ai_cascade_edit.html">
+        <div>
+          <strong>실행 조건 변경</strong>
+          <span>진행 중인 캐스케이드의 총 투자 한도, 변동 간격, 구간 금액만 변경</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card" href="moa_mts4_cascade_portfolio.html">
+        <div>
+          <strong>포트폴리오</strong>
+          <span>일반 보유 종목과 캐스케이드 포지션을 함께 확인</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card primary" href="moa_mts4_investment_mining.html">
+        <div>
+          <strong>Investment Mining</strong>
+          <span>데모 거래로 리워드를 적립하고 실거래 전환 혜택을 확인</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card" href="moa_mts4_demo_market.html">
+        <div>
+          <strong>데모 마켓</strong>
+          <span>데모 모드에서 주문을 완료하고 +1원 리워드를 적립</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card primary" href="moa_mts4_ai_indicator_strategy_intent.html">
+        <div>
+          <strong>기능 4 · AI 다섯 지표 투자 전략</strong>
+          <span>AI가 기술적 지표 다섯 개를 추천하고, 모든 매수 신호가 충족되는 투자 전략을 설계·검토·적용</span>
+        </div>
+        <em>Open</em>
+      </a>
+
+      <a class="card primary" href="moa_mts4_ai_indicator_cascade_intent.html">
+        <div>
+          <strong>기능 5 · AI 다섯 지표 + 캐스케이드</strong>
+          <span>다섯 매수 신호를 캐스케이드 시작 조건으로 연결하고 자본 배분, 시뮬레이션과 모니터링까지 통합</span>
+        </div>
+        <em>Open</em>
+      </a>
+    </section>
+
+    <div class="note">
+      온라인 배포 시 이 폴더 전체를 정적 사이트로 업로드하면 됩니다. 별도 서버 코드나 데이터베이스는 필요 없습니다.
+    </div>
+  </main>
+</body>
+</html>

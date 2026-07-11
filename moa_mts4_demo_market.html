@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 데모 마켓</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --soft: #f5f6f7;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --yellow: #fbbf24;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fafafa; color: var(--ink); font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    .board { position: relative; width: 1600px; min-height: 1220px; padding: 48px 64px; }
+    .title { font-size: 34px; font-weight: 800; letter-spacing: 0; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+    .phone-wrap { position: absolute; left: 120px; top: 170px; width: var(--phone-w); }
+    .phone { position: relative; width: var(--phone-w); height: var(--phone-h); border: 3px solid var(--ink); border-radius: 28px; background: white; overflow: hidden; }
+    .notch { position: absolute; top: 7px; left: 174px; width: 82px; height: 13px; border: 1px solid var(--ink); border-radius: 8px; background: #fff; z-index: 4; }
+    .appbar { position: absolute; left: 0; right: 0; top: 0; height: 78px; padding: 30px 18px 12px; border-bottom: 1px solid var(--line); background: white; display: grid; grid-template-columns: 36px 1fr 36px; gap: 8px; align-items: center; z-index: 3; }
+    .icon-button { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
+    .app-title { text-align: center; font-size: 16px; font-weight: 800; line-height: 18px; }
+    .app-subtitle { color: var(--muted); font-size: 10px; font-weight: 400; }
+    .content { position: absolute; left: 18px; right: 18px; top: 94px; bottom: 72px; overflow-y: auto; padding-bottom: 16px; scrollbar-width: none; }
+    .content::-webkit-scrollbar { display: none; }
+    .demo-widget { border: 1px solid #b7dfc1; border-radius: 12px; background: #f3fbf5; padding: 11px 12px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; font-size: 11px; line-height: 16px; }
+    .demo-widget strong { display: block; font-size: 13px; line-height: 18px; }
+    .points { color: var(--green); font-size: 18px; font-weight: 900; }
+    .search-card, .stock-card, .order-card { border: 1px solid var(--line); border-radius: 12px; background: white; margin-top: 10px; overflow: hidden; }
+    .search-card { padding: 12px; }
+    .search-title { font-size: 13px; font-weight: 900; }
+    .search-row { display: grid; grid-template-columns: 1fr 38px; gap: 8px; margin-top: 8px; }
+    .fake-input { height: 40px; border: 1px solid #c9c9c9; border-radius: 10px; background: var(--soft); color: #888; display: flex; align-items: center; padding: 0 11px; font-size: 12px; font-weight: 700; }
+    .submit { width: 38px; height: 40px; border-radius: 10px; background: var(--ink); color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; }
+    .section-head { padding: 10px 12px; border-bottom: 1px solid var(--line); background: #f4f4f4; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 900; }
+    .stock-list { padding: 4px 12px; }
+    .stock { min-height: 64px; border-bottom: 1px solid #eeeeee; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px 0; font-size: 11px; line-height: 16px; }
+    .stock:last-child { border-bottom: 0; }
+    .stock strong { display: block; font-size: 14px; line-height: 18px; }
+    .tag { width: max-content; border: 1px solid #f0c15a; border-radius: 999px; background: #fff8e7; color: #8a5b00; padding: 3px 8px; font-size: 10px; font-weight: 900; }
+    .order-card { padding: 12px; }
+    .order-title { font-size: 15px; font-weight: 900; }
+    .order-copy { margin-top: 5px; color: var(--muted); font-size: 11px; line-height: 16px; }
+    .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .amount { min-height: 38px; border: 1px solid #aaa; border-radius: 10px; background: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; }
+    .amount.dark { background: var(--ink); border-color: var(--ink); color: white; }
+    .primary { height: 46px; border-radius: 12px; background: var(--ink); color: white; display: flex; align-items: center; justify-content: center; margin-top: 12px; font-size: 14px; font-weight: 900; }
+    .bottom-nav { position: absolute; left: 0; right: 0; bottom: 0; height: 62px; border-top: 1px solid var(--line); background: white; display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; text-align: center; font-size: 10px; color: var(--muted); z-index: 4; }
+    .nav-item { display: grid; gap: 4px; justify-items: center; }
+    .nav-icon { width: 22px; height: 18px; border: 1px solid currentColor; border-radius: 4px; }
+    .nav-item.active { color: var(--blue); font-weight: 800; }
+    .caption { margin-top: 18px; text-align: center; color: var(--muted); font-size: 14px; font-weight: 800; }
+    .panel { position: absolute; left: 620px; top: 210px; width: 560px; border-left: 3px solid var(--blue); padding-left: 24px; font-size: 14px; line-height: 22px; }
+    .panel h2 { margin: 0 0 16px; font-size: 22px; }
+    .panel-row { margin: 12px 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .panel-row b { display: block; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 데모 마켓</div>
+    <div class="subtitle">데모 모드 활성 후 마켓에서 모의 주문을 실행하는 화면 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_investment_mining.html">&larr;</a>
+          <div class="app-title">데모 마켓<div class="app-subtitle">주문 완료 시 리워드 자동 적립</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="demo-widget">
+            <div>
+              <strong>데모 모드 활성</strong>
+              실제 자금 없이 주문을 연습합니다
+            </div>
+            <div class="points">0원</div>
+          </section>
+
+          <section class="search-card">
+            <div class="search-title">데모 거래할 종목 검색</div>
+            <div class="search-row">
+              <div class="fake-input">종목명 또는 코드 검색</div>
+              <div class="submit">↵</div>
+            </div>
+          </section>
+
+          <section class="stock-card">
+            <div class="section-head">
+              <span>추천 데모 종목</span>
+              <span class="tag">Demo</span>
+            </div>
+            <div class="stock-list">
+              <div class="stock">
+                <div><strong>삼성전자</strong>국내 주식 · 73,400원 <span style="color:var(--green);">+1.10%</span></div>
+                <a class="tag" href="moa_mts4_demo_order_reward.html">데모 주문</a>
+              </div>
+              <div class="stock">
+                <div><strong>SK하이닉스</strong>국내 주식 · 2,202,000원 <span style="color:var(--red);">-6.02%</span></div>
+                <a class="tag" href="moa_mts4_demo_order_reward.html">데모 주문</a>
+              </div>
+              <div class="stock">
+                <div><strong>Apple</strong>해외 주식 · $189.30 <span style="color:var(--green);">+1.15%</span></div>
+                <a class="tag" href="moa_mts4_demo_order_reward.html">데모 주문</a>
+              </div>
+            </div>
+          </section>
+
+          <section class="order-card">
+            <div class="order-title">빠른 데모 주문</div>
+            <div class="order-copy">주문이 완료되면 마이닝 포인트가 +1원 적립됩니다.</div>
+            <div class="amount-grid">
+              <div class="amount">10만원</div>
+              <div class="amount dark">100만원</div>
+              <div class="amount">500만원</div>
+            </div>
+            <a class="primary" href="moa_mts4_demo_order_reward.html">데모 주문 완료하기</a>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item active" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - 데모 마켓</div>
+    </section>
+
+    <aside class="panel">
+      <h2>명세 반영</h2>
+      <div class="panel-row"><b>상태</b><span>데모 모드 활성 위젯과 누적 포인트 표시</span></div>
+      <div class="panel-row"><b>트리거</b><span>데모 주문 완료 시 +1원 자동 적립</span></div>
+      <div class="panel-row"><b>연결</b><span>무료 데모 계좌 실행 버튼에서 마켓 화면으로 이동하고, 포트폴리오 탭에서 데모 거래 내역을 확인</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

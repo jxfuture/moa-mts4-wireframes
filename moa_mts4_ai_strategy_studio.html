@@ -1,0 +1,201 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - AI 자동매매</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --soft: #f5f7fa;
+      --blue: #3b66d6;
+      --cyan: #0891b2;
+      --green: #2ead65;
+      --red: #e53935;
+      --orange: #f59e0b;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #fafafa; color: var(--ink); font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif; }
+    a { color: inherit; text-decoration: none; }
+    .board { position: relative; width: 1600px; min-height: 1220px; padding: 48px 64px; }
+    .title { font-size: 34px; font-weight: 800; letter-spacing: 0; }
+    .subtitle { margin-top: 6px; color: #9a9a9a; font-size: 15px; }
+    .rule { width: 1460px; height: 1px; margin-top: 20px; background: #bdbdbd; }
+    .phone-wrap { position: absolute; left: 120px; top: 170px; width: var(--phone-w); }
+    .phone { position: relative; width: var(--phone-w); height: var(--phone-h); border: 3px solid var(--ink); border-radius: 28px; background: white; overflow: hidden; }
+    .notch { position: absolute; top: 7px; left: 174px; width: 82px; height: 13px; border: 1px solid var(--ink); border-radius: 8px; background: #fff; z-index: 4; }
+    .appbar { position: absolute; left: 0; right: 0; top: 0; height: 78px; padding: 30px 18px 12px; border-bottom: 1px solid var(--line); background: white; display: grid; grid-template-columns: 36px 1fr 36px; gap: 8px; align-items: center; z-index: 3; }
+    .icon-button { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; }
+    .app-title { text-align: center; font-size: 16px; font-weight: 800; line-height: 18px; }
+    .app-subtitle { color: var(--muted); font-size: 10px; font-weight: 400; }
+    .content { position: absolute; left: 18px; right: 18px; top: 94px; bottom: 72px; overflow-y: auto; padding-bottom: 16px; scrollbar-width: none; }
+    .content::-webkit-scrollbar { display: none; }
+    .studio-head { border: 1px solid rgba(56,189,248,.35); border-radius: 14px; background: #eefcff; padding: 11px 12px; display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+    .studio-head strong { display: block; font-size: 15px; line-height: 19px; }
+    .studio-head span { color: #475569; font-size: 11px; line-height: 16px; font-weight: 700; }
+    .voice { border: 1px solid #a5e5f2; border-radius: 999px; background: white; color: var(--cyan); padding: 5px 9px; font-size: 10px; font-weight: 900; }
+    .strategy-list { margin-top: 10px; border: 1px solid var(--line); border-radius: 12px; background: white; overflow: hidden; }
+    .list-head { padding: 9px 12px; border-bottom: 1px solid var(--line); background: #f4f4f4; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 900; }
+    .new-task { color: var(--blue); font-size: 10px; }
+    .strategy-card { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 9px 12px; border-bottom: 1px solid #eeeeee; font-size: 11px; line-height: 16px; align-items: center; }
+    .strategy-card:last-child { border-bottom: 0; }
+    .strategy-card b { display: block; font-size: 12px; line-height: 16px; }
+    .strategy-meta { margin-top: 2px; color: #555; }
+    .strategy-right { display: grid; justify-items: end; gap: 5px; }
+    .strategy-button-row { display: flex; gap: 5px; }
+    .badge { height: max-content; border-radius: 999px; border: 1px solid #c7d2fe; background: #f8fbff; color: var(--blue); padding: 3px 8px; font-size: 9px; font-weight: 900; }
+    .edit-link { border: 1px solid #cfcfcf; border-radius: 7px; background: #fff; padding: 4px 7px; font-size: 9px; line-height: 12px; font-weight: 900; color: var(--ink); }
+    .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+    .tab { min-height: 42px; border: 1px solid #d8d8d8; border-radius: 10px; background: white; display: flex; align-items: center; justify-content: center; text-align: center; padding: 5px; font-size: 10px; line-height: 13px; font-weight: 900; cursor: pointer; }
+    .tab.active { background: var(--ink); border-color: var(--ink); color: white; }
+    .panel-tab { display: none; margin-top: 10px; }
+    .panel-tab.active { display: block; }
+    .card { border: 1px solid var(--line); border-radius: 12px; background: white; overflow: hidden; margin-top: 10px; }
+    .card:first-child { margin-top: 0; }
+    .card-head { padding: 10px 12px; border-bottom: 1px solid var(--line); background: #f4f4f4; font-size: 13px; font-weight: 900; }
+    .card-body { padding: 12px; }
+    .bubble { max-width: 88%; margin-top: 8px; border-radius: 12px; padding: 10px 11px; font-size: 11px; line-height: 16px; }
+    .bubble:first-child { margin-top: 0; }
+    .bubble.user { margin-left: auto; background: var(--ink); color: white; border-bottom-right-radius: 4px; }
+    .bubble.ai { background: #f4f4f4; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+    .quick-chips { display: flex; gap: 6px; overflow: hidden; margin-top: 10px; }
+    .chip { border: 1px solid #d8d8d8; border-radius: 999px; background: #fafafa; padding: 5px 8px; color: #555; font-size: 9px; font-weight: 800; white-space: nowrap; }
+    .input-row { display: grid; grid-template-columns: 34px 1fr 38px; gap: 7px; align-items: center; margin-top: 8px; }
+    .fake-input { height: 38px; border: 1px solid #c9c9c9; border-radius: 10px; background: white; color: #aaa; display: flex; align-items: center; padding-left: 10px; font-size: 10px; }
+    .send { width: 38px; height: 38px; border-radius: 10px; background: var(--ink); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+    .select-row, .metric-grid, .asset-grid { display: grid; gap: 8px; margin-top: 10px; }
+    .select-row { grid-template-columns: repeat(3, 1fr); }
+    .asset-grid { grid-template-columns: repeat(3, 1fr); }
+    .option { min-height: 34px; border: 1px solid #aaa; border-radius: 9px; background: white; display: flex; align-items: center; justify-content: center; text-align: center; padding: 5px; font-size: 10px; line-height: 13px; font-weight: 900; }
+    .option.dark { background: var(--ink); border-color: var(--ink); color: white; }
+    .chart { height: 118px; border: 1px solid #e2e8f0; border-radius: 12px; background: #fbfdff; margin-top: 10px; }
+    .chart path { fill: none; stroke: var(--blue); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    .metric-grid { grid-template-columns: repeat(2, 1fr); }
+    .metric { border: 1px solid #e5e7eb; border-radius: 10px; background: #fafafa; padding: 9px; font-size: 10px; color: var(--muted); }
+    .metric b { display: block; margin-top: 3px; color: var(--ink); font-size: 15px; line-height: 18px; }
+    .note { border: 1px solid #cddbf6; border-radius: 10px; background: #f8fbff; color: #334155; padding: 9px; margin-top: 10px; font-size: 11px; line-height: 16px; font-weight: 700; }
+    .button { min-height: 42px; border: 1px solid #aaa; border-radius: 10px; background: white; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 10px; margin-top: 10px; font-size: 12px; font-weight: 900; }
+    .button.dark { background: var(--ink); color: white; border-color: var(--ink); }
+    .button.cyan { background: var(--cyan); color: white; border-color: var(--cyan); }
+    .strategy-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+    .strategy-actions .button { min-height: 46px; margin-top: 0; padding: 0 8px; font-size: 12px; line-height: 15px; }
+    .execution { margin-top: 8px; border: 1px solid #eeeeee; border-radius: 10px; overflow: hidden; }
+    .execution-row { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; padding: 9px 10px; border-bottom: 1px solid #eeeeee; font-size: 11px; line-height: 15px; align-items: center; }
+    .execution-row:last-child { border-bottom: 0; }
+    .execution-row b { font-size: 11px; }
+    .execution-row span small { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; line-height: 12px; }
+    .running-list { display: grid; gap: 9px; }
+    .running-card { border: 1px solid #e5e7eb; border-radius: 12px; background: #fafafa; padding: 11px; display: grid; gap: 9px; }
+    .running-top { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: start; }
+    .running-top b { display: block; font-size: 13px; line-height: 17px; }
+    .running-top span { display: block; margin-top: 3px; color: #555; font-size: 10px; line-height: 14px; }
+    .running-return { color: var(--green); font-size: 18px; line-height: 22px; font-weight: 900; text-align: right; }
+    .running-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+    .running-actions .button { margin-top: 0; min-height: 36px; font-size: 11px; }
+    .mini-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; margin-top: 10px; }
+    .mini-actions .button { min-height: 38px; margin-top: 0; font-size: 10px; line-height: 13px; padding: 0 6px; }
+    .warn { border: 1px solid #f1d592; border-radius: 10px; background: #fff8e7; color: #6c4a12; padding: 10px; font-size: 11px; line-height: 16px; font-weight: 700; }
+    .bottom-nav { position: absolute; left: 0; right: 0; bottom: 0; height: 62px; border-top: 1px solid var(--line); background: white; display: grid; grid-template-columns: repeat(5, 1fr); align-items: center; text-align: center; font-size: 10px; color: var(--muted); z-index: 4; }
+    .nav-item { display: grid; gap: 4px; justify-items: center; }
+    .nav-icon { width: 22px; height: 18px; border: 1px solid currentColor; border-radius: 4px; }
+    .nav-item.active { color: var(--blue); font-weight: 800; }
+    .caption { margin-top: 18px; text-align: center; color: var(--muted); font-size: 14px; font-weight: 800; }
+    .panel { position: absolute; left: 620px; top: 210px; width: 620px; border-left: 3px solid var(--blue); padding-left: 24px; font-size: 14px; line-height: 22px; }
+    .panel h2 { margin: 0 0 16px; font-size: 22px; }
+    .panel-row { margin: 12px 0; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .panel-row b { display: block; margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - AI 자동매매</div>
+    <div class="subtitle">현재 보유한 AI 자동매매, 백테스팅, 데모 테스팅, 라이브 적용 상태를 확인하는 메인 화면 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_home_wireframe.html">&larr;</a>
+          <div class="app-title">AI 자동매매<div class="app-subtitle">자동매매 운영 대시보드</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="card">
+            <div class="card-head">진행 중인 자동매매 시스템</div>
+            <div class="card-body">
+              <div class="running-list">
+                <div class="running-card">
+                  <div class="running-top">
+                    <div><b>삼성전자 배당 방어 자동매매</b><span>라이브 적용 중 · 실제 계좌</span></div>
+                    <div class="running-return">+2.14%</div>
+                  </div>
+                  <div class="running-actions">
+                    <a class="button dark" href="moa_mts4_cascade_portfolio.html">거래 내역 보기</a>
+                    <a class="button" href="moa_mts4_ai_strategy_pause_confirm.html">자동매매 멈추기</a>
+                  </div>
+                </div>
+                <div class="running-card">
+                  <div class="running-top">
+                    <div><b>테슬라 이동평균 돌파 자동매매</b><span>데모 테스팅 중 · 가상 투자금 1,000만원</span></div>
+                    <div class="running-return">+1.84%</div>
+                  </div>
+                  <div class="running-actions">
+                    <a class="button dark" href="moa_mts4_demo_portfolio.html">거래 내역 보기</a>
+                    <a class="button" href="moa_mts4_ai_strategy_pause_confirm.html">자동매매 멈추기</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="strategy-list">
+            <div class="list-head"><span>내 AI 자동매매 3개</span><a class="new-task" href="moa_mts4_ai_strategy_chat.html">+ 새로 만들기</a></div>
+            <div class="strategy-card"><div><b>삼성전자 배당 방어 자동매매</b><div class="strategy-meta">라이브 적용 · 현재 수익률 +2.14%</div></div><div class="strategy-right"><span class="badge">라이브</span><div class="strategy-button-row"><a class="edit-link" href="moa_mts4_ai_strategy_detail_samsung.html">상세보기</a><a class="edit-link" href="moa_mts4_ai_strategy_chat.html">수정하기</a></div></div></div>
+            <div class="strategy-card"><div><b>테슬라 이동평균 돌파 자동매매</b><div class="strategy-meta">데모 테스팅 · 현재 수익률 +1.84%</div></div><div class="strategy-right"><span class="badge">데모</span><div class="strategy-button-row"><a class="edit-link" href="moa_mts4_ai_strategy_detail_tesla.html">상세보기</a><a class="edit-link" href="moa_mts4_ai_strategy_chat.html">수정하기</a></div></div></div>
+            <div class="strategy-card"><div><b>엔비디아 변동성 방어 자동매매</b><div class="strategy-meta">백테스팅 완료 · 3년 검증 수익률 +28.6%</div></div><div class="strategy-right"><span class="badge">백테스트</span><div class="strategy-button-row"><a class="edit-link" href="moa_mts4_ai_strategy_detail_nvidia.html">상세보기</a><a class="edit-link" href="moa_mts4_ai_strategy_chat.html">수정하기</a></div></div></div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">현재 운영 상태</div>
+            <div class="card-body">
+              <div class="metric-grid">
+                <div class="metric">백테스팅<b>1개</b></div>
+                <div class="metric">데모 테스팅<b>1개</b></div>
+                <div class="metric">라이브 적용<b>1개</b></div>
+                <div class="metric">AI 분석 대기<b>2건</b></div>
+              </div>
+              <a class="button" href="moa_mts4_ai_strategy_intro.html">AI 자동매매 사용법 보기</a>
+            </div>
+          </section>
+
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - AI 자동매매</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>메인</b><span>AI 자동매매 메뉴 진입 시 사용자가 운영 중인 자동매매 상태를 먼저 보여줍니다.</span></div>
+      <div class="panel-row"><b>목록</b><span>내 AI 자동매매 목록에서 새로 만들기와 수정하기를 바로 실행합니다.</span></div>
+      <div class="panel-row"><b>사용법</b><span>하단 사용법 보기 버튼에서 설명 페이지로 이동합니다.</span></div>
+      <div class="panel-row"><b>운영</b><span>라이브와 데모로 실제 돌아가는 자동매매를 가장 먼저 확인합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

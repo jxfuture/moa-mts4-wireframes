@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA IR Deck - Feature Case Wireframe Process Flow</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #6f6f6f;
+      --line: #d9d9d9;
+      --soft: #f7f7f7;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --orange: #b76b00;
+      --red: #e53935;
+      --purple: #6d5bd0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: 1680px;
+      min-height: 1400px;
+      padding: 48px 56px 80px;
+    }
+
+    .top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #bdbdbd;
+    }
+
+    .title {
+      font-size: 34px;
+      line-height: 40px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .pin {
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 10px 16px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      color: #555;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: inline-block;
+    }
+
+    .dot.ai { background: var(--purple); }
+    .dot.order { background: var(--green); }
+    .dot.portfolio { background: var(--orange); }
+    .dot.market { background: var(--red); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr 1fr;
+      gap: 22px;
+      margin-top: 26px;
+    }
+
+    .flow-section {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #f1f1f1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .section-tag {
+      padding: 4px 9px;
+      border: 1px solid #aaa;
+      border-radius: 999px;
+      background: #fff;
+      color: #555;
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .section-body {
+      padding: 14px;
+    }
+
+    .node {
+      position: relative;
+      display: block;
+      border: 1px solid #cfcfcf;
+      border-radius: 10px;
+      background: #fff;
+      padding: 11px 12px;
+      margin: 0 0 12px;
+      min-height: 58px;
+    }
+
+    .node:hover {
+      border-color: var(--ink);
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+
+    .node::after {
+      content: "↓";
+      position: absolute;
+      left: 50%;
+      bottom: -19px;
+      transform: translateX(-50%);
+      color: #777;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .node:last-child::after,
+    .no-arrow::after {
+      content: "";
+    }
+
+    .node-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 18px;
+    }
+
+    .node-desc {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 17px;
+    }
+
+    .type {
+      min-width: 58px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: #555;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .type.home { color: var(--blue); }
+    .type.ai { color: var(--purple); }
+    .type.order { color: var(--green); }
+    .type.portfolio { color: var(--orange); }
+    .type.market { color: var(--red); }
+
+    .branch {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .branch .node {
+      margin-bottom: 0;
+    }
+
+    .branch .node::after {
+      content: "";
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #ececec;
+      border-radius: 10px;
+      background: #fbfbfb;
+    }
+
+    .mini {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 8px;
+      color: #555;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
+    .mini b {
+      color: #222;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .wide-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .note {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 16px;
+      color: #555;
+      font-size: 13px;
+      line-height: 20px;
+    }
+
+    .note b {
+      color: #222;
+    }
+
+    .todo {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .todo div {
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      background: #fafafa;
+      padding: 12px;
+      min-height: 70px;
+    }
+
+    .todo strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <div>
+        <div class="title">MOA IR Deck 기능 사례 · 와이어프레임 프로세스 플로우</div>
+        <div class="subtitle">IR 덱 슬라이드 2-6의 기능 1-5 케이스 스토리를 화면 흐름으로 재구성 · 슬라이드 7-8 연계</div>
+      </div>
+      <div class="pin">IR DECK SLIDES 2-8 · CLICKABLE FLOW</div>
+    </header>
+
+    <div class="legend">
+      <span><i class="dot"></i> 홈/공통</span>
+      <span><i class="dot ai"></i> MOA AI</span>
+      <span><i class="dot order"></i> 주문/캐스케이드</span>
+      <span><i class="dot portfolio"></i> 포트폴리오/계좌</span>
+      <span><i class="dot market"></i> 마켓/차트</span>
+    </div>
+
+    <section class="grid">
+      <article class="flow-section">
+        <div class="section-head">0. 홈 진입 <span class="section-tag">Entry</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_home_wireframe.html">
+            <div class="node-title">홈 화면 <span class="type home">HOME</span></div>
+            <div class="node-desc">MOA AI 질문, 빠른 접근, AI 추천 종목, 데모 배너의 시작점</div>
+          </a>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_fullscreen_wireframe.html">
+              <div class="node-title">SK하이닉스 사고 싶어 <span class="type ai">AI</span></div>
+              <div class="node-desc">AI 분석 후 무엇을 할지 선택</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_samsung_500k_answer.html">
+              <div class="node-title">삼성전자 50만원 투자 <span class="type ai">AI</span></div>
+              <div class="node-desc">AI 모니터링 경고 및 진행 선택</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_cascade_explain.html">
+              <div class="node-title">캐스케이드가 뭐야 <span class="type order">CASCADE</span></div>
+              <div class="node-desc">캐스케이드 설명, 설정 예시, 시작하기</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_chart_analysis.html">
+              <div class="node-title">원 달러 차트 분석 <span class="type market">CHART</span></div>
+              <div class="node-desc">USD/KRW 기술적 분석과 포트폴리오 영향</div>
+            </a>
+          </div>
+          <a class="node no-arrow" href="moa_mts4_market_korea_stocks.html">
+            <div class="node-title">빠른 접근 · 국내 주식 <span class="type market">MARKET</span></div>
+            <div class="node-desc">국내 시장 요약, AI 관심 종목, 시장 판단</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">1. SK하이닉스 주문 흐름 <span class="section-tag">Buy Flow</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_fullscreen_wireframe.html">
+            <div class="node-title">AI 분석 & 선택 <span class="type ai">AI</span></div>
+            <div class="node-desc">현재가, 지정가, 캐스케이드, 차트 분석 선택</div>
+          </a>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_market_price_order.html">
+              <div class="node-title">현재가로 살래요 <span class="type order">현재가</span></div>
+              <div class="node-desc">금액 입력, 빠른 금액 선택, 채팅/Mic 유지</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_limit_price_order.html">
+              <div class="node-title">지정가로 살래요 <span class="type order">지정가</span></div>
+              <div class="node-desc">먼저 원하는 가격, 그다음 투자 금액</div>
+            </a>
+          </div>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_market_price_confirm.html">
+              <div class="node-title">현재가 확인 <span class="type order">확인</span></div>
+              <div class="node-desc">주문 요약과 진행 확인</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_limit_price_amount.html">
+              <div class="node-title">지정가 금액 <span class="type order">금액</span></div>
+              <div class="node-desc">지정가 결정 후 투자 가능 현금 기준 금액 입력</div>
+            </a>
+          </div>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_market_price_filled.html">
+              <div class="node-title">현재가 체결 완료 <span class="type order">체결</span></div>
+              <div class="node-desc">체결 내역 및 다음 선택</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_limit_price_confirm.html">
+              <div class="node-title">지정가 확인 <span class="type order">확인</span></div>
+              <div class="node-desc">지정가 주문 조건 최종 확인</div>
+            </a>
+          </div>
+          <a class="node no-arrow" href="moa_mts4_portfolio_after_fill.html">
+            <div class="node-title">체결 후 포트폴리오 <span class="type portfolio">PORT</span></div>
+            <div class="node-desc">체결된 주문이 포트폴리오에 반영된 모습</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">1A. 조건형 자본 배분 주문 <span class="section-tag">Conditional</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_conditional_order_intent.html">
+            <div class="node-title">자연어 조건 분석 <span class="type ai">AI</span></div>
+            <div class="node-desc">종목, 가격 간격, 구간 수량을 요청에서 추출</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_conditional_market_analysis.html">
+            <div class="node-title">시장·계좌 분석 <span class="type ai">분석</span></div>
+            <div class="node-desc">현재 가격, 변동성, 유동성, 가용 자금과 종목 비중 확인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_conditional_simulation.html">
+            <div class="node-title">배분안 시뮬레이션 <span class="type order">계산</span></div>
+            <div class="node-desc">4개 가격 단계, 최대 사용 자금, 전체 체결 평균가 계산</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_conditional_recommendation.html">
+            <div class="node-title">AI 추천안 <span class="type ai">추천</span></div>
+            <div class="node-desc">단계 수, 기간, 비중 알림과 대안 비교</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_conditional_confirm.html">
+            <div class="node-title">사용자 최종 확인 <span class="type order">확인</span></div>
+            <div class="node-desc">주문 조건, 최대 자금, 연속 체결 위험 확인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_conditional_registered.html">
+            <div class="node-title">조건 주문 등록 <span class="type order">등록</span></div>
+            <div class="node-desc">승인된 4개 주문을 대기 상태로 등록</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_ai_conditional_monitoring.html">
+            <div class="node-title">주문 모니터링 <span class="type portfolio">관리</span></div>
+            <div class="node-desc">가격, 체결, 잔여 자금과 포트폴리오 영향 관리</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">1B. 코스피 포트폴리오 생성 <span class="section-tag">Portfolio AI</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_kospi_intent.html">
+            <div class="node-title">코스피 투자 요청 <span class="type ai">AI</span></div>
+            <div class="node-desc">시장, 투자 금액과 포트폴리오 생성 목표 확인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_kospi_memory.html">
+            <div class="node-title">투자 메모리 <span class="type ai">개인화</span></div>
+            <div class="node-desc">투자 성향, 목표, 기간, 위험 허용 범위 확인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_kospi_market_analysis.html">
+            <div class="node-title">시장·포트폴리오 분석 <span class="type market">시장</span></div>
+            <div class="node-desc">업종, 시가총액, 유동성과 기존 자산 중복 분석</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_kospi_universe.html">
+            <div class="node-title">투자 종목군 구성 <span class="type portfolio">후보</span></div>
+            <div class="node-desc">80개 후보를 실제 주문 가능한 20개 종목으로 축소</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_kospi_proposal.html">
+            <div class="node-title">포트폴리오 제안 <span class="type portfolio">제안</span></div>
+            <div class="node-desc">사용자 성향과 투자 금액에 맞춘 종목별 비중 생성</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_kospi_simulation.html">
+            <div class="node-title">포트폴리오 시뮬레이션 <span class="type ai">검토</span></div>
+            <div class="node-desc">시장 유사도 목표, 변동성, 집중도와 주문 가능성 검토</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_kospi_confirm.html">
+            <div class="node-title">사용자 최종 확인 <span class="type order">확인</span></div>
+            <div class="node-desc">구성, 투자 금액, 현금 비중과 주문 방식 확인</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_ai_kospi_applied.html">
+            <div class="node-title">주문 후보 생성 <span class="type portfolio">완료</span></div>
+            <div class="node-desc">20종목 주문 후보 생성 후 실제 주문 확인과 포트폴리오 연결</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">1C. AI 다섯 지표 투자 전략 <span class="section-tag">Feature 4</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_indicator_strategy_intent.html">
+            <div class="node-title">자연어 전략 요청 <span class="type ai">AI</span></div>
+            <div class="node-desc">기술적 지표 다섯 개를 AI가 추천하고 모두 매수일 때 투자하는 전략 요청</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_strategy_recommendation.html">
+            <div class="node-title">다섯 지표 추천 <span class="type market">지표</span></div>
+            <div class="node-desc">이동평균선, RSI, MACD, 볼린저 밴드와 ADX 추천</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_strategy_signal_rules.html">
+            <div class="node-title">매수 신호 설계 <span class="type ai">조건</span></div>
+            <div class="node-desc">다섯 지표를 측정 가능한 조건으로 바꾸고 AND 방식으로 결합</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_strategy_draft.html">
+            <div class="node-title">투자 전략 초안 <span class="type portfolio">설계</span></div>
+            <div class="node-desc">대상, 투자 한도, 1회 사용 금액, 위험과 종료 조건 설계</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_strategy_backtest.html">
+            <div class="node-title">백테스트 <span class="type ai">검토</span></div>
+            <div class="node-desc">상승·하락·횡보 구간에서 신호 빈도와 위험 비교</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_strategy_optimization.html">
+            <div class="node-title">AI 개선 제안 <span class="type ai">개선</span></div>
+            <div class="node-desc">신호 지연과 위험 구간을 줄이는 조건 수정안 제시</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_strategy_demo.html">
+            <div class="node-title">데모 테스트 <span class="type market">DEMO</span></div>
+            <div class="node-desc">실시간 데이터와 가상 자금으로 신호와 주문 후보 확인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_strategy_confirm.html">
+            <div class="node-title">사용자 최종 확인 <span class="type order">확인</span></div>
+            <div class="node-desc">전략 조건, 투자 한도와 위험 범위를 최종 승인</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_ai_indicator_strategy_monitoring.html">
+            <div class="node-title">전략 모니터링 <span class="type portfolio">관리</span></div>
+            <div class="node-desc">다섯 지표 충족 상태와 다음 주문 확인 단계 관리</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">1D. AI 다섯 지표 + 캐스케이드 <span class="section-tag">Feature 5</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_indicator_cascade_intent.html">
+            <div class="node-title">통합 요청 <span class="type ai">AI</span></div>
+            <div class="node-desc">다섯 지표가 모두 매수 신호면 캐스케이드로 투자하도록 요청</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_recommendation.html">
+            <div class="node-title">캐스케이드용 지표 추천 <span class="type market">지표</span></div>
+            <div class="node-desc">첫 진입의 방향성과 추세 강도를 확인할 다섯 지표 선정</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_signal_rules.html">
+            <div class="node-title">캐스케이드 시작 신호 <span class="type ai">조건</span></div>
+            <div class="node-desc">다섯 매수 조건을 캐스케이드 시작 기준으로 결합</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_allocation.html">
+            <div class="node-title">자본 배분 설계 <span class="type order">설계</span></div>
+            <div class="node-desc">총 한도, 초기 배분, 변동 간격과 구간 배분을 AI가 제안</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_simulation.html">
+            <div class="node-title">통합 시뮬레이션 <span class="type ai">검토</span></div>
+            <div class="node-desc">신호 발생 후 상승·하락 구간의 자본 재배분 과정 확인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_optimization.html">
+            <div class="node-title">AI 통합 개선안 <span class="type ai">개선</span></div>
+            <div class="node-desc">신호 지연과 자본 소진 위험을 함께 낮추는 설정 제안</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_demo.html">
+            <div class="node-title">데모 테스트 <span class="type market">DEMO</span></div>
+            <div class="node-desc">가상 계좌에서 지표 신호와 캐스케이드 작동을 함께 확인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_confirm.html">
+            <div class="node-title">사용자 최종 확인 <span class="type order">확인</span></div>
+            <div class="node-desc">신호, 투자 한도와 자본 배분 조건을 최종 승인</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_indicator_cascade_active.html">
+            <div class="node-title">통합 조건 적용 <span class="type order">적용</span></div>
+            <div class="node-desc">승인된 신호와 캐스케이드 조건을 실계좌에 연결</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_ai_indicator_cascade_monitoring.html">
+            <div class="node-title">통합 모니터링 <span class="type portfolio">관리</span></div>
+            <div class="node-desc">지표 상태, 자본 배분과 잔여 대응 여력을 한 화면에서 관리</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">2. 캐스케이드 시작 흐름 <span class="section-tag">Core</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_cascade_explain.html">
+            <div class="node-title">캐스케이드 설명 <span class="type order">설명</span></div>
+            <div class="node-desc">왜 만들었는지, 자본 재배분, 수익 보존 설명</div>
+          </a>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_cascade_example_answer.html">
+              <div class="node-title">설정 예시 보기 <span class="type ai">AI 답변</span></div>
+              <div class="node-desc">조건과 주문 상세를 한 번에 이해</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_cascade_stock_select.html">
+              <div class="node-title">캐스케이드 시작 <span class="type order">시작</span></div>
+              <div class="node-desc">어떤 종목에 적용할지 선택</div>
+            </a>
+          </div>
+          <a class="node" href="moa_mts4_cascade_setup_amount.html">
+            <div class="node-title">총 투자 금액 선택 <span class="type order">한도</span></div>
+            <div class="node-desc">투자 가능 현금 기준 25%, 50%, 75%, 100% 또는 직접 입력</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_cascade_initial_amount.html">
+            <div class="node-title">초기 투자 금액 선택 <span class="type order">초기</span></div>
+            <div class="node-desc">25%, 50%, 75% 또는 AI가 선택</div>
+          </a>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_cascade_ai_period.html">
+              <div class="node-title">AI 투자 기간 선택 <span class="type ai">AI</span></div>
+              <div class="node-desc">3개월, 6개월, 1년 기준 변동성 판단</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_cascade_rule.html">
+              <div class="node-title">변동성 간격 선택 <span class="type order">간격</span></div>
+              <div class="node-desc">0.5%, 1%, AI 추천</div>
+            </a>
+          </div>
+          <a class="node" href="moa_mts4_ai_cascade_allocation.html">
+            <div class="node-title">구간 금액 선택 <span class="type order">구간</span></div>
+            <div class="node-desc">각 구간마다 초기 투자금의 몇 %를 사고팔지 결정</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_cascade_confirm.html">
+            <div class="node-title">캐스케이드 확인 <span class="type order">확인</span></div>
+            <div class="node-desc">예상 투자금, 상세 주문 가격, 다시 설정, 시작</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_ai_cascade_active.html">
+            <div class="node-title">캐스케이드 진행 중 <span class="type order">ACTIVE</span></div>
+            <div class="node-desc">오늘 실행 내역, 기준가, 조건 변경, 포트폴리오 보기</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">3. 포트폴리오 흐름 <span class="section-tag">Portfolio</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_cascade_portfolio.html">
+            <div class="node-title">포트폴리오 첫 화면 <span class="type portfolio">PORT</span></div>
+            <div class="node-desc">자산 현황, 보유 항목, AI 모니터링, 입금/출금</div>
+          </a>
+          <div class="branch">
+            <a class="node" href="moa_mts4_portfolio_cascade_detail.html">
+              <div class="node-title">SK하이닉스 상세 <span class="type portfolio">상세</span></div>
+              <div class="node-desc">캐스케이드 포지션 상세 정보</div>
+            </a>
+            <a class="node" href="moa_mts4_portfolio_expanded.html">
+              <div class="node-title">포트폴리오 확장 <span class="type portfolio">확장</span></div>
+              <div class="node-desc">보유 항목을 넓게 확인</div>
+            </a>
+          </div>
+          <a class="node" href="moa_mts4_ai_portfolio_analysis.html">
+            <div class="node-title">포트폴리오 AI 분석 <span class="type ai">AI 분석</span></div>
+            <div class="node-desc">전체 포트폴리오 리스크, 비중, 추천 관리</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_portfolio_apply_confirm.html">
+            <div class="node-title">추천 적용 확인 <span class="type ai">확인</span></div>
+            <div class="node-desc">AI 추천대로 관리할지 확인</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_ai_portfolio_applied.html">
+            <div class="node-title">추천 적용 완료 <span class="type portfolio">적용</span></div>
+            <div class="node-desc">AI 모니터링 상태가 포트폴리오에 반영</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">4. AI 모니터링 & 대체 후보 <span class="section-tag">Guardrail</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_samsung_monitoring_check.html">
+            <div class="node-title">삼성전자 추가 투자 경고 <span class="type ai">AI 체크</span></div>
+            <div class="node-desc">반도체 비중 확대와 신규 추가 매수 보류 안내</div>
+          </a>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_alternative_candidates.html">
+              <div class="node-title">대체 후보 비교 <span class="type ai">후보</span></div>
+              <div class="node-desc">해외 분산, 외환, 귀금속, 크립토 후보</div>
+            </a>
+            <a class="node" href="moa_mts4_ai_samsung_override_confirm.html">
+              <div class="node-title">그래도 사고 싶어 <span class="type order">진행</span></div>
+              <div class="node-desc">사용자 의사 확인 후 작은 금액 진행</div>
+            </a>
+          </div>
+          <a class="node" href="moa_mts4_ai_samsung_500k_answer.html">
+            <div class="node-title">삼성전자 50만원 투자 질문 <span class="type ai">AI</span></div>
+            <div class="node-desc">10만원 이하, 50만원 진행, 대체 후보, 포트폴리오 보기</div>
+          </a>
+          <a class="node" href="moa_mts4_ai_samsung_500k_final_confirm.html">
+            <div class="node-title">50만원 진행 최종 확인 <span class="type order">확인</span></div>
+            <div class="node-desc">AI 경고 후 사용자 확인</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_ai_samsung_500k_order_complete.html">
+            <div class="node-title">삼성전자 주문 완료 <span class="type order">완료</span></div>
+            <div class="node-desc">주문 완료 및 AI 모니터링 반영</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section">
+        <div class="section-head">5. 차트 & 환율 흐름 <span class="section-tag">Chart</span></div>
+        <div class="section-body">
+          <a class="node" href="moa_mts4_ai_chart_analysis.html">
+            <div class="node-title">원·달러 차트 분석 <span class="type market">FX</span></div>
+            <div class="node-desc">지지/저항, 패턴, Technical Indicators 20, AI 판단</div>
+          </a>
+          <div class="branch">
+            <a class="node" href="moa_mts4_ai_indicator_settings.html">
+              <div class="node-title">지표 설정 <span class="type market">설정</span></div>
+              <div class="node-desc">20개 지표 설정값 조절</div>
+            </a>
+            <a class="node" href="moa_mts4_chart.html">
+              <div class="node-title">고급 차트 <span class="type market">TradingView</span></div>
+              <div class="node-desc">별도 차트 메뉴 화면</div>
+            </a>
+          </div>
+          <a class="node" href="moa_mts4_ai_fx_portfolio_impact.html">
+            <div class="node-title">환율 포트폴리오 영향 <span class="type portfolio">영향</span></div>
+            <div class="node-desc">원·달러 상승/하락이 해외주식, 달러 현금, 국내 보유에 미치는 영향</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_portfolio_cash.html">
+            <div class="node-title">일부 환전 / 입출금 <span class="type portfolio">계좌</span></div>
+            <div class="node-desc">등록 계좌 기반 입금/출금, 환전 행동 연결</div>
+          </a>
+        </div>
+      </article>
+
+      <article class="flow-section wide">
+        <div class="section-head">6. 기타 보조 화면 <span class="section-tag">Support</span></div>
+        <div class="section-body wide-grid">
+          <a class="node no-arrow" href="moa_mts4_portfolio_cash.html">
+            <div class="node-title">입금/출금 <span class="type portfolio">CASH</span></div>
+            <div class="node-desc">등록된 국민은행 계좌로만 입출금</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_account_settings.html">
+            <div class="node-title">등록 계좌 설정 <span class="type portfolio">설정</span></div>
+            <div class="node-desc">회원 등록 계좌 확인 및 변경</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_order_history.html">
+            <div class="node-title">주문 내역 <span class="type order">주문</span></div>
+            <div class="node-desc">체결/미체결 주문 내역 확인</div>
+          </a>
+          <a class="node no-arrow" href="moa_mts4_pending_order_detail.html">
+            <div class="node-title">미체결 주문 상세 <span class="type order">상세</span></div>
+            <div class="node-desc">미체결 주문 상세와 취소 시트 연결</div>
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section class="note">
+      <b>다음에 확장하기 좋은 흐름</b>
+      <div class="todo">
+        <div><strong>해외 주식</strong>빠른 접근의 해외 주식 버튼을 Apple/AAPL 중심 마켓 화면으로 확장</div>
+        <div><strong>외환</strong>빠른 접근 외환 버튼을 USD/KRW, USD/JPY, EUR/USD 마켓 화면으로 확장</div>
+        <div><strong>귀금속/크립토</strong>금, 은, BTC, ETH 카테고리 화면과 MOA AI 분석 연결</div>
+        <div><strong>알림</strong>환율 알림, 지지선 이탈 알림, AI 모니터링 알림 화면 추가</div>
+      </div>
+    </section>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

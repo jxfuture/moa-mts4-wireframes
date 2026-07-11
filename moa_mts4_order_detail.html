@@ -1,0 +1,422 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 주문 내역 상세</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --red: #e53935;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 78px;
+      overflow: hidden;
+    }
+
+    .status-card {
+      border: 1px solid #bfe4cd;
+      border-radius: 12px;
+      background: #f1fbf5;
+      padding: 13px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .status-card strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .detail-card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .detail-head {
+      padding: 12px;
+      background: #f1f1f1;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .detail-head strong {
+      display: block;
+      font-size: 15px;
+      line-height: 18px;
+    }
+
+    .detail-body {
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid #efefef;
+    }
+
+    .row:last-child { border-bottom: 0; }
+    .row b { color: var(--muted); font-weight: 700; }
+
+    .section-title {
+      margin: 16px 0 8px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .timeline {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 12px;
+      font-size: 11px;
+      line-height: 17px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      padding: 5px 0;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      margin-top: 3px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .logic-panel {
+      left: 630px;
+      top: 200px;
+      width: 410px;
+    }
+
+    .next-panel {
+      left: 1080px;
+      top: 200px;
+      width: 390px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 주문 내역 상세</div>
+    <div class="subtitle">주문 카드 선택 후 체결/수수료/정산 정보 확인 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_order_history.html">&larr;</a>
+          <div class="app-title">
+            주문 상세
+            <div class="app-subtitle">MOA-260707-0428</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="status-card">
+            <strong>체결 완료</strong>
+            SK하이닉스 현재가 주문이 정상 체결되어 포트폴리오에 반영되었습니다.
+          </section>
+
+          <section class="detail-card">
+            <div class="detail-head">
+              <div>
+                <strong>SK하이닉스</strong>
+                000660 · 국내 주식
+              </div>
+              <div style="text-align:right;">
+                <b>500,000원</b><br />
+                <span style="color:var(--green);">체결</span>
+              </div>
+            </div>
+            <div class="detail-body">
+              <div class="row"><b>주문 방식</b><span>현재가 주문</span></div>
+              <div class="row"><b>체결가</b><span>2,202,000원</span></div>
+              <div class="row"><b>체결 수량</b><span>0.22주</span></div>
+              <div class="row"><b>주문 금액</b><span>500,000원</span></div>
+              <div class="row"><b>수수료</b><span>250원</span></div>
+              <div class="row"><b>정산 예정</b><span>2026-07-09</span></div>
+              <div class="row"><b>주문 경로</b><span>MOA AI → 현재가로 살래요</span></div>
+              <div class="row"><b>주문 번호</b><span>MOA-260707-0428</span></div>
+            </div>
+          </section>
+
+          <div class="section-title">처리 타임라인</div>
+          <section class="timeline">
+            <div class="step"><div class="dot"></div><div><b>13:41:55</b> 주문 확인 완료</div></div>
+            <div class="step"><div class="dot"></div><div><b>13:42:01</b> 주문 접수</div></div>
+            <div class="step"><div class="dot"></div><div><b>13:42:18</b> 체결 완료</div></div>
+            <div class="step"><div class="dot"></div><div><b>13:42:19</b> 포트폴리오 반영</div></div>
+          </section>
+
+          <div class="actions">
+            <a class="button dark" href="moa_mts4_portfolio_after_fill.html">포트폴리오 보기</a>
+            <a class="button" href="moa_mts4_ai_fullscreen_wireframe.html">AI에게 물어보기</a>
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 주문 내역 상세</div>
+    </section>
+
+    <aside class="panel logic-panel">
+      <h2>화면 목적</h2>
+      <div class="panel-row"><b>신뢰</b><span>주문이 어떻게 처리됐는지 상세 내역 제공</span></div>
+      <div class="panel-row"><b>상세 정보</b><span>체결가, 수량, 수수료, 정산 예정일, 주문 경로, 주문 번호</span></div>
+      <div class="panel-row"><b>타임라인</b><span>확인, 접수, 체결, 포트폴리오 반영 순서 표시</span></div>
+      <div class="panel-row"><b>후속 행동</b><span>포트폴리오 보기 또는 AI에게 주문 내역 질문</span></div>
+    </aside>
+
+    <aside class="panel next-panel">
+      <h2>다음 확장 추천</h2>
+      <div class="panel-row"><b>1순위</b><span>대기 주문 상세/취소 화면</span></div>
+      <div class="panel-row"><b>2순위</b><span>종목별 상세 보유 화면</span></div>
+      <div class="panel-row"><b>3순위</b><span>AI 주문 내역 설명 화면</span></div>
+      <div class="panel-row"><b>추가</b><span>거래 확인서 다운로드, 공유, 문의 기능은 후순위</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

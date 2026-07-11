@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 위험 제한 수정</title>
+  <style>
+    :root { --ink:#232323; --muted:#777; --line:#d4d4d4; --blue:#3b66d6; --green:#2ead65; --orange:#f59e0b; --phone-w:430px; --phone-h:920px; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#fafafa; color:var(--ink); font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .board { position:relative; width:1200px; min-height:1100px; padding:48px 64px; }
+    .title { font-size:34px; font-weight:800; }
+    .subtitle { margin-top:6px; color:#999; font-size:15px; }
+    .phone-wrap { position:absolute; left:120px; top:150px; width:var(--phone-w); }
+    .phone { position:relative; width:var(--phone-w); height:var(--phone-h); border:3px solid var(--ink); border-radius:28px; background:#fff; overflow:hidden; }
+    .notch { position:absolute; top:7px; left:174px; width:82px; height:13px; border:1px solid var(--ink); border-radius:8px; background:#fff; z-index:4; }
+    .appbar { position:absolute; left:0; right:0; top:0; height:78px; padding:30px 18px 12px; border-bottom:1px solid var(--line); background:#fff; display:grid; grid-template-columns:36px 1fr 36px; gap:8px; align-items:center; z-index:3; }
+    .icon-button { width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; }
+    .app-title { text-align:center; font-size:16px; font-weight:800; line-height:18px; }
+    .app-subtitle { color:var(--muted); font-size:10px; font-weight:400; }
+    .content { position:absolute; left:18px; right:18px; top:94px; bottom:72px; overflow-y:auto; padding-bottom:16px; scrollbar-width:none; }
+    .content::-webkit-scrollbar { display:none; }
+    .hero { border:1px solid #cddbf6; border-radius:12px; background:#f8fbff; padding:12px; font-size:11px; line-height:16px; }
+    .hero b { display:block; font-size:15px; line-height:20px; margin-bottom:4px; }
+    .card { border:1px solid var(--line); border-radius:12px; background:#fff; overflow:hidden; margin-top:10px; }
+    .card-head { padding:10px 12px; border-bottom:1px solid var(--line); background:#f4f4f4; font-size:13px; font-weight:900; }
+    .card-body { padding:12px; font-size:11px; line-height:16px; }
+    .setting { padding:10px 0; border-bottom:1px solid #eee; }
+    .setting:last-child { border-bottom:0; }
+    .setting-top { display:flex; justify-content:space-between; gap:8px; font-weight:900; }
+    .setting-top span { color:var(--blue); }
+    .setting-copy { margin-top:3px; color:var(--muted); font-size:10px; line-height:14px; }
+    .range { position:relative; height:8px; border-radius:999px; background:#e5e7eb; margin-top:9px; overflow:hidden; }
+    .range-fill { height:100%; border-radius:999px; background:var(--blue); }
+    .chips { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-top:9px; }
+    .chip { min-height:32px; border:1px solid #ccc; border-radius:9px; background:#fff; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 4px; font-size:9px; line-height:12px; font-weight:900; }
+    .chip.active { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .warn { border:1px solid #f1d592; border-radius:10px; background:#fff8e7; color:#6c4a12; padding:10px; margin-top:10px; font-size:11px; line-height:16px; font-weight:700; }
+    .button { min-height:42px; border:1px solid #aaa; border-radius:10px; background:#fff; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 10px; margin-top:10px; font-size:12px; font-weight:900; }
+    .button.dark { background:var(--ink); color:#fff; border-color:var(--ink); }
+    .bottom-nav { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:#fff; display:grid; grid-template-columns:repeat(5,1fr); align-items:center; text-align:center; font-size:10px; color:var(--muted); }
+    .nav-item { display:grid; gap:4px; justify-items:center; }
+    .nav-icon { width:22px; height:18px; border:1px solid currentColor; border-radius:4px; }
+    .nav-item.active { color:var(--blue); font-weight:800; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">AI 자동매매 위험 제한 수정</div>
+    <div class="subtitle">라이브 적용 전에 실제 주문 위험을 사용자가 직접 확인하는 화면</div>
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_ai_strategy_live_apply.html">&larr;</a>
+          <div class="app-title">위험 제한 수정<div class="app-subtitle">라이브 적용 전 확인</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+        <main class="content">
+          <section class="hero">
+            <b>실제 계좌에 적용될 제한값입니다</b>
+            이 값은 자동매매가 주문을 넣을 수 있는 최대 범위를 정합니다. 라이브 적용 후에도 다시 수정할 수 있습니다.
+          </section>
+          <section class="card">
+            <div class="card-head">위험 제한</div>
+            <div class="card-body">
+              <div class="setting">
+                <div class="setting-top"><b>최대 투자금</b><span>1,000만원</span></div>
+                <div class="setting-copy">이 자동매매가 사용할 수 있는 전체 투자 한도입니다.</div>
+                <div class="range"><div class="range-fill" style="width:55%;"></div></div>
+                <div class="chips"><div class="chip">500만원</div><div class="chip active">1,000만원</div><div class="chip">2,000만원</div><div class="chip">최대</div><div class="chip">직접 입력</div></div>
+              </div>
+              <div class="setting">
+                <div class="setting-top"><b>1회 주문 한도</b><span>100만원</span></div>
+                <div class="setting-copy">한 번의 주문으로 들어갈 수 있는 최대 금액입니다.</div>
+                <div class="range"><div class="range-fill" style="width:45%;"></div></div>
+                <div class="chips"><div class="chip">50만원</div><div class="chip active">100만원</div><div class="chip">최대</div><div class="chip">없음</div><div class="chip">직접 입력</div></div>
+              </div>
+              <div class="setting">
+                <div class="setting-top"><b>하루 주문 횟수</b><span>최대 3회</span></div>
+                <div class="setting-copy">하루에 자동매매가 실행할 수 있는 주문 횟수입니다.</div>
+                <div class="range"><div class="range-fill" style="width:60%;"></div></div>
+                <div class="chips"><div class="chip">1회</div><div class="chip active">3회</div><div class="chip">5회</div><div class="chip">없음</div><div class="chip">직접 입력</div></div>
+              </div>
+              <div class="setting">
+                <div class="setting-top"><b>자동 중단 손실률</b><span>-10%</span></div>
+                <div class="setting-copy">전략 손실률이 이 기준에 닿으면 신규 주문을 멈춥니다.</div>
+                <div class="range"><div class="range-fill" style="width:50%;"></div></div>
+                <div class="chips"><div class="chip">-5%</div><div class="chip active">-10%</div><div class="chip">-15%</div><div class="chip">없음</div><div class="chip">직접 입력</div></div>
+              </div>
+            </div>
+          </section>
+          <div class="warn">위험 제한을 낮추면 손실 방어는 강해지지만 주문 기회가 줄어들 수 있습니다.</div>
+          <a class="button dark" href="moa_mts4_ai_strategy_live_apply.html">저장하고 라이브 적용으로 돌아가기</a>
+        </main>
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

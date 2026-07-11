@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 종목 검색 결과</title>
+  <style>
+    :root {
+      --ink:#232323;
+      --muted:#777;
+      --line:#d4d4d4;
+      --blue:#3b66d6;
+      --green:#2ead65;
+      --red:#e53935;
+      --phone-w:430px;
+      --phone-h:920px;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#fafafa; color:var(--ink); font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .board { position:relative; width:1600px; min-height:1220px; padding:48px 64px; }
+    .title { font-size:34px; font-weight:800; }
+    .subtitle { margin-top:6px; color:#999; font-size:15px; }
+    .rule { width:1460px; height:1px; margin-top:20px; background:#bdbdbd; }
+    .phone-wrap { position:absolute; left:120px; top:170px; width:var(--phone-w); }
+    .phone { position:relative; width:var(--phone-w); height:var(--phone-h); border:3px solid var(--ink); border-radius:28px; background:#fff; overflow:hidden; }
+    .notch { position:absolute; top:7px; left:174px; width:82px; height:13px; border:1px solid var(--ink); border-radius:8px; background:#fff; z-index:4; }
+    .appbar { position:absolute; left:0; right:0; top:0; height:78px; padding:30px 18px 12px; border-bottom:1px solid var(--line); background:#fff; display:grid; grid-template-columns:36px 1fr 36px; gap:8px; align-items:center; z-index:3; }
+    .icon-button { width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:900; }
+    .app-title { text-align:center; font-size:16px; font-weight:900; line-height:18px; }
+    .app-subtitle { color:var(--muted); font-size:10px; font-weight:700; }
+    .content { position:absolute; left:18px; right:18px; top:94px; bottom:72px; overflow-y:auto; padding-bottom:16px; scrollbar-width:none; }
+    .content::-webkit-scrollbar { display:none; }
+    .search-box { border:1px solid var(--line); border-radius:14px; background:#fff; padding:12px; }
+    .search-line { display:grid; grid-template-columns:1fr 38px; gap:8px; }
+    .query { height:38px; border:1px solid #c9c9c9; border-radius:9px; display:flex; align-items:center; padding:0 10px; font-size:13px; font-weight:900; }
+    .enter { height:38px; border-radius:9px; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; }
+    .hint { margin-top:9px; color:var(--muted); font-size:11px; line-height:16px; font-weight:700; }
+    .section { margin-top:12px; border:1px solid var(--line); border-radius:14px; background:#fff; overflow:hidden; }
+    .section-head { padding:11px 12px; border-bottom:1px solid var(--line); background:#f5f5f5; display:flex; justify-content:space-between; font-size:13px; font-weight:900; }
+    .section-head span:last-child { color:var(--muted); font-size:10px; }
+    .result { display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; min-height:74px; padding:12px; border-bottom:1px solid #eee; }
+    .result:last-child { border-bottom:0; }
+    .name strong { display:block; font-size:14px; line-height:18px; }
+    .name span { display:block; margin-top:3px; color:var(--muted); font-size:11px; line-height:15px; font-weight:700; }
+    .price { text-align:right; font-size:12px; line-height:16px; font-weight:900; }
+    .price span { display:block; font-size:10px; }
+    .up { color:var(--green); }
+    .down { color:#2563eb; }
+    .tag-row { display:flex; gap:6px; margin-top:7px; flex-wrap:wrap; }
+    .tag { border:1px solid #d8d8d8; border-radius:999px; padding:3px 7px; background:#fafafa; color:#555; font-size:9px; font-weight:900; }
+    .notice { margin-top:12px; border:1px solid #dbeafe; border-radius:12px; background:#f8fbff; padding:12px; color:#334155; font-size:11px; line-height:17px; font-weight:800; }
+    .bottom-nav { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:#fff; display:grid; grid-template-columns:repeat(5,1fr); align-items:center; text-align:center; font-size:10px; color:var(--muted); z-index:4; }
+    .nav-item { display:grid; gap:4px; justify-items:center; }
+    .nav-icon { width:22px; height:18px; border:1px solid currentColor; border-radius:4px; }
+    .nav-item.active { color:var(--blue); font-weight:900; }
+    .caption { margin-top:18px; text-align:center; color:var(--muted); font-size:14px; font-weight:800; }
+    .panel { position:absolute; left:620px; top:210px; width:560px; border-left:3px solid var(--blue); padding-left:24px; font-size:14px; line-height:22px; }
+    .panel h2 { margin:0 0 16px; font-size:22px; }
+    .panel-row { margin:12px 0; padding:12px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+    .panel-row b { display:block; margin-bottom:4px; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 종목 검색 결과</div>
+    <div class="subtitle">검색어가 여러 종목과 매칭될 때 바로 주문창으로 가지 않고 후보를 먼저 고르는 중간 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_market.html">&larr;</a>
+          <div class="app-title">검색 결과<div class="app-subtitle">삼성전자</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="search-box">
+            <div class="search-line">
+              <div class="query">삼성전자</div>
+              <a class="enter" href="moa_mts4_search_results_samsung.html">&#8617;</a>
+            </div>
+            <div class="hint">검색어와 비슷한 종목이 여러 개 있을 때 정확한 상품을 먼저 선택합니다.</div>
+          </section>
+
+          <section class="section">
+            <div class="section-head"><span>국내 주식</span><span>3개 후보</span></div>
+            <a class="result" href="moa_mts4_stock_quick_order_samsung.html">
+              <div class="name">
+                <strong>삼성전자</strong>
+                <span>005930 · 코스피 · 보통주</span>
+                <div class="tag-row"><span class="tag">가장 많이 거래</span><span class="tag">AI 관심 종목</span></div>
+              </div>
+              <div class="price">73,400원<span class="up">▲ 1.10%</span></div>
+            </a>
+            <a class="result" href="moa_mts4_stock_quick_order_samsung.html">
+              <div class="name">
+                <strong>삼성전자우</strong>
+                <span>005935 · 코스피 · 우선주</span>
+                <div class="tag-row"><span class="tag">배당 선호</span><span class="tag">유동성 확인</span></div>
+              </div>
+              <div class="price">60,800원<span class="up">▲ 0.82%</span></div>
+            </a>
+            <a class="result" href="moa_mts4_stock_quick_order_samsung.html">
+              <div class="name">
+                <strong>삼성전자 ADR</strong>
+                <span>SSNLF · 해외 장외 · 달러 표시</span>
+                <div class="tag-row"><span class="tag">해외 상품</span><span class="tag">환율 영향</span></div>
+              </div>
+              <div class="price">$54.20<span class="down">▼ -0.35%</span></div>
+            </a>
+          </section>
+
+          <div class="notice">
+            후보를 선택하면 해당 종목의 바로 주문창으로 이동합니다. 같은 이름이라도 보통주, 우선주, 해외 ADR은 가격과 거래 시장이 다릅니다.
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item active" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN - 종목 검색 결과</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>검색어가 여러 상품을 가리킬 때 사용자가 정확한 종목을 먼저 선택합니다.</span></div>
+      <div class="panel-row"><b>이동</b><span>후보를 누르면 기존 바로 주문창으로 이동합니다.</span></div>
+      <div class="panel-row"><b>안전장치</b><span>삼성전자, 삼성전자우, ADR처럼 이름이 비슷하지만 시장과 위험이 다른 상품을 구분합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>

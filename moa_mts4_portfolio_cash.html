@@ -1,0 +1,462 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 입금 출금</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --green: #2ead65;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 4;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 78px;
+      overflow-y: auto;
+      padding-bottom: 14px;
+    }
+
+    .cash-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #f7f7f7;
+      padding: 14px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .amount {
+      margin-top: 4px;
+      font-size: 25px;
+      font-weight: 800;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tab {
+      min-height: 38px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .tab.active {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .section {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 12px;
+    }
+
+    .account-card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .account-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .account-head b {
+      font-size: 13px;
+    }
+
+    .settings-link {
+      min-height: 28px;
+      border: 1px solid #9d9d9d;
+      border-radius: 8px;
+      padding: 0 9px;
+      display: flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .account-row {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 8px;
+      padding: 8px 0;
+      border-top: 1px solid #efefef;
+    }
+
+    .account-row:first-of-type {
+      border-top: 0;
+    }
+
+    .account-row b {
+      color: #555;
+    }
+
+    .account-note {
+      margin-top: 8px;
+      color: #4d6b53;
+      border: 1px solid #b8ddc3;
+      border-radius: 10px;
+      background: #f3fbf5;
+      padding: 9px;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .input {
+      height: 42px;
+      border: 1px solid #c9c9c9;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .quick {
+      min-height: 36px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .button {
+      min-height: 40px;
+      border: 1px solid var(--ink);
+      border-radius: 10px;
+      background: var(--ink);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .notice {
+      margin-top: 10px;
+      border: 1px solid #b8ddc3;
+      border-radius: 10px;
+      background: #f3fbf5;
+      color: #4d6b53;
+      padding: 10px;
+      font-size: 11px;
+      line-height: 16px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      left: 630px;
+      top: 200px;
+      width: 420px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 입금 / 출금</div>
+    <div class="subtitle">포트폴리오 현금 관리 화면 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_cascade_portfolio.html">&larr;</a>
+          <div class="app-title">
+            입금 / 출금
+            <div class="app-subtitle">투자 가능 현금</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="cash-card">
+            <div class="label">현재 투자 가능 현금</div>
+            <div class="amount">760,000원</div>
+            <div class="tabs">
+              <div class="tab active">입금</div>
+              <div class="tab">출금</div>
+            </div>
+          </section>
+
+          <section class="account-card">
+            <div class="account-head">
+              <b>등록된 입출금 계좌</b>
+              <a class="settings-link" href="moa_mts4_account_settings.html">설정</a>
+            </div>
+            <div class="account-row">
+              <b>입금 계좌</b>
+              <span>국민은행 12345-***-******</span>
+            </div>
+            <div class="account-row">
+              <b>출금 계좌</b>
+              <span>국민은행 12345-***-******</span>
+            </div>
+            <div class="account-note">
+              회원가입 때 등록한 본인 계좌입니다. 입금과 출금은 이 계좌로만 가능합니다.
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="section-title">금액 입력</div>
+            <div class="input">금액 입력</div>
+            <div class="quick-grid">
+              <div class="quick">10만원</div>
+              <div class="quick">100만원</div>
+              <div class="quick">500만원</div>
+            </div>
+            <div class="button">확인</div>
+            <div class="notice">
+              프로토타입 화면입니다. 실제 입금과 출금은 등록 계좌 확인과 본인 인증 단계가 추가됩니다.
+            </div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item active" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · 입금 / 출금</div>
+    </section>
+
+    <aside class="panel">
+      <h2>화면 역할</h2>
+      <div class="panel-row"><b>목적</b><span>포트폴리오에서 부족한 현금을 바로 보충하거나 출금 흐름으로 이동합니다.</span></div>
+      <div class="panel-row"><b>계좌</b><span>회원가입 때 등록한 하나의 본인 계좌로만 입금과 출금이 가능합니다.</span></div>
+      <div class="panel-row"><b>진입</b><span>포트폴리오 자산 카드와 상단 메뉴 양쪽에서 접근합니다.</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+

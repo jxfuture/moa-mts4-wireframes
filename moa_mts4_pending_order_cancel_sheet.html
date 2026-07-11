@@ -1,0 +1,469 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA MTS4 - 주문 취소 확인</title>
+  <style>
+    :root {
+      --ink: #232323;
+      --muted: #7c7c7c;
+      --line: #d4d4d4;
+      --blue: #3b66d6;
+      --orange: #b76b00;
+      --red: #e53935;
+      --phone-w: 430px;
+      --phone-h: 920px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #fafafa;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .board {
+      position: relative;
+      width: 1600px;
+      min-height: 1220px;
+      padding: 48px 64px;
+    }
+
+    .title {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      color: #9a9a9a;
+      font-size: 15px;
+    }
+
+    .rule {
+      width: 1460px;
+      height: 1px;
+      margin-top: 20px;
+      background: #bdbdbd;
+    }
+
+    .phone-wrap {
+      position: absolute;
+      left: 120px;
+      top: 170px;
+      width: var(--phone-w);
+    }
+
+    .phone {
+      position: relative;
+      width: var(--phone-w);
+      height: var(--phone-h);
+      border: 3px solid var(--ink);
+      border-radius: 28px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .notch {
+      position: absolute;
+      top: 7px;
+      left: 174px;
+      width: 82px;
+      height: 13px;
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      background: #fff;
+      z-index: 5;
+    }
+
+    .appbar {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      padding: 30px 18px 12px;
+      border-bottom: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .icon-button {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .app-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 18px;
+    }
+
+    .app-subtitle {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 400;
+    }
+
+    .content {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 94px;
+      bottom: 78px;
+      overflow: hidden;
+    }
+
+    .status-card {
+      border: 1px solid #f1d19b;
+      border-radius: 12px;
+      background: #fff8ea;
+      padding: 13px;
+      color: var(--orange);
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .status-card strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: var(--orange);
+    }
+
+    .detail-card {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      overflow: hidden;
+    }
+
+    .detail-head {
+      padding: 12px;
+      background: #f1f1f1;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .detail-head strong {
+      display: block;
+      font-size: 15px;
+      line-height: 18px;
+    }
+
+    .detail-body {
+      padding: 12px;
+      font-size: 12px;
+      line-height: 18px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 10px;
+      padding: 6px 0;
+      border-bottom: 1px solid #efefef;
+    }
+
+    .row:last-child { border-bottom: 0; }
+    .row b { color: var(--muted); font-weight: 700; }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .button {
+      min-height: 40px;
+      border: 1px solid #9d9d9d;
+      border-radius: 10px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 10px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .button.dark {
+      background: var(--ink);
+      color: white;
+      border-color: var(--ink);
+    }
+
+    .button.danger {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+    }
+
+    .button.disabled {
+      background: #eeeeee;
+      color: #9a9a9a;
+      border-color: #d8d8d8;
+      cursor: default;
+    }
+
+    .dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, .38);
+      z-index: 6;
+    }
+
+    .sheet {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 7;
+      padding: 14px 16px 18px;
+      border-radius: 20px 20px 0 0;
+      background: white;
+      box-shadow: 0 -8px 24px rgba(0,0,0,.18);
+    }
+
+    .handle {
+      width: 46px;
+      height: 5px;
+      border-radius: 999px;
+      background: #d7d7d7;
+      margin: 0 auto 14px;
+    }
+
+    .sheet-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .sheet-copy {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 18px;
+      margin-bottom: 12px;
+    }
+
+    .cancel-summary {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #f7f7f7;
+      padding: 10px;
+      font-size: 11px;
+      line-height: 17px;
+      margin-bottom: 12px;
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 62px;
+      border-top: 1px solid var(--line);
+      background: white;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      z-index: 2;
+    }
+
+    .nav-item {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .nav-icon {
+      width: 22px;
+      height: 18px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+
+    .nav-item.active {
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .caption {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .panel {
+      position: absolute;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      background: white;
+      padding: 18px;
+    }
+
+    .logic-panel {
+      left: 630px;
+      top: 200px;
+      width: 410px;
+    }
+
+    .next-panel {
+      left: 1080px;
+      top: 200px;
+      width: 390px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid #e5e5e5;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    .panel-row:first-of-type { border-top: 0; }
+    .panel-row b { color: #555; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA MTS4 - 주문 취소 확인 바텀시트</div>
+    <div class="subtitle">대기 주문에서 “주문 취소” 선택 시 뜨는 확인 상태 | 편집 원본 HTML | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <a class="icon-button" href="moa_mts4_pending_order_detail.html">&larr;</a>
+          <div class="app-title">
+            대기 주문 상세
+            <div class="app-subtitle">Apple 지정가</div>
+          </div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="status-card">
+            <strong>아직 대기 중입니다.</strong>
+            지정한 가격에 도달하면 주문이 자동으로 진행됩니다.
+          </section>
+
+          <section class="detail-card">
+            <div class="detail-head">
+              <div>
+                <strong>Apple (AAPL)</strong>
+                해외 주식 · 지정가 주문
+              </div>
+              <div style="text-align:right;">
+                <b>$1,000</b><br />
+                <span style="color:var(--orange);">대기</span>
+              </div>
+            </div>
+            <div class="detail-body">
+              <div class="row"><b>지정 가격</b><span>$188.00</span></div>
+              <div class="row"><b>현재 가격</b><span>$189.30</span></div>
+              <div class="row"><b>예상 수량</b><span>약 5.2주</span></div>
+              <div class="row"><b>유효 기간</b><span>오늘 장 마감까지</span></div>
+            </div>
+          </section>
+
+          <div class="actions">
+            <div class="button dark">가격 수정</div>
+            <div class="button">금액 수정</div>
+            <div class="button danger">주문 취소</div>
+            <a class="button" href="moa_mts4_order_history.html">내역으로</a>
+          </div>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+
+        <div class="dim"></div>
+        <section class="sheet">
+          <div class="handle"></div>
+          <div class="sheet-title">이 주문을 취소할까요?</div>
+          <div class="sheet-copy">
+            아직 체결되지 않은 주문이라 지금 취소할 수 있습니다. 취소하면 이 주문은 더 이상 진행되지 않습니다.
+          </div>
+          <div class="cancel-summary">
+            <b>Apple 지정가 주문</b><br />
+            $188.00 도달 시 $1,000 주문 · 오늘 장 마감까지 유효
+          </div>
+          <div class="sheet-actions">
+            <a class="button" href="moa_mts4_pending_order_detail.html">계속 둘래요</a>
+            <div class="button disabled">네, 취소할게요 · 개발 중</div>
+          </div>
+        </section>
+      </div>
+      <div class="caption">SCREEN · 주문 취소 확인</div>
+    </section>
+
+    <aside class="panel logic-panel">
+      <h2>화면 목적</h2>
+      <div class="panel-row"><b>실수 방지</b><span>취소 버튼을 누르자마자 처리하지 않고 한 번 더 확인</span></div>
+      <div class="panel-row"><b>요약</b><span>취소 대상 주문의 종목, 가격, 금액, 유효 기간 표시</span></div>
+      <div class="panel-row"><b>취소 유지</b><span>계속 둘래요를 누르면 상세 화면으로 복귀</span></div>
+      <div class="panel-row"><b>최종 취소</b><span>프로토타입 범위에서는 비활성 상태로 표시</span></div>
+    </aside>
+
+    <aside class="panel next-panel">
+      <h2>프로토타입 범위</h2>
+      <div class="panel-row"><b>여기서 정지</b><span>취소 완료 같은 세부 운영 화면은 만들지 않음</span></div>
+      <div class="panel-row"><b>다음 우선순위</b><span>지정가 주문, 캐스케이드, 차트 분석처럼 핵심 기능 화면으로 이동</span></div>
+      <div class="panel-row"><b>버튼 상태</b><span>미개발 기능은 비활성 또는 개발 중 표시</span></div>
+    </aside>
+  </main>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
+
