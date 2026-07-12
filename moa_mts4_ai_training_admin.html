@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MOA AI - 교육 및 파인튜닝 데이터 수집</title>
+  <style>
+    :root {
+      --ink:#232323;
+      --muted:#777;
+      --line:#d8d8d8;
+      --blue:#3b66d6;
+      --soft:#f5f7fb;
+      --good:#128a4a;
+      --phone-w:430px;
+      --phone-h:920px;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#fafafa; color:var(--ink); font-family:"Malgun Gothic","Apple SD Gothic Neo",Arial,sans-serif; }
+    a { color:inherit; text-decoration:none; }
+    .board { position:relative; width:1680px; min-height:1280px; padding:48px 64px; }
+    .title { font-size:34px; font-weight:900; }
+    .subtitle { margin-top:6px; color:#999; font-size:15px; }
+    .rule { width:1520px; height:1px; margin-top:20px; background:#bdbdbd; }
+    .phone-wrap { position:absolute; left:120px; top:170px; width:var(--phone-w); }
+    .phone { position:relative; width:var(--phone-w); height:var(--phone-h); border:3px solid var(--ink); border-radius:28px; background:#fff; overflow:hidden; }
+    .notch { position:absolute; top:7px; left:174px; width:82px; height:13px; border:1px solid var(--ink); border-radius:8px; background:#fff; z-index:4; }
+    .appbar { position:absolute; left:0; right:0; top:0; height:78px; padding:30px 18px 12px; border-bottom:1px solid var(--line); background:#fff; display:grid; grid-template-columns:46px 1fr 36px; gap:8px; align-items:center; z-index:3; }
+    .moa-logo { font-size:12px; font-weight:900; letter-spacing:0; }
+    .icon-button { width:36px; height:36px; border:1px solid var(--line); border-radius:8px; background:#fff; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:900; }
+    .app-title { text-align:center; font-size:15px; font-weight:900; line-height:18px; }
+    .app-subtitle { color:var(--muted); font-size:10px; font-weight:400; }
+    .content { position:absolute; left:18px; right:18px; top:94px; bottom:62px; overflow-y:auto; padding-bottom:18px; }
+    .card { margin-top:12px; border:1px solid var(--line); border-radius:14px; background:#fff; overflow:hidden; }
+    .card-head { padding:12px; border-bottom:1px solid var(--line); background:#f4f4f4; font-size:13px; font-weight:900; }
+    .card-body { padding:12px; font-size:12px; line-height:18px; }
+    .field { margin-top:10px; }
+    .field:first-child { margin-top:0; }
+    .field label { display:block; margin-bottom:6px; color:#555; font-size:11px; font-weight:900; }
+    input, textarea, select { width:100%; border:1px solid #cfcfcf; border-radius:10px; padding:10px; font:inherit; font-size:12px; background:#fff; }
+    textarea { min-height:92px; resize:vertical; line-height:18px; }
+    .short-textarea { min-height:56px; }
+    .button { margin-top:10px; min-height:40px; border:1px solid var(--ink); border-radius:10px; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; cursor:pointer; }
+    .button.secondary { background:#fff; color:var(--ink); }
+    .button-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .notice { margin-top:10px; border:1px solid #dbeafe; border-radius:10px; background:#f8fbff; padding:10px; color:#334155; font-size:11px; line-height:16px; }
+    .notice.good { border-color:#bbf7d0; background:#f0fdf4; color:#166534; }
+    .entry { padding:10px 0; border-top:1px solid #eee; }
+    .entry:first-child { border-top:0; }
+    .entry b { display:block; font-size:12px; }
+    .entry span { color:var(--muted); font-size:10px; }
+    .tag { display:inline-flex; align-items:center; min-height:20px; margin:6px 5px 0 0; padding:0 7px; border-radius:999px; border:1px solid #cfe0ff; background:#f8fbff; color:#2454c6; font-size:10px; font-weight:900; }
+    .stats { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .stat { border:1px solid #e1e1e1; border-radius:12px; padding:10px; background:#fafafa; }
+    .stat b { display:block; font-size:17px; }
+    .stat span { color:var(--muted); font-size:10px; }
+    .bottom-nav { position:absolute; left:0; right:0; bottom:0; height:62px; border-top:1px solid var(--line); background:#fff; display:grid; grid-template-columns:repeat(5,1fr); align-items:center; text-align:center; font-size:10px; color:var(--muted); }
+    .nav-item { display:grid; gap:4px; justify-items:center; }
+    .nav-icon { width:22px; height:18px; border:1px solid currentColor; border-radius:4px; }
+    .nav-item.active { color:var(--blue); font-weight:900; }
+    .caption { margin-top:18px; text-align:center; color:var(--muted); font-size:14px; font-weight:900; }
+    .panel { position:absolute; left:620px; top:190px; width:520px; border:2px solid var(--ink); border-radius:12px; background:#fff; padding:18px; }
+    .panel h2 { margin:0 0 12px; font-size:18px; }
+    .panel-row { display:grid; grid-template-columns:145px 1fr; gap:10px; padding:10px 0; border-top:1px solid #eee; font-size:13px; line-height:18px; }
+    .panel-row:first-of-type { border-top:0; }
+    .panel-row b { color:#555; }
+    .flow-panel { position:absolute; left:1180px; top:190px; width:350px; border:1px solid var(--line); border-radius:12px; background:#fff; padding:18px; }
+    .flow-panel h3 { margin:0 0 12px; font-size:16px; }
+    .step { position:relative; margin-top:10px; padding:10px 10px 10px 28px; border:1px solid #e5e5e5; border-radius:10px; background:#fafafa; font-size:12px; line-height:17px; }
+    .step::before { content:attr(data-step); position:absolute; left:8px; top:10px; width:14px; height:14px; border-radius:50%; background:var(--blue); color:#fff; font-size:9px; display:flex; align-items:center; justify-content:center; font-weight:900; }
+  </style>
+</head>
+<body>
+  <main class="board">
+    <div class="title">MOA AI - 교육 및 파인튜닝 데이터 수집</div>
+    <div class="subtitle">OpenAI 답변 가이드라인 저장 + 향후 fine-tuning용 질문/답변 예시 수집 화면 | 2026.07</div>
+    <div class="rule"></div>
+
+    <section class="phone-wrap">
+      <div class="phone">
+        <div class="notch"></div>
+        <header class="appbar">
+          <div class="moa-logo">MOA</div>
+          <div class="app-title">MOA AI<div class="app-subtitle">교육 관리</div></div>
+          <a class="icon-button" href="moa_mts4_all_menu.html">&#9776;</a>
+        </header>
+
+        <main class="content">
+          <section class="card">
+            <div class="card-head">파인튜닝 예시 수집</div>
+            <div class="card-body">
+              <div class="stats">
+                <div class="stat"><b id="ftCount">0</b><span>저장된 후보 예시</span></div>
+                <div class="stat"><b id="ftReady">후보</b><span>상태</span></div>
+              </div>
+
+              <div class="field">
+                <label for="ftCategory">분류</label>
+                <select id="ftCategory">
+                  <option>캐스케이드</option>
+                  <option>주문</option>
+                  <option>포트폴리오</option>
+                  <option>AI 자동매매</option>
+                  <option>차트 분석</option>
+                  <option>예외 상황</option>
+                  <option>기타</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="ftUserMessage">사용자 질문</label>
+                <textarea id="ftUserMessage" class="short-textarea">삼성전자 50만원 투자할래</textarea>
+              </div>
+
+              <div class="field">
+                <label for="ftIdealAnswer">이상적인 MOA AI 답변</label>
+                <textarea id="ftIdealAnswer">현재 삼성전자 기준가는 285,000원이고, 50만원이면 약 1.75주를 살 수 있습니다. 다만 포트폴리오에서 반도체 비중이 커질 수 있으니 먼저 10만원 이하로 작게 시작하거나 대체 후보를 함께 비교하는 선택지도 제안드립니다.</textarea>
+              </div>
+
+              <div class="field">
+                <label for="ftChoices">버튼 선택지</label>
+                <textarea id="ftChoices" class="short-textarea">10만원 이하로 진행|moa_mts4_ai_samsung_100k_confirm.html
+그래도 50만원 진행|moa_mts4_ai_samsung_500k_final_confirm.html
+대체 후보 비교|moa_mts4_ai_alternative_candidates.html</textarea>
+              </div>
+
+              <div class="field">
+                <label for="ftNotes">메모</label>
+                <textarea id="ftNotes" class="short-textarea">주문 의도에는 가격, 예상 수량, 포트폴리오 영향, 다음 선택지를 함께 보여준다.</textarea>
+              </div>
+
+              <div class="button-row">
+                <button class="button" id="saveFtButton">예시 저장</button>
+                <a class="button secondary" id="downloadJsonlButton" href="/api/moa-ai/fine-tuning-jsonl">JSONL 다운로드</a>
+              </div>
+              <div class="notice good" id="ftStatus">좋은 예시가 100개 이상 쌓이면 첫 fine-tune 후보로 검토할 수 있습니다.</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">저장된 파인튜닝 후보</div>
+            <div class="card-body" id="ftList">불러오는 중...</div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">빠른 교육 메모 저장</div>
+            <div class="card-body">
+              <div class="field">
+                <label for="trainingTitle">제목</label>
+                <input id="trainingTitle" value="IR 데모 답변 규칙" />
+              </div>
+              <div class="field">
+                <label for="trainingContent">교육 내용</label>
+                <textarea id="trainingContent">앞으로 MOA AI는 IR 데모에서 답변을 너무 길게 하지 말고, 핵심 판단과 다음 선택지를 먼저 보여준다.</textarea>
+              </div>
+              <button class="button" id="saveTrainingButton">교육 메모 저장</button>
+              <div class="notice" id="trainingStatus">저장하면 다음 MOA AI 답변부터 참고합니다.</div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">저장된 추가 교육</div>
+            <div class="card-body" id="trainingList">불러오는 중...</div>
+          </section>
+        </main>
+
+        <nav class="bottom-nav">
+          <a class="nav-item" href="moa_mts4_home_wireframe.html"><div class="nav-icon"></div><div>홈</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_main.html"><div class="nav-icon"></div><div>캐스케이드</div></a>
+          <a class="nav-item active" href="moa_mts4_ai_fullscreen_wireframe.html"><div class="nav-icon"></div><div>MOA AI</div></a>
+          <a class="nav-item" href="moa_mts4_market.html"><div class="nav-icon"></div><div>마켓</div></a>
+          <a class="nav-item" href="moa_mts4_cascade_portfolio.html"><div class="nav-icon"></div><div>포트폴리오</div></a>
+        </nav>
+      </div>
+      <div class="caption">SCREEN · MOA AI 교육 및 파인튜닝 데이터 수집</div>
+    </section>
+
+    <aside class="panel">
+      <h2>파인튜닝 데이터 수집 방식</h2>
+      <div class="panel-row"><b>지금 저장되는 것</b><span>사용자 질문, 이상적인 답변, 버튼 선택지, 분류, 메모가 저장됩니다.</span></div>
+      <div class="panel-row"><b>저장 위치</b><span><code>server/data/moa_ai_fine_tuning_examples.json</code>에 후보 예시로 저장됩니다.</span></div>
+      <div class="panel-row"><b>실제 파인튜닝 전</b><span>후보 예시 중 좋은 것만 골라 검수하고, 테스트용 예시는 따로 분리합니다.</span></div>
+      <div class="panel-row"><b>내보내기</b><span>JSONL 다운로드 버튼으로 fine-tuning 준비 파일을 받을 수 있습니다.</span></div>
+    </aside>
+
+    <aside class="flow-panel">
+      <h3>추천 진행 순서</h3>
+      <div class="step" data-step="1">MOA AI가 답변해야 할 대표 질문을 입력합니다.</div>
+      <div class="step" data-step="2">투자자가 이해하기 쉬운 이상적인 답변을 작성합니다.</div>
+      <div class="step" data-step="3">다음 화면으로 이어지는 버튼 선택지를 함께 저장합니다.</div>
+      <div class="step" data-step="4">100개 이상 쌓이면 중복과 품질을 검수합니다.</div>
+      <div class="step" data-step="5">검수한 예시만 JSONL로 내보내 fine-tuning 후보로 사용합니다.</div>
+    </aside>
+  </main>
+
+  <script>
+    const apiBase = location.protocol === "file:" ? "http://localhost:8787" : "";
+    const titleInput = document.getElementById("trainingTitle");
+    const contentInput = document.getElementById("trainingContent");
+    const statusBox = document.getElementById("trainingStatus");
+    const listBox = document.getElementById("trainingList");
+    const ftCount = document.getElementById("ftCount");
+    const ftReady = document.getElementById("ftReady");
+    const ftList = document.getElementById("ftList");
+    const ftStatus = document.getElementById("ftStatus");
+    const downloadJsonlButton = document.getElementById("downloadJsonlButton");
+
+    if (location.protocol === "file:") {
+      downloadJsonlButton.href = "http://localhost:8787/api/moa-ai/fine-tuning-jsonl";
+    }
+
+    async function loadTraining() {
+      try {
+        const response = await fetch(`${apiBase}/api/moa-ai/training`);
+        const training = await response.json();
+        const entries = training.additionalTraining || [];
+        if (!entries.length) {
+          listBox.textContent = "아직 추가 교육이 없습니다.";
+          return;
+        }
+        listBox.innerHTML = entries.slice().reverse().map((entry) => `
+          <div class="entry">
+            <b>${escapeHtml(entry.title)}</b>
+            <span>${escapeHtml(entry.createdAt)}</span>
+            <div>${escapeHtml(entry.content)}</div>
+          </div>
+        `).join("");
+      } catch {
+        listBox.textContent = "MOA AI 서버에 연결되지 않았습니다. npm run ai:server 실행 후 다시 열어 주세요.";
+      }
+    }
+
+    async function loadFineTuningExamples() {
+      try {
+        const response = await fetch(`${apiBase}/api/moa-ai/fine-tuning-examples`);
+        const data = await response.json();
+        const entries = data.items || [];
+        ftCount.textContent = entries.length;
+        ftReady.textContent = entries.length >= 100 ? "검수 가능" : "후보";
+        if (!entries.length) {
+          ftList.textContent = "아직 저장된 후보 예시가 없습니다.";
+          return;
+        }
+        ftList.innerHTML = entries.slice().reverse().map((entry) => `
+          <div class="entry">
+            <b>${escapeHtml(entry.userMessage)}</b>
+            <span>${escapeHtml(entry.createdAt)} · ${escapeHtml(entry.category)}</span>
+            <div>${escapeHtml(entry.idealAnswer)}</div>
+            ${(entry.choices || []).map((choice) => `<span class="tag">${escapeHtml(choice.label)}</span>`).join("")}
+          </div>
+        `).join("");
+      } catch {
+        ftList.textContent = "MOA AI 서버에 연결되지 않았습니다. npm run ai:server 실행 후 다시 열어 주세요.";
+      }
+    }
+
+    document.getElementById("saveFtButton").addEventListener("click", async () => {
+      ftStatus.textContent = "파인튜닝 후보 예시 저장 중...";
+      try {
+        const response = await fetch(`${apiBase}/api/moa-ai/fine-tuning-examples`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            category: document.getElementById("ftCategory").value,
+            userMessage: document.getElementById("ftUserMessage").value,
+            idealAnswer: document.getElementById("ftIdealAnswer").value,
+            choices: parseChoices(document.getElementById("ftChoices").value),
+            notes: document.getElementById("ftNotes").value
+          })
+        });
+        if (!response.ok) throw new Error("save failed");
+        ftStatus.textContent = "저장 완료. 이 예시는 향후 fine-tuning 후보 데이터로 쌓입니다.";
+        await loadFineTuningExamples();
+      } catch {
+        ftStatus.textContent = "저장 실패. MOA AI 서버가 실행 중인지 확인해 주세요.";
+      }
+    });
+
+    document.getElementById("saveTrainingButton").addEventListener("click", async () => {
+      statusBox.textContent = "저장 중...";
+      try {
+        const response = await fetch(`${apiBase}/api/moa-ai/training`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: titleInput.value,
+            content: contentInput.value
+          })
+        });
+        if (!response.ok) throw new Error("save failed");
+        statusBox.textContent = "저장 완료. 다음 MOA AI 답변부터 반영됩니다.";
+        contentInput.value = "";
+        await loadTraining();
+      } catch {
+        statusBox.textContent = "저장 실패. MOA AI 서버가 실행 중인지 확인해 주세요.";
+      }
+    });
+
+    function parseChoices(text) {
+      return text.split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .map((line) => {
+          const [label, href] = line.split("|").map((part) => part.trim());
+          return { label, href };
+        })
+        .filter((choice) => choice.label && choice.href);
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
+
+    loadTraining();
+    loadFineTuningExamples();
+  </script>
+  <script src="moa_mts4_common.js"></script>
+</body>
+</html>
