@@ -40,6 +40,47 @@
     });
   }
 
+  function normalizeHeaderBackButtons() {
+    if (!document.querySelector("style[data-moa-logo-style]")) {
+      const style = document.createElement("style");
+      style.setAttribute("data-moa-logo-style", "true");
+      style.textContent = `
+        .moa-logo {
+          width: 36px;
+          height: 36px;
+          border: 1px solid var(--line, #d4d4d4);
+          border-radius: 9px;
+          background: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--blue, #3b66d6);
+          font-family: "Malgun Gothic", "Apple SD Gothic Neo", Arial, sans-serif;
+          font-size: 12px;
+          font-weight: 900;
+          line-height: 1;
+          letter-spacing: 0;
+          box-sizing: border-box;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    document.querySelectorAll(".appbar a, .appbar .back").forEach((element) => {
+      const text = (element.textContent || "").trim();
+      const isBackArrow = text === "←" || text === "‹" || text === "<";
+      const isBackClass = element.classList.contains("back");
+      const isMenu = element.getAttribute("href") === "moa_mts4_all_menu.html" || text === "☰";
+      if ((!isBackArrow && !isBackClass) || isMenu) return;
+
+      const logo = document.createElement("div");
+      logo.className = "moa-logo";
+      logo.textContent = "MOA";
+      logo.setAttribute("aria-label", "MOA");
+      element.replaceWith(logo);
+    });
+  }
+
   function removeStrayQuestionMarks() {
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     const nodes = [];
@@ -49,6 +90,25 @@
         node.nodeValue = "";
       }
     });
+  }
+
+  function autoScrollMoaAIContent() {
+    const isMoaAIChatPage = Boolean(document.querySelector(".content .bubble"));
+    if (!isMoaAIChatPage) return;
+
+    const scrollTargets = Array.from(document.querySelectorAll(".content")).filter((element) => {
+      return element.querySelector(".bubble");
+    });
+
+    const scrollToBottom = () => {
+      scrollTargets.forEach((element) => {
+        element.scrollTop = element.scrollHeight;
+      });
+    };
+
+    requestAnimationFrame(scrollToBottom);
+    setTimeout(scrollToBottom, 120);
+    setTimeout(scrollToBottom, 420);
   }
 
   function addReviewMode() {
@@ -196,10 +256,12 @@
   }
 
   function init() {
+    normalizeHeaderBackButtons();
     normalizeMenuButtons();
     normalizeBottomNav();
     removeStrayQuestionMarks();
     addReviewMode();
+    autoScrollMoaAIContent();
   }
 
   if (document.readyState === "loading") {
