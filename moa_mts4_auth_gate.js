@@ -1,11 +1,10 @@
 ﻿(function () {
-  const protectedHosts = ["jxfuture.github.io", "wireframe.moasis.ai"];
+  const protectedHosts = ["jxfuture.github.io", "wireframe.moasys.ai"];
   const isProtectedHost = protectedHosts.includes(location.hostname);
   if (!isProtectedHost) return;
 
-  const adminIdHash = "ca466e9bddd57bdccf2d445d21b955f01437ee92c6e0e20229e9db02ea812a99";
-  const passwordHash = "58db3574f7359e617c32ab5155e7b3f51347eadc6492fd9215a6c1d665e65ce0";
-  const sessionKey = "moaWireframeAdminSessionV1";
+  const passwordHash = "cea90c1d2627a9e02bf853214a48a1248ed861512124d2333e9193deaa088f65";
+  const sessionKey = "moaWireframeAdminSessionV2";
   const sessionTtlMs = 12 * 60 * 60 * 1000;
 
   const style = document.createElement("style");
@@ -91,9 +90,8 @@
       <div class="moa-auth-card">
         <div class="moa-auth-kicker">MOA Wireframe</div>
         <div class="moa-auth-title">관리자 전용 화면</div>
-        <div class="moa-auth-copy">온라인 와이어프레임은 관리자 확인 후 접근할 수 있습니다.</div>
+        <div class="moa-auth-copy">온라인 와이어프레임은 비밀번호 입력 후 접근할 수 있습니다.</div>
         <form class="moa-auth-form">
-          <input name="adminId" autocomplete="username" placeholder="관리자 ID" aria-label="관리자 ID" />
           <input name="password" type="password" autocomplete="current-password" placeholder="비밀번호" aria-label="비밀번호" />
           <button type="submit">입장하기</button>
           <div class="moa-auth-error" aria-live="polite"></div>
@@ -112,10 +110,9 @@
       event.preventDefault();
       error.textContent = "확인 중입니다...";
       const formData = new FormData(form);
-      const idOk = await matchesHash(String(formData.get("adminId") || ""), adminIdHash);
       const passwordOk = await matchesHash(String(formData.get("password") || ""), passwordHash);
-      if (!idOk || !passwordOk) {
-        error.textContent = "관리자 ID 또는 비밀번호가 맞지 않습니다.";
+      if (!passwordOk) {
+        error.textContent = "비밀번호가 맞지 않습니다.";
         return;
       }
       localStorage.setItem(sessionKey, JSON.stringify({ ok: true, createdAt: Date.now() }));
